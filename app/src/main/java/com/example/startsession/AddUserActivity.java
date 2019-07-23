@@ -1,5 +1,6 @@
 package com.example.startsession;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -39,8 +40,6 @@ public class AddUserActivity extends AppCompatActivity {
         editTextMotherLastName = findViewById(R.id.input_mother_last_name);
 
 
-
-
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +73,15 @@ public class AddUserActivity extends AppCompatActivity {
                     }
                     else{
                         Toast.makeText(getApplicationContext(), "Guardado correctamente", Toast.LENGTH_LONG).show();
+                        editTextUser.setText("");
+                        editTextMail.setText("");
+                        editTextPassword.setText("");
+                        editTextName.setText("");
+                        editTextLastName.setText("");
+                        editTextMotherLastName.setText("");
+
+                        editTextUser.setFocusableInTouchMode(true);
+                        editTextUser.requestFocus();
                     }
                 }
 
