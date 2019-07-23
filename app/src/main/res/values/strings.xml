@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Mobility App Lock</string>
+    <string name="tab_text_1">Iniciar Sesión</string>
+    <string name="tab_text_2">Recuperar</string>
+
+    <!-- Login Strings -->
+    <string name="input_text_mail">Correo o Usuario</string>
+    <string name="input_text_password">Contraseña</string>
+    <string name="text_new_account">Si no tienes una cuenta envia un correo a soporte@mobilitysolutions.com</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_admin">Administrador Mobility Lock</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Confg. Usuarios</string>
+    <string name="title_notifications">In-Ex-portar</string>
+    <string name="input_text_search">Buscar Usuario</string>
+    <string name="apps_by_user">App\'s por Usuario</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Guardar</string>
+    <string name="new_user">Nuevo Usuario</string>
+    <string name="input_text_mail_only">Correo</string>
+    <string name="input_text_user_only">Usuario</string>
+    <string name="title_activity_add_user">AddUserActivity</string>
+    <string name="input_text_mother_last_name">Apellido Materno</string>
+    <string name="input_text_last_name">Apellido Paterno</string>
+    <string name="input_text_name">Nombre</string>
+    <string name="saving">Guardando</string>
+    <string name="error_saving">Error al guardar</string>
+</resources>
