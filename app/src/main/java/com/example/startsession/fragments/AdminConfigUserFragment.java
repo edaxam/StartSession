@@ -1,15 +1,22 @@
 package com.example.startsession.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -17,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.startsession.AddUserActivity;
 import com.example.startsession.AdminActivity;
+import com.example.startsession.EditUserActivity;
 import com.example.startsession.MainActivity;
 import com.example.startsession.R;
 import com.example.startsession.db.controller.UserController;
@@ -55,6 +63,7 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
     private RecyclerView recyclerView;
     private UserAdapter userAdapter;
     private UserController userController;
+    SwipeRefreshLayout pullToRefresh;
 
 
 
@@ -119,6 +128,73 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
             }
         });
 
+        pullToRefresh = (SwipeRefreshLayout) view.findViewById(R.id.pullToRefresh);
+
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadListUser();
+                pullToRefresh.setRefreshing(false);
+            }
+        });
+
+
+        final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return true;
+            }
+        });
+
+
+        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+                try {
+                    View child = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
+
+                    Log.e("Event click", String.valueOf(mGestureDetector.onTouchEvent(motionEvent)));
+                    if (child != null && mGestureDetector.onTouchEvent(motionEvent)) {
+
+                        int position = recyclerView.getChildAdapterPosition(child);
+                        UserModel userSelected = listUser.get(position);
+
+
+                        Toast.makeText(getContext(),"user ID: "+ userSelected.getId_user() + "Nombre: " + userSelected.getName() ,Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(getActivity(), EditUserActivity.class);
+                        intent.putExtra("id_user",userSelected.getId_user());
+                        intent.putExtra("user",userSelected.getUser());
+                        intent.putExtra("mail",userSelected.getMail());
+                        intent.putExtra("password",userSelected.getPassword());
+                        intent.putExtra("name",userSelected.getName());
+                        intent.putExtra("last_name",userSelected.getLast_name());
+                        intent.putExtra("mother_last_name",userSelected.getMother_last_name());
+
+                        startActivity(intent);
+
+                        return true;
+                    }
+
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean b) {
+
+            }
+        });
+
+
         return view ;
     }
 
@@ -177,4 +253,7 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
     public void applyTexts(String mail, String user, String password) {
         Toast.makeText(getContext(), "Guardando ... Mail :  " + mail + " Usuario: " + user + " Contraseña: " + password,Toast.LENGTH_LONG).show();
     }
+
+
+
 }
