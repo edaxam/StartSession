@@ -10,9 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ConfigAppActivity"
+            android:label="@string/title_activity_config_app"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".EditUserActivity"
             android:label="@string/title_activity_edit_user"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AddUserActivity"
             android:label="@string/title_activity_add_user"

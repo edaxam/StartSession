@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.example.startsession.fragments.AdminConfigAppFragment;
 import com.example.startsession.fragments.AdminConfigUserFragment;
 import com.example.startsession.fragments.AdminHomeFragment;
 import com.example.startsession.fragments.AdminImportExportFragment;
@@ -20,7 +21,7 @@ import com.example.startsession.ui.admin.ViewPagerAdapter;
 public class AdminActivity extends AppCompatActivity implements
         AdminHomeFragment.OnFragmentInteractionListener,
         AdminImportExportFragment.OnFragmentInteractionListener,
-        AdminConfigUserFragment.OnFragmentInteractionListener{
+        AdminConfigUserFragment.OnFragmentInteractionListener, AdminConfigAppFragment.OnFragmentInteractionListener{
     BottomNavigationView bottomNavigationView;
 
     //This is our viewPager
@@ -32,6 +33,7 @@ public class AdminActivity extends AppCompatActivity implements
     AdminHomeFragment homeFragment;
     AdminConfigUserFragment configUserFragment;
     AdminImportExportFragment importExportFragment;
+    AdminConfigAppFragment adminConfigAppFragment;
     MenuItem prevMenuItem;
 
     @Override
@@ -56,8 +58,11 @@ public class AdminActivity extends AppCompatActivity implements
                             case R.id.navigation_config_user:
                                 viewPager.setCurrentItem(1);
                                 break;
-                            case R.id.navigation_import_export:
+                            case R.id.navigation_config_app:
                                 viewPager.setCurrentItem(2);
+                                break;
+                            case R.id.navigation_import_export:
+                                viewPager.setCurrentItem(3);
                                 break;
                         }
                         return false;
@@ -114,9 +119,11 @@ public class AdminActivity extends AppCompatActivity implements
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         homeFragment=new AdminHomeFragment();
         configUserFragment=new AdminConfigUserFragment();
+        adminConfigAppFragment =new AdminConfigAppFragment();
         importExportFragment=new AdminImportExportFragment();
         adapter.addFragment(homeFragment);
         adapter.addFragment(configUserFragment);
+        adapter.addFragment(adminConfigAppFragment);
         adapter.addFragment(importExportFragment);
         viewPager.setAdapter(adapter);
     }

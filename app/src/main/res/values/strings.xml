@@ -13,7 +13,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_admin">Administrador Mobility Lock</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Confg. Usuarios</string>
+    <string name="title_dashboard">Conf. Usuario</string>
     <string name="title_notifications">In-Ex-portar</string>
     <string name="input_text_search">Buscar Usuario</string>
     <string name="apps_by_user">App\'s por Usuario</string>
@@ -33,5 +33,6 @@
     <string name="edit_info">Editra Info.</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="title_activity_edit_user">EditUserActivity</string>
-    <string name="config_app">C. App\'s</string>
+    <string name="config_app">Conf. App\'s</string>
+    <string name="title_activity_config_app">Configuración de App\'s</string>
 </resources>
