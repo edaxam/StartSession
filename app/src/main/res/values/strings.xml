@@ -7,6 +7,7 @@
     <string name="input_text_mail">Correo o Usuario</string>
     <string name="input_text_password">Contraseña</string>
     <string name="text_new_account">Si no tienes una cuenta envia un correo a soporte@mobilitysolutions.com</string>
+    <string name="text_scanner_code">Escanear código para recuperar cuenta</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
