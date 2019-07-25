@@ -13,10 +13,12 @@ public class UserModel {
     private String date_create;
     private Integer active;
     private Integer status_ws;
+    private Integer admin;
 
     private long id_user;
 
-    public UserModel(String user, String password, String mail, String name, String last_name, String mother_last_name, String date_create, Integer active, Integer status_ws) {
+    //CONSTRUCTOR PARA INSERTAR
+    public UserModel(String user, String mail, String password,  String name, String last_name, String mother_last_name, String date_create, Integer active, Integer status_ws, Integer admin) {
         this.user = user;
         this.password = password;
         this.mail = mail;
@@ -26,9 +28,11 @@ public class UserModel {
         this.date_create = date_create;
         this.active = active;
         this.status_ws = status_ws;
+        this.admin = admin;
     }
 
-    public UserModel(String user, String password, String mail, String name, String last_name, String mother_last_name, String date_create, Integer active, Integer status_ws, long id_user) {
+    //CONSTRUCTOR PARA ACTUALIZAR
+    public UserModel(String user, String mail, String password, String name, String last_name, String mother_last_name, String date_create, Integer active, Integer status_ws, long id_user, Integer admin) {
         this.user = user;
         this.password = password;
         this.mail = mail;
@@ -39,6 +43,7 @@ public class UserModel {
         this.active = active;
         this.status_ws = status_ws;
         this.id_user = id_user;
+        this.admin = admin;
     }
 
     public UserModel(String user, String password) {
@@ -130,6 +135,10 @@ public class UserModel {
         this.id_user = id_user;
     }
 
+    public Integer getAdmin() { return admin; }
+
+    public void setAdmin(Integer admin) { this.admin = admin; }
+
     @Override
     public String toString() {
         return "UserModel{" +
@@ -142,6 +151,7 @@ public class UserModel {
                 ", mother_last_name=" + mother_last_name +
                 ", date_create=" + date_create +
                 ", status_ws=" + status_ws +
+                ", admin=" + admin +
                 '}';
     }
 }
