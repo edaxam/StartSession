@@ -15,8 +15,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.startsession.AdminActivity;
+import com.example.startsession.LauncherActivity;
 import com.example.startsession.R;
 import com.example.startsession.db.controller.UserController;
+import com.example.startsession.db.model.UserModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +44,7 @@ public class LoginFragment extends Fragment {
     private EditText password;
     private String passwordText;
     private OnFragmentInteractionListener mListener;
+    private UserController userController;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -82,6 +85,7 @@ public class LoginFragment extends Fragment {
         FloatingActionButton fab = view.findViewById(R.id.fab);
         user   = (EditText) view.findViewById(R.id.input_user);
 
+
         password = (EditText) view.findViewById(R.id.input_password);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -91,13 +95,29 @@ public class LoginFragment extends Fragment {
                 passwordText = password.getText().toString();
                 Toast.makeText(getActivity(),"Conectando ...",Toast.LENGTH_LONG).show();
 
-                if( validationLogin(userText,passwordText)){
-                    Intent intent = new Intent(getActivity(), AdminActivity.class);
-                    startActivity(intent);
-                }
-                else{
+                if(userText.equals("") || passwordText.equals("")){
                     Toast.makeText(getActivity(),"Usuario o contraseña VACIOS",Toast.LENGTH_LONG).show();
                 }
+                else{
+                    UserModel userModel = validationLogin(userText,passwordText);
+                    Log.e("LOGIN","User: " + userText + " Password: " + passwordText + "id_user:" + userModel.getId_user());
+
+                    if( userModel.getId_user() != 0){
+                        if(userModel.getId_user() > 0){
+                            Intent intent = new Intent(getActivity(), LauncherActivity.class);
+                            startActivity(intent);
+                        }
+                        else{
+                            Intent intent = new Intent(getActivity(), AdminActivity.class);
+                            startActivity(intent);
+                        }
+
+                    }
+                    else{
+                        Toast.makeText(getActivity(),"Usuario o contraseña Incorrectos",Toast.LENGTH_LONG).show();
+                    }
+                }
+
             }
         });
 
@@ -143,17 +163,18 @@ public class LoginFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private boolean validationLogin(String user, String password){
-        boolean response = false;
+    private UserModel validationLogin(String user, String password){
         // Consumo de WS
 
-        //userController = new UserController(getContext());
+        userController = new UserController(getContext());
+        UserModel loginUser = new UserModel(user,password);
+        UserModel id_user = userController.login(loginUser);
 
         // Root Access
         if(user.equalsIgnoreCase("root") && password.equalsIgnoreCase("Sys2639")){
-
-            response = true;
+            id_user.setId_user(-1989);
         }
-        return response;
+
+        return id_user;
     }
 }

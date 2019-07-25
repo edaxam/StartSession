@@ -41,6 +41,11 @@ public class UserModel {
         this.id_user = id_user;
     }
 
+    public UserModel(String user, String password) {
+        this.user = user;
+        this.password = password;
+    }
+
     public UserModel(long id_user) {
         this.id_user = id_user;
     }

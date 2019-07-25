@@ -17,6 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.startsession.db.controller.AppController;
+import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.AppModel;
 import com.example.startsession.db.model.UserModel;
 import com.example.startsession.ui.admin.AppAdapter;
@@ -27,6 +29,7 @@ import java.util.List;
 public class ConfigAppActivity extends AppCompatActivity {
     private TextView userName, mailPassword;
     private List<AppModel> installedApps;
+    private AppController appController;
     ListView userInstalledApps;
 
     @Override
@@ -59,15 +62,13 @@ public class ConfigAppActivity extends AppCompatActivity {
         userInstalledApps.setAdapter(installedAppAdapter);
 
 
+        appController = new AppController(getApplicationContext());
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
-
+                Toast.makeText(getApplicationContext(), "Error al guardar. Intenta de nuevo", Toast.LENGTH_LONG).show();
                 CheckBox cb;
                 ListView mainListView = userInstalledApps;
                 for (int x = 0; x<mainListView.getChildCount();x++){
@@ -76,7 +77,19 @@ public class ConfigAppActivity extends AppCompatActivity {
                     if(cb.isChecked()){
                         AppModel appSelected = installedApps.get(x);
 
-                        Log.e("Status","Checked . Position :" + x + " App name:" + appSelected.getApp_name() + " App flag" + appSelected.getApp_flag_system());
+                        int id_user = appSelected.getId_user();
+                        String app_name = appSelected.getApp_name();
+                        String app_flag_system = appSelected.getApp_flag_system();
+                        String app_icon_string = appSelected.getApp_icon_string();
+
+                        AppModel newUser = new AppModel( id_user, app_name, app_flag_system, app_icon_string);
+                        long id_app = appController.addApp(newUser);
+                        if(id_app  == -1){
+                            Toast.makeText(getApplicationContext(), "Error al guardar. Intenta de nuevo", Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "Guardado correctamente", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             }

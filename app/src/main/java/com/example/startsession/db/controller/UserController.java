@@ -105,26 +105,26 @@ public class UserController {
         return db.update(TABLE_NAME, valuesUpdate, where, argsUpdate);
     }
 
-    public int login(String usuario, String contraseña){
+    public UserModel login(UserModel user){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] args = new String[] {usuario, contraseña};
+        String[] args = new String[] {user.getUser(), user.getPassword()};
         String[] column_names = {"id_user"};
 
-        int id_userDB = 0;
+        UserModel userModel = new UserModel(0);
 
-        Cursor cursor = db.query(TABLE_NAME,column_names,"user=? AND mail=?",args,null,null,null);
+        Cursor cursor = db.query(TABLE_NAME,column_names,"user=? AND password=?",args,null,null,null);
         if(cursor == null){
-            return 0;
+            return userModel;
         }
-        if (!cursor.moveToFirst()) return 0;
+        if (!cursor.moveToFirst()) return userModel;
 
         do {
-            id_userDB = cursor.getInt(0);
+            userModel.setId_user(cursor.getInt(0));
 
         } while (cursor.moveToNext());
 
         cursor.close();
-        return id_userDB;
+        return userModel;
 
 
     }
