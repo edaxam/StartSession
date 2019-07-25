@@ -1,6 +1,7 @@
 package com.example.startsession.ui.admin;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +68,6 @@ public class AppAdapter extends BaseAdapter {
             public void onClick(View view) {
                 final boolean newState = !listStorage.get(position).isChecked();
                 listStorage.get(position).setChecked(newState);
-
             }
         });
 

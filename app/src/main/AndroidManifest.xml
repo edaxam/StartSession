@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".LauncherActivity"></activity>
         <activity
             android:name=".ConfigAppActivity"
             android:label="@string/title_activity_config_app"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EditUserActivity"
             android:label="@string/title_activity_edit_user"

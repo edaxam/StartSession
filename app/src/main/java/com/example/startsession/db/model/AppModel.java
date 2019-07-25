@@ -4,8 +4,10 @@ import android.graphics.drawable.Drawable;
 import android.widget.CheckBox;
 
 public class AppModel {
+    private int id_user;
     private String app_name;
     private String app_flag_system;
+    private String app_icon_string;
     Drawable app_icon;
     CheckBox app_check;
     boolean checked;
@@ -14,6 +16,13 @@ public class AppModel {
         this.app_name = app_name;
         this.app_flag_system = app_flag_system;
         this.app_icon = app_icon;
+    }
+
+    public AppModel(int id_user, String app_name, String app_flag_system, String app_icon_string) {
+        this.id_user = id_user;
+        this.app_name = app_name;
+        this.app_flag_system = app_flag_system;
+        this.app_icon_string = app_icon_string;
     }
 
     public AppModel(String app_name, String app_flag_system, CheckBox app_check) {
@@ -31,6 +40,14 @@ public class AppModel {
     public AppModel(String app_name, Drawable app_icon) {
         this.app_name = app_name;
         this.app_icon = app_icon;
+    }
+
+    public int getId_user() {
+        return id_user;
+    }
+
+    public void setId_user(int id_user) {
+        this.id_user = id_user;
     }
 
     public String getApp_name() {
@@ -71,5 +88,13 @@ public class AppModel {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    public String getApp_icon_string() {
+        return app_icon_string;
+    }
+
+    public void setApp_icon_string(String app_icon_string) {
+        this.app_icon_string = app_icon_string;
     }
 }

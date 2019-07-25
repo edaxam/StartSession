@@ -159,7 +159,6 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
                         int position = recyclerView.getChildAdapterPosition(child);
                         UserModel userSelected = listUser.get(position);
 
-
                         Toast.makeText(getContext(),"user ID: "+ userSelected.getId_user() + "Nombre: " + userSelected.getName() ,Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(getActivity(), EditUserActivity.class);

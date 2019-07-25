@@ -9,11 +9,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.startsession.db.model.AppModel;
+import com.example.startsession.db.model.UserModel;
 import com.example.startsession.ui.admin.AppAdapter;
 
 import java.util.ArrayList;
@@ -21,6 +26,8 @@ import java.util.List;
 
 public class ConfigAppActivity extends AppCompatActivity {
     private TextView userName, mailPassword;
+    private List<AppModel> installedApps;
+    ListView userInstalledApps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +52,13 @@ public class ConfigAppActivity extends AppCompatActivity {
         mailPassword.setText(stringMailPasword);
 
 
-        ListView userInstalledApps = (ListView)findViewById(R.id.recyclerViewApp);
+        userInstalledApps = (ListView)findViewById(R.id.recyclerViewApp);
 
-        List<AppModel> installedApps = getInstalledApps();
+        installedApps = getInstalledApps();
         AppAdapter installedAppAdapter = new AppAdapter(getApplicationContext(), installedApps);
         userInstalledApps.setAdapter(installedAppAdapter);
+
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +66,19 @@ public class ConfigAppActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+
+
+                CheckBox cb;
+                ListView mainListView = userInstalledApps;
+                for (int x = 0; x<mainListView.getChildCount();x++){
+
+                    cb = (CheckBox)mainListView.getChildAt(x).findViewById(R.id.rowCheckBox);
+                    if(cb.isChecked()){
+                        AppModel appSelected = installedApps.get(x);
+
+                        Log.e("Status","Checked . Position :" + x + " App name:" + appSelected.getApp_name() + " App flag" + appSelected.getApp_flag_system());
+                    }
+                }
             }
         });
     }
@@ -69,9 +91,11 @@ public class ConfigAppActivity extends AppCompatActivity {
             PackageInfo p = packs.get(i);
             if ((isSystemPackage(p) == false)) {
                 String appName = p.applicationInfo.loadLabel(getPackageManager()).toString();
-                String appFlag = p.applicationInfo.loadLabel(getPackageManager()).toString();
+                String appFlag = p.applicationInfo.packageName;
+                //getPackageManager().getLaunchIntentForPackage(ApplicationInfo info)
+
                 Drawable icon = p.applicationInfo.loadIcon(getPackageManager());
-                res.add(new AppModel(appName, icon));
+                res.add(new AppModel(appName, appFlag, icon));
             }
         }
         return res;
