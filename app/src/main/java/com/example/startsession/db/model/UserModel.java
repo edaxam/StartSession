@@ -41,6 +41,9 @@ public class UserModel {
         this.id_user = id_user;
     }
 
+    public UserModel(long id_user) {
+        this.id_user = id_user;
+    }
 
     public String getUser() {
         return user;

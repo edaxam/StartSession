@@ -163,7 +163,7 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
                         Toast.makeText(getContext(),"user ID: "+ userSelected.getId_user() + "Nombre: " + userSelected.getName() ,Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(getActivity(), EditUserActivity.class);
-                        intent.putExtra("id_user",userSelected.getId_user());
+                        intent.putExtra("id_user","" + userSelected.getId_user());
                         intent.putExtra("user",userSelected.getUser());
                         intent.putExtra("mail",userSelected.getMail());
                         intent.putExtra("password",userSelected.getPassword());

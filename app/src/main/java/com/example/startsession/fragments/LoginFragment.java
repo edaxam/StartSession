@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.startsession.AdminActivity;
 import com.example.startsession.R;
+import com.example.startsession.db.controller.UserController;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -146,6 +147,7 @@ public class LoginFragment extends Fragment {
         boolean response = false;
         // Consumo de WS
 
+        //userController = new UserController(getContext());
 
         // Root Access
         if(user.equalsIgnoreCase("root") && password.equalsIgnoreCase("Sys2639")){

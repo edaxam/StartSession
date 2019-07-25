@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.startsession.db.DBHelper;
 import com.example.startsession.db.model.UserModel;
@@ -39,7 +40,8 @@ public class UserController {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String[] column_names = {"id_user","user","mail","password","name","last_name","mother_last_name","active","status_ws","date_create"};
-        Cursor cursor = db.query(TABLE_NAME,column_names,null,null,null,null,null);
+        String[] args = new String[] {"1"};
+        Cursor cursor = db.query(TABLE_NAME,column_names,"active =?",args,null,null,null);
 
         if (cursor == null) {
             return users;
@@ -74,17 +76,18 @@ public class UserController {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues valuesUpdate = new ContentValues();
         valuesUpdate.put("user",user.getUser());
-        valuesUpdate.put("mail",user.getUser());
-        valuesUpdate.put("password",user.getUser());
-        valuesUpdate.put("name",user.getUser());
-        valuesUpdate.put("last_name",user.getUser());
-        valuesUpdate.put("mother_last_name",user.getUser());
+        valuesUpdate.put("mail",user.getMail());
+        valuesUpdate.put("password",user.getPassword());
+        valuesUpdate.put("name",user.getName());
+        valuesUpdate.put("last_name",user.getLast_name());
+        valuesUpdate.put("mother_last_name",user.getMother_last_name());
         valuesUpdate.put("active",1);
         valuesUpdate.put("status_ws",1);
 
         String where = "id_user = ?";
 
         String[] argsUpdate = {String.valueOf(user.getId_user())};
+        Log.e("id user", "" + user.getId_user() );
         return db.update(TABLE_NAME, valuesUpdate, where, argsUpdate);
     }
 
@@ -94,11 +97,35 @@ public class UserController {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues valuesUpdate = new ContentValues();
         valuesUpdate.put("active",2);
-        valuesUpdate.put("status_ws",1);
+        valuesUpdate.put("status_ws",0);
 
         String where = "id_user = ?";
 
         String[] argsUpdate = {String.valueOf(user.getId_user())};
         return db.update(TABLE_NAME, valuesUpdate, where, argsUpdate);
+    }
+
+    public int login(String usuario, String contraseña){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] args = new String[] {usuario, contraseña};
+        String[] column_names = {"id_user"};
+
+        int id_userDB = 0;
+
+        Cursor cursor = db.query(TABLE_NAME,column_names,"user=? AND mail=?",args,null,null,null);
+        if(cursor == null){
+            return 0;
+        }
+        if (!cursor.moveToFirst()) return 0;
+
+        do {
+            id_userDB = cursor.getInt(0);
+
+        } while (cursor.moveToNext());
+
+        cursor.close();
+        return id_userDB;
+
+
     }
 }
