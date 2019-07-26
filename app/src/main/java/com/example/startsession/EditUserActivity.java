@@ -6,7 +6,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -78,7 +77,7 @@ public class EditUserActivity extends AppCompatActivity {
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
                     String strDate = dateFormat.format(date);
 
-                    UserModel editUser = new UserModel(stringUser,stringMail,stringPassword,stringName,stringLastName,stringMotherLastName,strDate,1,0, id_user);
+                    UserModel editUser = new UserModel(stringUser,stringPassword,stringMail,stringName,stringLastName,stringMotherLastName,strDate,1,0, id_user);
                     int id_user_up = userController.updateUser(editUser);
 
                     if(id_user_up == -1){
@@ -96,7 +95,7 @@ public class EditUserActivity extends AppCompatActivity {
         });
 
         //DELETE
-        FloatingActionButton elim = findViewById(R.id.fab_delete);
+        FloatingActionButton elim = findViewById(R.id.fab_del);
         elim.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

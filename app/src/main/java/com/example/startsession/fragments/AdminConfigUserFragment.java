@@ -19,13 +19,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+
 import android.widget.Toast;
 
 import com.example.startsession.AddUserActivity;
-import com.example.startsession.AdminActivity;
 import com.example.startsession.EditUserActivity;
-import com.example.startsession.MainActivity;
 import com.example.startsession.R;
 import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.UserModel;
@@ -159,7 +157,7 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
                         int position = recyclerView.getChildAdapterPosition(child);
                         UserModel userSelected = listUser.get(position);
 
-                        Toast.makeText(getContext(),"user ID: "+ userSelected.getId_user() + "Nombre: " + userSelected.getName() ,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),"Cargando ..." ,Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(getActivity(), EditUserActivity.class);
                         intent.putExtra("id_user","" + userSelected.getId_user());

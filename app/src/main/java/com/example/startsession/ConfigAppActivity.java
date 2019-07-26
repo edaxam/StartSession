@@ -41,10 +41,13 @@ public class ConfigAppActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
+        final int id_user = Integer.parseInt(intent.getStringExtra("id_user"));
+
+
         userName  = findViewById(R.id.user_full_name);
         mailPassword  = findViewById(R.id.mail_password);
 
-        String stringUserName = intent.getStringExtra("user") + " - "
+        String stringUserName = "ID: " + intent.getStringExtra("id_user") + " - " + intent.getStringExtra("user") + " - "
                 + intent.getStringExtra("name") + " "
                 + intent.getStringExtra("last_name") + " "
                 + intent.getStringExtra("mother_last_name");
@@ -77,13 +80,13 @@ public class ConfigAppActivity extends AppCompatActivity {
                     if(cb.isChecked()){
                         AppModel appSelected = installedApps.get(x);
 
-                        int id_user = appSelected.getId_user();
                         String app_name = appSelected.getApp_name();
                         String app_flag_system = appSelected.getApp_flag_system();
                         String app_icon_string = appSelected.getApp_icon_string();
 
-                        AppModel newUser = new AppModel( id_user, app_name, app_flag_system, app_icon_string);
-                        long id_app = appController.addApp(newUser);
+                        AppModel newApp = new AppModel(id_user, app_name, app_flag_system, app_icon_string);
+                        long id_app = appController.addApp(newApp);
+                        Log.e("RESPONSE","Id :" + id_app);
                         if(id_app  == -1){
                             Toast.makeText(getApplicationContext(), "Error al guardar. Intenta de nuevo", Toast.LENGTH_LONG).show();
                         }

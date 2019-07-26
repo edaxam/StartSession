@@ -42,6 +42,11 @@ public class AppModel {
         this.app_icon = app_icon;
     }
 
+    public AppModel(int id_user, String app_flag_system) {
+        this.id_user = id_user;
+        this.app_flag_system = app_flag_system;
+    }
+
     public int getId_user() {
         return id_user;
     }
