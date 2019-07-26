@@ -22,10 +22,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(id_user integer primary key autoincrement, mail VARCHAR(255),user VARCHAR(255),password VARCHAR(255),name VARCHAR(255),last_name VARCHAR(255),mother_last_name VARCHAR(255),active INTEGER ,date_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,status_ws INTEGER)", USER));
-        sqLiteDatabase.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(id_config integer primary key autoincrement, id_user INTEGER, app_name VARCHAR(255), app_flag_system VARCHAR(255), app_image VARCHAR(255),active INTEGER ,date_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP, status_ws INTEGER)", USER_CONFIG_LAUNCHER));
-        sqLiteDatabase.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(id_history integer primary key autoincrement, id_user INTEGER, id_config INTEGER, date_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP, status_ws INTEGER)", HISTORY_USER));
-        sqLiteDatabase.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(id_log integer primary key autoincrement, id_user INTEGER,log TEXT,date_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP, status_ws INTEGER)", LOG));
+        sqLiteDatabase.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(id_user integer primary key autoincrement, mail VARCHAR(255),user VARCHAR(255),password VARCHAR(255),name VARCHAR(255),last_name VARCHAR(255),mother_last_name VARCHAR(255),active INTEGER ,date_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP,status_ws INTEGER, admin INTEGER)", USER));
+        sqLiteDatabase.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(id_config integer primary key autoincrement, id_user INTEGER, app_name VARCHAR(255), app_flag_system VARCHAR(255), app_image VARCHAR(255),active INTEGER ,date_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP, status_ws INTEGER, admin INTEGER)", USER_CONFIG_LAUNCHER));
+        sqLiteDatabase.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(id_history integer primary key autoincrement, id_user INTEGER, id_config INTEGER, date_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP, status_ws INTEGER, admin INTEGER)", HISTORY_USER));
+        sqLiteDatabase.execSQL(String.format("CREATE TABLE IF NOT EXISTS %s(id_log integer primary key autoincrement, id_user INTEGER,log TEXT,date_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP, status_ws INTEGER, admin INTEGER)", LOG));
 
     }
 

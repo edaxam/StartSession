@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ public class AddUserActivity extends AppCompatActivity {
         editTextLastName = findViewById(R.id.input_last_name);
         editTextMotherLastName = findViewById(R.id.input_mother_last_name);
 
+        final CheckBox check_admin = (CheckBox) findViewById(R.id.checkbox_admin);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +67,15 @@ public class AddUserActivity extends AppCompatActivity {
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
                     String strDate = dateFormat.format(date);
 
-                    UserModel newUser = new UserModel(stringUser,stringPassword,stringMail,stringName,stringLastName,stringMotherLastName,strDate,1,0);
+                    int admin = 0;
+
+                    if(check_admin.isChecked()== true){
+                        admin = 1;
+                    }else{
+                        admin = 0;
+                    }
+
+                    UserModel newUser = new UserModel(stringUser,stringMail,stringPassword,stringName,stringLastName,stringMotherLastName,strDate,1,0, admin);
                     long id_user = userController.addUser(newUser);
 
                     if(id_user == -1){
