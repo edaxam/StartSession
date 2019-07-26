@@ -105,6 +105,7 @@ public class LoginFragment extends Fragment {
                     if( userModel.getId_user() != 0){
                         if(userModel.getId_user() > 0){
                             Intent intent = new Intent(getActivity(), LauncherActivity.class);
+                            intent.putExtra("id_user","" + userModel.getId_user());
                             startActivity(intent);
                         }
                         else{

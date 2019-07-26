@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.example.startsession.db.DBHelper;
 import com.example.startsession.db.model.AppModel;
@@ -29,37 +30,29 @@ public class AppController {
         valuesInsert.put("app_image",app_conf.getApp_icon_string());
         valuesInsert.put("active",1);
         valuesInsert.put("status_ws",0);
+        Log.e("Insert Apps","id: " + app_conf.getId_user() + "  | app_name: " + app_conf.getApp_name() + "   | pack" + app_conf.getApp_flag_system());
         return db.insert(TABLE_NAME,null,valuesInsert);
     }
 
 
-    public ArrayList<AppModel> getAppsByUser(AppModel apps){
-        ArrayList<AppModel> apps_by_user = new ArrayList<>();
-
+    public boolean appActiveByUser(AppModel apps){
+        boolean status = false;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String[] column_names = {"id_user","app_name","app_flag_system","app_image"};
-        String[] args = {"1",""+apps.getId_user()};
-        Cursor cursor = db.query(TABLE_NAME,column_names," active = ? AND id_user = ? ",args,null,null,null);
+        String[] column_names = {"id_user"};
+        String[] args = {"1",""+apps.getId_user(),apps.getApp_flag_system()};
+        Cursor cursor = db.query(TABLE_NAME,column_names," active = ? AND id_user = ? AND app_flag_system = ?",args,null,null,null);
 
-        if (cursor == null) {
-            return apps_by_user;
+        if(cursor == null){
+            return status;
         }
-        if (!cursor.moveToFirst()) return apps_by_user;
+        if (!cursor.moveToFirst()) return status;
 
         do {
-
-            int id_userDB = cursor.getInt(0);
-            String app_nameDB = cursor.getString(1);
-            String app_flag_systemDB = cursor.getString(2);
-            String app_imageDB = cursor.getString(3);
-
-
-            AppModel getUserBD = new AppModel(id_userDB,app_nameDB,app_flag_systemDB,app_imageDB);
-            apps_by_user.add(getUserBD);
+            status = true;
         } while (cursor.moveToNext());
 
         cursor.close();
-        return apps_by_user;
+        return status;
     }
 }
