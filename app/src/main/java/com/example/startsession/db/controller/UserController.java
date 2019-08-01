@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.IntegerRes;
 import android.util.Log;
 
 import com.example.startsession.db.DBHelper;
@@ -30,6 +31,7 @@ public class UserController {
         valuesInsert.put("mother_last_name",user.getMother_last_name());
         valuesInsert.put("active",1);
         valuesInsert.put("status_ws",1);
+        valuesInsert.put("admin", user.getAdmin());
         return db.insert(TABLE_NAME,null,valuesInsert);
     }
 
@@ -39,7 +41,7 @@ public class UserController {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String[] column_names = {"id_user","user","mail","password","name","last_name","mother_last_name","active","status_ws","date_create"};
+        String[] column_names = {"id_user","user","mail","password","name","last_name","mother_last_name","active","status_ws","admin","date_create"};
         String[] args = new String[] {"1"};
         Cursor cursor = db.query(TABLE_NAME,column_names,"active =?",args,null,null,null);
 
@@ -59,10 +61,12 @@ public class UserController {
             String mother_last_nameDB = cursor.getString(6);
             Integer activeDB = cursor.getInt(7);
             Integer status_wsDB = cursor.getInt(8);
-            String date_createDB = cursor.getString(9);
+            Integer adminDB = cursor.getInt(9);
+            String date_createDB = cursor.getString(10);
 
 
-            UserModel getUserBD = new UserModel(userDB, passwordDB, mailDB, nameDB, last_nameDB, mother_last_nameDB, date_createDB, activeDB, status_wsDB, id_userDB);
+
+            UserModel getUserBD = new UserModel(userDB, mailDB, passwordDB, nameDB, last_nameDB, mother_last_nameDB, date_createDB, activeDB, status_wsDB, id_userDB, adminDB);
             users.add(getUserBD);
         } while (cursor.moveToNext());
 
