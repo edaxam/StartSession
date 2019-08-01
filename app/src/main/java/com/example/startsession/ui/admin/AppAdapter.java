@@ -55,7 +55,12 @@ public class AppAdapter extends BaseAdapter {
             listViewHolder.checkInListView = (CheckBox) convertView.findViewById(R.id.rowCheckBox);
             listViewHolder.textInListView = (TextView)convertView.findViewById(R.id.list_app_name);
             listViewHolder.imageInListView = (ImageView)convertView.findViewById(R.id.app_icon);
-            convertView.setTag(listViewHolder);
+            //convertView.setTag(listViewHolder);
+            if (!String.valueOf(position).isEmpty())
+            {
+                convertView.setTag(listViewHolder);
+            }
+
         }else{
             listViewHolder = (ViewHolder)convertView.getTag();
         }
@@ -67,6 +72,7 @@ public class AppAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 final boolean newState = !listStorage.get(position).isChecked();
+
                 listStorage.get(position).setChecked(newState);
             }
         });
