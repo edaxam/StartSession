@@ -75,7 +75,6 @@ public class ConfigAppActivity extends AppCompatActivity {
                 CheckBox cb;
                 ListView mainListView = userInstalledApps;
                 for (int x = 0; x<mainListView.getChildCount();x++){
-
                     cb = (CheckBox)mainListView.getChildAt(x).findViewById(R.id.rowCheckBox);
                     if(cb.isChecked()){
                         AppModel appSelected = installedApps.get(x);
