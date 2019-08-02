@@ -7,12 +7,16 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".AddUserActivity"
     tools:showIn="@layout/activity_add_user">
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical"
         android:paddingLeft="24dp"
-        android:paddingRight="24dp">
+        android:paddingRight="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp">
 
 
         <!-- User Label -->
@@ -21,13 +25,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_user"
-                android:drawableLeft="@drawable/ic_account_circle_black_24dp"
-                android:drawablePadding="10dp"
+
+            <EditText
+                android:id="@+id/input_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_user_only"  />
+                android:drawableLeft="@drawable/ic_account_circle_black_24dp"
+                android:drawablePadding="10dp"
+                android:hint="@string/input_text_user_only"
+                android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Email Label -->
@@ -36,13 +42,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_mail"
+
+            <EditText
+                android:id="@+id/input_mail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
                 android:drawableLeft="@drawable/ic_contact_mail_black_24dp"
                 android:drawablePadding="10dp"
-                android:hint="@string/input_text_mail_only" />
+                android:hint="@string/input_text_mail_only"
+                android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
@@ -51,13 +59,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_password"
-                android:drawableLeft="@drawable/ic_security_black_24dp"
-                android:drawablePadding="10dp"
+
+            <EditText
+                android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_password"/>
+                android:drawableLeft="@drawable/ic_security_black_24dp"
+                android:drawablePadding="10dp"
+                android:hint="@string/input_text_password"
+                android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Name Label -->
@@ -66,13 +76,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_name"
-                android:drawableLeft="@drawable/ic_mood_black_24dp"
-                android:drawablePadding="10dp"
+
+            <EditText
+                android:id="@+id/input_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_name"/>
+                android:drawableLeft="@drawable/ic_mood_black_24dp"
+                android:drawablePadding="10dp"
+                android:hint="@string/input_text_name"
+                android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Last Name Label -->
@@ -81,13 +93,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_last_name"
-                android:drawableLeft="@drawable/ic_accessibility_black_24dp"
-                android:drawablePadding="10dp"
+
+            <EditText
+                android:id="@+id/input_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_last_name"/>
+                android:drawableLeft="@drawable/ic_accessibility_black_24dp"
+                android:drawablePadding="10dp"
+                android:hint="@string/input_text_last_name"
+                android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Mother Last Name Label -->
@@ -96,18 +110,21 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_mother_last_name"
-                android:drawableLeft="@drawable/ic_pregnant_woman_black_24dp"
-                android:drawablePadding="10dp"
+
+            <EditText
+                android:id="@+id/input_mother_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_mother_last_name"/>
+                android:drawableLeft="@drawable/ic_pregnant_woman_black_24dp"
+                android:drawablePadding="10dp"
+                android:hint="@string/input_text_mother_last_name"
+                android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
-        <CheckBox android:id="@+id/checkbox_admin"
+        <CheckBox
+            android:id="@+id/checkbox_admin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Administrador"/>
+            android:text="Administrador" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

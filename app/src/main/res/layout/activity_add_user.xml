@@ -20,7 +20,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_add_user" />
+    <include
+        layout="@layout/content_add_user"
+        android:layout_height="642dp"
+        android:paddingTop="20dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

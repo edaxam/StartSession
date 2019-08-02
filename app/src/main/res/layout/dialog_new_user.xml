@@ -17,11 +17,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_user"
+
+            <EditText
+                android:id="@+id/input_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_user_only"  />
+                android:hint="@string/input_text_user_only"
+                android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Email Label -->
@@ -30,11 +32,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_mail"
+
+            <EditText
+                android:id="@+id/input_mail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="@string/input_text_mail_only" />
+                android:hint="@string/input_text_mail_only"
+                android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
@@ -43,11 +47,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_password"
+
+            <EditText
+                android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_password"/>
+                android:hint="@string/input_text_password"
+                android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Name Label -->
@@ -56,11 +62,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_name"
+
+            <EditText
+                android:id="@+id/input_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_name"/>
+                android:hint="@string/input_text_name"
+                android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Last Name Label -->
@@ -69,11 +77,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_last_name"
+
+            <EditText
+                android:id="@+id/input_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_last_name"/>
+                android:hint="@string/input_text_last_name"
+                android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- Mother Last Name Label -->
@@ -82,11 +92,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_mother_last_name"
+
+            <EditText
+                android:id="@+id/input_mother_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_mother_last_name"/>
+                android:hint="@string/input_text_mother_last_name"
+                android:inputType="text" />
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

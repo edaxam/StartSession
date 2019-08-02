@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorAccentDark">#581FD5</color>
-    <color name="colorPrimary">#22242F</color>
+    <color name="colorPrimary">#2a2d3a</color>
     <color name="colorPrimaryDark">#000000</color>
-    <color name="colorAccent">#C94F9F</color>
+    <color name="colorAccent">#c94fa9</color>
     <color name="colorWhite">#FFFFFF</color>
 
     <!-- DASHBOARD -->
@@ -13,5 +13,7 @@
     <color name="colorGreen">#00bfa5</color>
     <color name="colorPink">#FF4081</color>
     <color name="colorBlack">#000000</color>
+    <color name="tabBlue">#1a1a29</color>
+    <color name="tabDark">#12121d</color>
 
 </resources>

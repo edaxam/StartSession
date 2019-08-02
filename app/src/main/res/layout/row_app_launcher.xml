@@ -8,24 +8,37 @@
         android:id="@+id/app_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:contentDescription="Image"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:paddingBottom="8dp"/>
+        android:contentDescription="Image"
+        android:paddingBottom="8dp" />
+
+    <!--<de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/app_icon"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_security_black_24dp"
+        app:civ_border_color="#fff"
+        app:civ_border_width="2dp" />-->
 
     <TextView
         android:id="@+id/list_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="16dp"
-        android:textColor="@color/colorLigthGrey"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="23dp"
         android:layout_toRightOf="@+id/app_icon"
-        android:layout_alignTop="@+id/app_icon"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="2dp"
-        android:text="App Name"/>
+        android:text="App Name"
+        android:textColor="@color/colorLigthGrey"
+        android:textSize="16dp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
