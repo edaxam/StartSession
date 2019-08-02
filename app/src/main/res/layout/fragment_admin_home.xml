@@ -133,7 +133,7 @@
                         android:background="@color/colorLigthGrey"
                         android:layout_margin="10dp"/>
                     <TextView
-                        android:id="@+id/num_"
+                        android:id="@+id/num_app"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"

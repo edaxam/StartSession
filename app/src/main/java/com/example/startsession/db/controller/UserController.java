@@ -132,4 +132,31 @@ public class UserController {
 
 
     }
+
+    public int users(){
+        int num_user = 0;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c_user = db.rawQuery("SELECT COUNT(id_user) FROM user", null);
+
+        if(c_user.moveToFirst()){
+            num_user = c_user.getInt(0);
+        }
+
+        return num_user;
+    }
+
+    public int lanzamientos(){
+        int num_lanzamientos = 0;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c_lanz = db.rawQuery("SELECT COUNT(id_history) FROM user_history", null);
+
+        if(c_lanz.moveToFirst()){
+            num_lanzamientos = c_lanz.getInt(0);
+        }
+        return num_lanzamientos;
+
+    }
+
+
+
 }
