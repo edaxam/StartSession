@@ -4,17 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.service.autofill.TextValueSanitizer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.startsession.AdminActivity;
 import com.example.startsession.MainActivity;
 import com.example.startsession.R;
+import com.example.startsession.db.controller.AppController;
+import com.example.startsession.db.controller.UserController;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +37,9 @@ public class AdminHomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private UserController userController;
+    private UserController lazamientosController;
+    private AppController appController;
 
     private OnFragmentInteractionListener mListener;
 
@@ -73,6 +80,21 @@ public class AdminHomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
 
+        TextView num_users = (TextView) view.findViewById(R.id.num_users);
+        userController = new UserController(getContext());
+        int num_user =  userController.users();
+        num_users.setText("" + num_user);
+
+        TextView num_lanzamientos = (TextView) view.findViewById(R.id.num_launcher);
+        lazamientosController = new UserController(getContext());
+        int num_lanzamiento = lazamientosController.lanzamientos();
+        num_lanzamientos.setText("" + num_lanzamiento);
+
+        TextView num_apps = (TextView) view.findViewById(R.id.num_app);
+        appController = new AppController(getContext());
+        int num_app = appController.num_app();
+        num_apps.setText("" + num_app);
+
 
         //Exit Mode Admin
         FloatingActionButton fab = view.findViewById(R.id.fab);
@@ -84,6 +106,11 @@ public class AdminHomeFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private int numUser() {
+        int num_user = 0;
+        return  num_user;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

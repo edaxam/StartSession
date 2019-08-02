@@ -55,4 +55,15 @@ public class AppController {
         cursor.close();
         return status;
     }
+
+    public int num_app(){
+        int num_app = 0;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c_app = db.rawQuery("SELECT COUNT(id_config) FROM user_config_launcher GROUP BY app_flag_system", null);
+
+        if(c_app.moveToFirst()){
+            num_app = c_app.getInt(0);
+        }
+        return num_app;
+    }
 }

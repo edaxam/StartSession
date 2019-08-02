@@ -12,7 +12,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.startsession.db.controller.AppController;
+import com.example.startsession.db.controller.HistoryController;
 import com.example.startsession.db.model.AppModel;
+import com.example.startsession.db.model.HistoryModel;
 import com.example.startsession.ui.user.AppConfigAdapter;
 
 
@@ -23,6 +25,7 @@ import java.util.List;
 public class LauncherActivity extends AppCompatActivity {
     private AppController appController;
     ListView userInstalledApps;
+    private HistoryController historyController;
     private List<AppModel> installedApps;
 
 
@@ -32,7 +35,7 @@ public class LauncherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launcher);
 
         Intent intent = getIntent();
-        int id_user = Integer.parseInt(intent.getStringExtra("id_user"));
+        final int id_user = Integer.parseInt(intent.getStringExtra("id_user"));
 
 
         userInstalledApps = (ListView)findViewById(R.id.recyclerViewApp);
@@ -50,6 +53,11 @@ public class LauncherActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"Item:" + i + " Flag" + appSelected.getApp_flag_system(),Toast.LENGTH_SHORT).show();
                 Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
                 if (launchIntent != null) {
+                    //INSERT user_history
+                    historyController = new HistoryController(getApplicationContext());
+                    /*HistoryModel historyModel = new HistoryModel(id_user);*/
+
+
                     startActivity(launchIntent);//null pointer check in case package name was not found
                 }
             }
