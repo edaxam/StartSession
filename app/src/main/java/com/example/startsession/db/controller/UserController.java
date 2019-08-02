@@ -36,14 +36,20 @@ public class UserController {
     }
 
 
-    public ArrayList<UserModel> getUsers(){
+    public ArrayList<UserModel> getUsers(String campo_search){
         ArrayList<UserModel> users = new ArrayList<>();
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String[] column_names = {"id_user","user","mail","password","name","last_name","mother_last_name","active","status_ws","admin","date_create"};
         String[] args = new String[] {"1"};
-        Cursor cursor = db.query(TABLE_NAME,column_names,"active =?",args,null,null,null);
+
+        String where = "";
+        if(campo_search.equals("")){
+            where = " AND " + column_names + " LIKE '%" + campo_search + "%' ";
+        }
+        
+        Cursor cursor = db.query(TABLE_NAME,column_names,"active =?" + where,args,null,null,null);
 
         if (cursor == null) {
             return users;

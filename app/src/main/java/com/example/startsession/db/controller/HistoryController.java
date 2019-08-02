@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class HistoryController {
     private DBHelper dbHelper;
-    private String TABLE_NAME = "user";
+    private String TABLE_NAME = "user_history";
 
     public HistoryController(Context context){
         dbHelper = new DBHelper(context);
