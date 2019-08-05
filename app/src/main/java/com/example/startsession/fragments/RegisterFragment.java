@@ -1,14 +1,18 @@
 package com.example.startsession.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.example.startsession.R;
+import com.example.startsession.ReadQRActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +23,9 @@ import com.example.startsession.R;
  * create an instance of this fragment.
  */
 public class RegisterFragment extends Fragment {
+        public static EditText user;
+    public static EditText password;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -65,7 +72,24 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_register, container, false);
+
+        user = (EditText) view.findViewById(R.id.input_user);
+        password = (EditText) view.findViewById(R.id.input_pass);
+
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_scan);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), ReadQRActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        return view;
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

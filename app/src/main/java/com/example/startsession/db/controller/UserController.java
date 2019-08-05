@@ -45,11 +45,11 @@ public class UserController {
         String[] args = new String[] {"1"};
 
         String where = "";
-        if(campo_search.equals("")){
+        if(!campo_search.equals("")){
             where = " AND " + column_names + " LIKE '%" + campo_search + "%' ";
         }
 
-        Cursor cursor = db.query(TABLE_NAME,column_names,"active =?" + where,args,null,null,null);
+        Cursor cursor = db.query(TABLE_NAME,column_names,"active =? " + where,args,null,null,null);
 
         if (cursor == null) {
             return users;
@@ -163,6 +163,26 @@ public class UserController {
 
     }
 
+    public String getPassword(String user){
+        String password = "";
 
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] args = new String[] {user};
+        String[] column_names = {"password"};
+
+        Cursor cursor = db.query(TABLE_NAME,column_names,"user=? ",args,null,null,null);
+        if(cursor == null){
+            return password;
+        }
+        if (!cursor.moveToFirst()) return password;
+
+        do {
+            password = cursor.getString(0);
+
+        } while (cursor.moveToNext());
+
+        cursor.close();
+        return password;
+    }
 
 }
