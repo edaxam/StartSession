@@ -9,9 +9,6 @@ import android.util.Log;
 
 import com.example.startsession.db.DBHelper;
 import com.example.startsession.db.model.AppModel;
-import com.example.startsession.db.model.UserModel;
-
-import java.util.ArrayList;
 
 public class AppController {
     private DBHelper dbHelper;

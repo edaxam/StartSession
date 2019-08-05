@@ -174,7 +174,7 @@ public class AdminConfigAppFragment extends Fragment {
 
     private void reloadListUser() {
         if (userAdapter == null) return;
-        listUser = userController.getUsers();
+        listUser = userController.getUsers("");
         userAdapter.setListUser(listUser);
         userAdapter.notifyDataSetChanged();
     }

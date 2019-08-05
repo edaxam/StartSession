@@ -1,8 +1,6 @@
 package com.example.startsession.fragments;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -197,7 +195,8 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
 
     private void reloadListUser() {
         if (userAdapter == null) return;
-        listUser = userController.getUsers();
+        String empty = "";
+        listUser = userController.getUsers(empty);
         userAdapter.setListUser(listUser);
         userAdapter.notifyDataSetChanged();
     }
