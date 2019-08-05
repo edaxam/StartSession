@@ -18,6 +18,14 @@ public class AppModel {
         this.app_icon = app_icon;
     }
 
+
+    public AppModel(String app_name, String app_flag_system, Drawable app_icon, boolean checked) {
+        this.app_name = app_name;
+        this.app_flag_system = app_flag_system;
+        this.app_icon = app_icon;
+        this.checked = checked;
+    }
+
     public AppModel(int id_user, String app_name, String app_flag_system, String app_icon_string) {
         this.id_user = id_user;
         this.app_name = app_name;
@@ -25,22 +33,6 @@ public class AppModel {
         this.app_icon_string = app_icon_string;
     }
 
-    public AppModel(String app_name, String app_flag_system, CheckBox app_check) {
-        this.app_name = app_name;
-        this.app_flag_system = app_flag_system;
-        this.app_check = app_check;
-    }
-
-    public AppModel(String app_name, Drawable app_icon, boolean checked) {
-        this.app_name = app_name;
-        this.app_icon = app_icon;
-        this.checked = checked;
-    }
-
-    public AppModel(String app_name, Drawable app_icon) {
-        this.app_name = app_name;
-        this.app_icon = app_icon;
-    }
 
     public AppModel(int id_user, String app_flag_system) {
         this.id_user = id_user;

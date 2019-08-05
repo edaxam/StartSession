@@ -60,10 +60,11 @@ public class ConfigAppActivity extends AppCompatActivity {
 
         userInstalledApps = (ListView)findViewById(R.id.recyclerViewApp);
 
-        installedApps = getInstalledApps();
+        installedApps = getInstalledApps(id_user);
         AppAdapter installedAppAdapter = new AppAdapter(getApplicationContext(), installedApps);
         userInstalledApps.setAdapter(installedAppAdapter);
 
+        //userInstalledApps.setOnItemClickListener();
 
         appController = new AppController(getApplicationContext());
 
@@ -73,9 +74,10 @@ public class ConfigAppActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(), "Error al guardar. Intenta de nuevo", Toast.LENGTH_LONG).show();
                 CheckBox cb;
-                ListView mainListView = userInstalledApps;
-                for (int x = 0; x<mainListView.getChildCount();x++){
-                    cb = (CheckBox)mainListView.getChildAt(x).findViewById(R.id.rowCheckBox);
+                Log.e("Num APPS",""+userInstalledApps.getAdapter().getCount());
+                for (int x = 0; x<userInstalledApps.getChildCount();x++){
+                    cb = (CheckBox)userInstalledApps.getChildAt(x).findViewById(R.id.rowCheckBox);
+
                     if(cb.isChecked()){
                         AppModel appSelected = installedApps.get(x);
 
@@ -99,7 +101,7 @@ public class ConfigAppActivity extends AppCompatActivity {
     }
 
 
-    private List<AppModel> getInstalledApps() {
+    private List<AppModel> getInstalledApps(int id_user) {
         List<AppModel> res = new ArrayList<AppModel>();
         List<PackageInfo> packs = getPackageManager().getInstalledPackages(0);
         for (int i = 0; i < packs.size(); i++) {
@@ -110,7 +112,13 @@ public class ConfigAppActivity extends AppCompatActivity {
                 //getPackageManager().getLaunchIntentForPackage(ApplicationInfo info)
 
                 Drawable icon = p.applicationInfo.loadIcon(getPackageManager());
-                res.add(new AppModel(appName, appFlag, icon));
+
+
+                appController = new AppController(getApplicationContext());
+                AppModel loginUser = new AppModel(id_user,appFlag);
+                boolean app_active = appController.appActiveByUser(loginUser);
+
+                res.add(new AppModel(appName, appFlag, icon, app_active));
             }
         }
         return res;

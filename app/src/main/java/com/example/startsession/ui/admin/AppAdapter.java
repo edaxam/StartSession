@@ -72,7 +72,6 @@ public class AppAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 final boolean newState = !listStorage.get(position).isChecked();
-
                 listStorage.get(position).setChecked(newState);
             }
         });
