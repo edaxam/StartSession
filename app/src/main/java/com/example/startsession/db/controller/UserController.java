@@ -48,7 +48,7 @@ public class UserController {
         if(campo_search.equals("")){
             where = " AND " + column_names + " LIKE '%" + campo_search + "%' ";
         }
-        
+
         Cursor cursor = db.query(TABLE_NAME,column_names,"active =?" + where,args,null,null,null);
 
         if (cursor == null) {
