@@ -18,7 +18,11 @@ import com.example.startsession.db.model.HistoryModel;
 import com.example.startsession.ui.user.AppConfigAdapter;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -54,9 +58,21 @@ public class LauncherActivity extends AppCompatActivity {
                 Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
                 if (launchIntent != null) {
                     //INSERT user_history
-                    historyController = new HistoryController(getApplicationContext());
-                    /*HistoryModel historyModel = new HistoryModel(id_user);*/
+                    Date date = Calendar.getInstance().getTime();
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                    String strDate = dateFormat.format(date);
+                    appController = new AppController(getApplicationContext());
+                    int id_config = appController.getIdConfigByUser(id_user);
 
+                    historyController = new HistoryController(getApplicationContext());
+                    HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1, 0);
+                    long id_history = historyController.addHistory(historyModel);
+                    if(id_history == -1){
+                        Toast.makeText(getApplicationContext(), "Error al guardar. Intenta de nuevo", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "Guardado correctamente", Toast.LENGTH_LONG).show();
+                    }
 
                     startActivity(launchIntent);//null pointer check in case package name was not found
                 }

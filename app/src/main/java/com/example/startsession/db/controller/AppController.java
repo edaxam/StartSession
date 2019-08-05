@@ -66,4 +66,15 @@ public class AppController {
         }
         return num_app;
     }
+
+    public int getIdConfigByUser(int id_user){
+        int id_config = 0;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c_app = db.rawQuery("SELECT id_config FROM user_config_launcher WHERE id_user = " + id_user + " AND active = 1", null);
+
+        if(c_app.moveToFirst()){
+            id_config = c_app.getInt(0);
+        }
+        return id_config;
+    }
 }
