@@ -42,11 +42,13 @@ public class UserController {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String[] column_names = {"id_user","user","mail","password","name","last_name","mother_last_name","active","status_ws","admin","date_create"};
+
         String[] args = new String[] {"1"};
 
         String where = "";
         if(!campo_search.equals("")){
-            where = " AND " + column_names + " LIKE '%" + campo_search + "%' ";
+            //args = new String[] {"1",campo_search};
+            where = " AND name LIKE '%"+campo_search+"%' OR mother_last_name LIKE '%"+campo_search+"%' OR last_name LIKE '%"+campo_search+"%' OR user LIKE '%"+campo_search+"%' ";
         }
 
         Cursor cursor = db.query(TABLE_NAME,column_names,"active =? " + where,args,null,null,null);
@@ -117,12 +119,12 @@ public class UserController {
 
     public UserModel login(UserModel user){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] args = new String[] {user.getUser(), user.getPassword()};
+        String[] args = new String[] {user.getUser(), user.getPassword(),"1"};
         String[] column_names = {"id_user"};
 
         UserModel userModel = new UserModel(0);
 
-        Cursor cursor = db.query(TABLE_NAME,column_names,"user=? AND password=?",args,null,null,null);
+        Cursor cursor = db.query(TABLE_NAME,column_names,"user=? AND password=? and active=?",args,null,null,null);
         if(cursor == null){
             return userModel;
         }
