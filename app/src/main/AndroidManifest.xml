@@ -3,6 +3,8 @@
     package="com.example.startsession">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <application
         android:allowBackup="true"
@@ -42,4 +44,5 @@
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
+    
 </manifest>

@@ -1,14 +1,41 @@
 package com.example.startsession.fragments;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.startsession.MainActivity;
 import com.example.startsession.R;
+import com.example.startsession.ReadQRActivity;
+import com.example.startsession.db.DBHelper;
+import com.example.startsession.db.controller.AppController;
+import com.example.startsession.ui.admin.CSVWriter;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import io.reactivex.functions.Consumer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +54,8 @@ public class AdminImportExportFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private AppController appController;
 
     private OnFragmentInteractionListener mListener;
 
@@ -65,7 +94,34 @@ public class AdminImportExportFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_admin_import_export, container, false);
+        View view = inflater.inflate(R.layout.fragment_admin_import_export, container, false);
+        CardView exportar = (CardView) view.findViewById(R.id.exportar);
+        exportar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RxPermissions permissions = new RxPermissions(getActivity());
+                permissions.setLogging(true);
+                permissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .subscribe(new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean aBoolean) throws Exception {
+                                ExportDatabaseCSVTask export_db =  new ExportDatabaseCSVTask();
+                                boolean status =  export_db.doInBackground();
+                                if(status){
+                                    Toast.makeText(getContext(), "Exportado Correctamente!", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getContext(), "Exportación Fallida", Toast.LENGTH_SHORT).show();
+                                }
+                                //LogUtils.error(TAG, "checkPermission22--:" + aBoolean);
+                            }
+                        });
+                //new ExportDatabaseCSVTask();
+            }
+        });
+
+        return view;
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -74,7 +130,6 @@ public class AdminImportExportFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -105,5 +160,72 @@ public class AdminImportExportFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    class ExportDatabaseCSVTask extends AsyncTask<String, Void, Boolean> {
+
+        private final ProgressDialog dialog = new ProgressDialog(getContext());
+        DBHelper dbhelper;
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Exportando Base de Datos...");
+            this.dialog.show();
+            dbhelper = new DBHelper(getContext());
+        }
+
+        protected Boolean doInBackground(final String... args) {
+
+            Log.e("Args: ", "" + args);
+
+            File exportDir = new File(Environment.getExternalStorageDirectory(), "/csvs/");
+            if (!exportDir.exists()) {
+                exportDir.mkdirs();
+            }
+
+            String[] tables = {"user", "user_config_launcher", "user_history"};
+            Log.e("Tamanio", "" + tables.length);
+            for (int j=0; j<tables.length; j++) {
+                File file_user = new File(exportDir,  tables[j]+".csv");
+
+                try {
+                    file_user.createNewFile();
+                    CSVWriter csvWrite = new CSVWriter(new FileWriter(file_user));
+
+                    appController = new AppController(getContext());
+                    Cursor curCSV = appController.exportTablas(tables[j]);
+
+                    csvWrite.writeNext(curCSV.getColumnNames());
+                    while (curCSV.moveToNext()) {
+                        String arrStr[] = null;
+                        String[] mySecondStringArray = new String[curCSV.getColumnNames().length];
+                        for (int i = 0; i < curCSV.getColumnNames().length; i++) {
+                            mySecondStringArray[i] = curCSV.getString(i);
+                        }
+                        csvWrite.writeNext(mySecondStringArray);
+                    }
+                    csvWrite.close();
+                    curCSV.close();
+
+                }
+                catch (IOException e) {
+                    return false;
+                }
+            }
+            return true;
+
+        }
+
+        protected void onPostExecute(final Boolean success) {
+            if (this.dialog.isShowing()) {
+                this.dialog.dismiss();
+            }
+            if (success) {
+                Toast.makeText(getContext(), "Exportado Correctamente!", Toast.LENGTH_SHORT).show();
+                //ShareGif();
+            } else {
+                Toast.makeText(getContext(), "Exportación Fallida", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
