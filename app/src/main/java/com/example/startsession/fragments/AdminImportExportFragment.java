@@ -1,26 +1,41 @@
 package com.example.startsession.fragments;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.startsession.MainActivity;
 import com.example.startsession.R;
+import com.example.startsession.ReadQRActivity;
 import com.example.startsession.db.DBHelper;
+import com.example.startsession.db.controller.AppController;
 import com.example.startsession.ui.admin.CSVWriter;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import io.reactivex.functions.Consumer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +54,8 @@ public class AdminImportExportFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private AppController appController;
 
     private OnFragmentInteractionListener mListener;
 
@@ -82,7 +99,24 @@ public class AdminImportExportFragment extends Fragment {
         exportar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new ExportDatabaseCSVTask();
+                RxPermissions permissions = new RxPermissions(getActivity());
+                permissions.setLogging(true);
+                permissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .subscribe(new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean aBoolean) throws Exception {
+                                ExportDatabaseCSVTask export_db =  new ExportDatabaseCSVTask();
+                                boolean status =  export_db.doInBackground();
+                                if(status){
+                                    Toast.makeText(getContext(), "Exportado Correctamente!", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getContext(), "Exportación Fallida", Toast.LENGTH_SHORT).show();
+                                }
+                                //LogUtils.error(TAG, "checkPermission22--:" + aBoolean);
+                            }
+                        });
+                //new ExportDatabaseCSVTask();
             }
         });
 
@@ -96,7 +130,6 @@ public class AdminImportExportFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -143,31 +176,44 @@ public class AdminImportExportFragment extends Fragment {
 
         protected Boolean doInBackground(final String... args) {
 
-            File exportDir = new File(Environment.getExternalStorageDirectory(), "/codesss/");
+            Log.e("Args: ", "" + args);
+
+            File exportDir = new File(Environment.getExternalStorageDirectory(), "/csvs/");
             if (!exportDir.exists()) {
                 exportDir.mkdirs();
             }
 
-            File file = new File(exportDir, "BDD-StartSession.csv");
-            try {
-                file.createNewFile();
-                CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
-                Cursor curCSV = dbhelper.raw();
-                csvWrite.writeNext(curCSV.getColumnNames());
-                while (curCSV.moveToNext()) {
-                    String arrStr[] = null;
-                    String[] mySecondStringArray = new String[curCSV.getColumnNames().length];
-                    for (int i = 0; i < curCSV.getColumnNames().length; i++) {
-                        mySecondStringArray[i] = curCSV.getString(i);
+            String[] tables = {"user", "user_config_launcher", "user_history"};
+            Log.e("Tamanio", "" + tables.length);
+            for (int j=0; j<tables.length; j++) {
+                File file_user = new File(exportDir,  tables[j]+".csv");
+
+                try {
+                    file_user.createNewFile();
+                    CSVWriter csvWrite = new CSVWriter(new FileWriter(file_user));
+
+                    appController = new AppController(getContext());
+                    Cursor curCSV = appController.exportTablas(tables[j]);
+
+                    csvWrite.writeNext(curCSV.getColumnNames());
+                    while (curCSV.moveToNext()) {
+                        String arrStr[] = null;
+                        String[] mySecondStringArray = new String[curCSV.getColumnNames().length];
+                        for (int i = 0; i < curCSV.getColumnNames().length; i++) {
+                            mySecondStringArray[i] = curCSV.getString(i);
+                        }
+                        csvWrite.writeNext(mySecondStringArray);
                     }
-                    csvWrite.writeNext(mySecondStringArray);
+                    csvWrite.close();
+                    curCSV.close();
+
                 }
-                csvWrite.close();
-                curCSV.close();
-                return true;
-            } catch (IOException e) {
-                return false;
+                catch (IOException e) {
+                    return false;
+                }
             }
+            return true;
+
         }
 
         protected void onPostExecute(final Boolean success) {

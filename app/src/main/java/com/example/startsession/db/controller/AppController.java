@@ -74,4 +74,12 @@ public class AppController {
         }
         return id_config;
     }
+
+    public Cursor exportTablas(String tabla){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor registos_tablas = db.rawQuery("SELECT * FROM " + tabla , null);
+        Log.e("Consulta: ", "" + registos_tablas);
+        return registos_tablas;
+    }
+
 }

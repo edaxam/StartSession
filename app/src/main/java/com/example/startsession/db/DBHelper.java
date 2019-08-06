@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -35,9 +36,4 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public Cursor raw() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + USER_CONFIG_LAUNCHER , new String[]{});
-        return res;
-    }
 }
