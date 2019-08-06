@@ -185,4 +185,26 @@ public class UserController {
         return password;
     }
 
+    public String getPasswordByIdUser(int id_user){
+        String password = "";
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] args = new String[] {""+id_user};
+        String[] column_names = {"password"};
+
+        Cursor cursor = db.query(TABLE_NAME,column_names,"id_user=? ",args,null,null,null);
+        if(cursor == null){
+            return password;
+        }
+        if (!cursor.moveToFirst()) return password;
+
+        do {
+            password = cursor.getString(0);
+
+        } while (cursor.moveToNext());
+
+        cursor.close();
+        return password;
+    }
+
 }
