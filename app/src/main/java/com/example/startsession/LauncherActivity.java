@@ -1,18 +1,25 @@
 package com.example.startsession;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.startsession.db.controller.AppController;
 import com.example.startsession.db.controller.HistoryController;
+import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.AppModel;
 import com.example.startsession.db.model.HistoryModel;
 import com.example.startsession.ui.user.AppConfigAdapter;
@@ -31,7 +38,8 @@ public class LauncherActivity extends AppCompatActivity {
     ListView userInstalledApps;
     private HistoryController historyController;
     private List<AppModel> installedApps;
-
+    private int id_user;
+    private UserController userController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +47,7 @@ public class LauncherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launcher);
 
         Intent intent = getIntent();
-        final int id_user = Integer.parseInt(intent.getStringExtra("id_user"));
+        id_user = Integer.parseInt(intent.getStringExtra("id_user"));
 
 
         userInstalledApps = (ListView)findViewById(R.id.recyclerViewApp);
@@ -110,5 +118,64 @@ public class LauncherActivity extends AppCompatActivity {
 
     private boolean isSystemPackage(PackageInfo pkgInfo) {
         return ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) ? true : false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.launcher_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.exit_launcher:
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+                alertDialog.setTitle("CONTRASEÑA");
+                alertDialog.setMessage("Por favor ingresa tu contraseña");
+
+                final EditText input = new EditText(this);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+                alertDialog.setView(input);
+                //alertDialog.setIcon(R.drawable.key);
+
+                alertDialog.setPositiveButton("Confirmar",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String password_input = input.getText().toString();
+
+                                userController = new UserController(getApplicationContext());
+                                String password_by_id_user = userController.getPasswordByIdUser(id_user);
+
+                                if(password_by_id_user.equals(password_input)){
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                else{
+                                    Toast.makeText(getApplicationContext(), "Contraseña erronea",Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                        });
+
+                alertDialog.setNegativeButton("Cancelar",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                alertDialog.show();
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
