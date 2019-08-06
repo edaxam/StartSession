@@ -12,3 +12,10 @@
 /captures
 .externalNativeBuild
 *.xml
+app/src/main/res/drawable-ldpi/ic_done_all.png
+app/src/main/res/drawable-hdpi/ic_done_all.png
+app/src/main/res/drawable-mdpi/ic_done_all.png
+app/src/main/res/drawable-xhdpi/ic_done_all.png
+app/src/main/res/drawable-xhdpi/warehouse.png
+app/src/main/res/drawable-xxhdpi/ic_done_all.png
+app/src/main/res/drawable-xxxhdpi/ic_done_all.png
