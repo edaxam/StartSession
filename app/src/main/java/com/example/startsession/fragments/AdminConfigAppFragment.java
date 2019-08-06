@@ -5,17 +5,21 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.startsession.ConfigAppActivity;
@@ -37,7 +41,6 @@ public class AdminConfigAppFragment extends Fragment {
     private String mParam2;
 
     private AdminConfigAppFragment.OnFragmentInteractionListener mListener;
-
 
     /**
      * Mobility
@@ -87,7 +90,6 @@ public class AdminConfigAppFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_config_app, container, false);
-
         userController = new UserController(getContext());
         recyclerView = view.findViewById(R.id.recyclerViewUsers);
 
@@ -99,7 +101,25 @@ public class AdminConfigAppFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(userAdapter);
 
-        reloadListUser();
+        EditText searchs=(EditText)view.findViewById(R.id.input_user);
+        searchs.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.e("RESP",""+s);
+                reloadListUser(s.toString());
+            }
+        });
+
 
 
         pullToRefresh = (SwipeRefreshLayout) view.findViewById(R.id.pullToRefresh);
@@ -107,7 +127,7 @@ public class AdminConfigAppFragment extends Fragment {
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                reloadListUser();
+                reloadListUser("");
                 pullToRefresh.setRefreshing(false);
             }
         });
@@ -172,9 +192,10 @@ public class AdminConfigAppFragment extends Fragment {
         return view ;
     }
 
-    private void reloadListUser() {
+    private void reloadListUser(String seachrUser) {
+        Log.e("RESP",seachrUser);
         if (userAdapter == null) return;
-        listUser = userController.getUsers("");
+        listUser = userController.getUsers(seachrUser);
         userAdapter.setListUser(listUser);
         userAdapter.notifyDataSetChanged();
     }
