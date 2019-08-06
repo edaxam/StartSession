@@ -72,13 +72,11 @@ public class ConfigAppActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Error al guardar. Intenta de nuevo", Toast.LENGTH_LONG).show();
                 CheckBox cb;
                 Log.e("Num APPS",""+userInstalledApps.getAdapter().getCount());
-                for (int x = 0; x<userInstalledApps.getChildCount();x++){
-                    cb = (CheckBox)userInstalledApps.getChildAt(x).findViewById(R.id.rowCheckBox);
-
-                    if(cb.isChecked()){
+                int tam =userInstalledApps.getAdapter().getCount();
+                for (int x = 0; x< tam;x++){
+                    if (installedApps.get(x).isChecked()) {
                         AppModel appSelected = installedApps.get(x);
 
                         String app_name = appSelected.getApp_name();
@@ -117,8 +115,9 @@ public class ConfigAppActivity extends AppCompatActivity {
                 appController = new AppController(getApplicationContext());
                 AppModel loginUser = new AppModel(id_user,appFlag);
                 boolean app_active = appController.appActiveByUser(loginUser);
-
-                res.add(new AppModel(appName, appFlag, icon, app_active));
+                if (!appFlag.equals("com.example.startsession")) {
+                    res.add(new AppModel(appName, appFlag, icon, app_active));
+                }
             }
         }
         return res;
