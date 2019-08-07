@@ -103,14 +103,16 @@ public class LoginFragment extends Fragment {
                     Log.e("LOGIN","User: " + userText + " Password: " + passwordText + "id_user:" + userModel.getId_user());
 
                     if( userModel.getId_user() != 0){
-                        if(userModel.getId_user() > 0){
+                        if(userModel.getId_user() > 0 && userModel.getAdmin() != 1){
                             Intent intent = new Intent(getActivity(), LauncherActivity.class);
                             intent.putExtra("id_user","" + userModel.getId_user());
                             startActivity(intent);
+                            getActivity().finish();
                         }
                         else{
                             Intent intent = new Intent(getActivity(), AdminActivity.class);
                             startActivity(intent);
+                            getActivity().finish();
                         }
 
                     }

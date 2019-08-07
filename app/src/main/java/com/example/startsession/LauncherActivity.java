@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +26,7 @@ import com.example.startsession.db.controller.HistoryController;
 import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.AppModel;
 import com.example.startsession.db.model.HistoryModel;
+import com.example.startsession.db.model.UserModel;
 import com.example.startsession.ui.user.AppConfigAdapter;
 
 
@@ -43,15 +45,23 @@ public class LauncherActivity extends AppCompatActivity {
     private List<AppModel> installedApps;
     private int id_user;
     private UserController userController;
+    private boolean saved_app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
+        saved_app = false;
 
-        Intent intent = getIntent();
-        id_user = Integer.parseInt(intent.getStringExtra("id_user"));
+        userController = new UserController(this);
+        id_user = userController.getLastUserActive();
 
+
+        if(id_user == 0){
+            Intent intent_login = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent_login);
+            finish();
+        }
 
         userInstalledApps = (ListView)findViewById(R.id.recyclerViewApp);
 
@@ -65,7 +75,7 @@ public class LauncherActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //UserModel userSelected = listUser.get(position);
                 AppModel appSelected = installedApps.get(i);
-                Toast.makeText(getApplicationContext(),"Item:" + i + " Flag" + appSelected.getApp_flag_system(),Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(),"Item:" + i + " Flag" + appSelected.getApp_flag_system(),Toast.LENGTH_SHORT).show();
                 Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
                 if (launchIntent != null) {
                     //INSERT user_history
@@ -76,13 +86,13 @@ public class LauncherActivity extends AppCompatActivity {
                     int id_config = appController.getIdConfigByUser(id_user);
 
                     historyController = new HistoryController(getApplicationContext());
-                    HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1, 0);
+                    HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1);
                     long id_history = historyController.addHistory(historyModel);
                     if(id_history == -1){
-                        Toast.makeText(getApplicationContext(), "Error al guardar. Intenta de nuevo", Toast.LENGTH_LONG).show();
+                        saved_app = false ;
                     }
                     else{
-                        Toast.makeText(getApplicationContext(), "Guardado correctamente", Toast.LENGTH_LONG).show();
+                        saved_app = true;
                     }
 
                     startActivity(launchIntent);//null pointer check in case package name was not found
@@ -188,8 +198,10 @@ public class LauncherActivity extends AppCompatActivity {
 
         ActivityManager activityManager = (ActivityManager) getApplicationContext()
                 .getSystemService(Context.ACTIVITY_SERVICE);
-
-        activityManager.moveTaskToFront(getTaskId(), 0);
+        if(!saved_app){
+            activityManager.moveTaskToFront(getTaskId(), 0);
+        }
+        saved_app = false;
     }
 
     @Override

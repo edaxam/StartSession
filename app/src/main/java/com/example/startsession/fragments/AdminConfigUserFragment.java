@@ -156,7 +156,7 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
                         UserModel userSelected = listUser.get(position);
 
                         Toast.makeText(getContext(),"Cargando ..." ,Toast.LENGTH_SHORT).show();
-
+                        Log.e("Es admin",""+userSelected.getAdmin());
                         Intent intent = new Intent(getActivity(), EditUserActivity.class);
                         intent.putExtra("id_user","" + userSelected.getId_user());
                         intent.putExtra("user",userSelected.getUser());
@@ -165,6 +165,7 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
                         intent.putExtra("name",userSelected.getName());
                         intent.putExtra("last_name",userSelected.getLast_name());
                         intent.putExtra("mother_last_name",userSelected.getMother_last_name());
+                        intent.putExtra("admin",""+userSelected.getAdmin());
 
                         startActivity(intent);
 

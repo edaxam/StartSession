@@ -27,7 +27,6 @@ public class HistoryController {
         valuesInsert.put("id_config", history.getId_config());
         valuesInsert.put("date_create", history.getDate_create());
         valuesInsert.put("status_ws", history.getStatus_ws());
-        valuesInsert.put("admin", history.getAdmin());
 
         return db.insert(TABLE_NAME,null,valuesInsert);
     }

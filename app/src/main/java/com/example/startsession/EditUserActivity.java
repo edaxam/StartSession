@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -54,6 +55,9 @@ public class EditUserActivity extends AppCompatActivity {
         //Log.e("id","" + id_user);
 
         final CheckBox check_admin = (CheckBox) findViewById(R.id.checkbox_admin);
+        if(intent.getStringExtra("admin").equals("1")){
+            check_admin.setChecked(true);
+        }
 
                 FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -85,10 +89,9 @@ public class EditUserActivity extends AppCompatActivity {
 
                     if(check_admin.isChecked()== true){
                         admin = 1;
-                    }else{
-                        admin = 0;
                     }
 
+                    Log.e("Es admin ","" + admin);
                     UserModel editUser = new UserModel(stringUser,stringMail,stringPassword,stringName,stringLastName,stringMotherLastName,strDate,1,0, id_user, admin);
 
                     int id_user_up = userController.updateUser(editUser);

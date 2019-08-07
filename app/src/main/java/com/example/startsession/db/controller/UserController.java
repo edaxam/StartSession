@@ -95,6 +95,7 @@ public class UserController {
         valuesUpdate.put("mother_last_name",user.getMother_last_name());
         valuesUpdate.put("active",1);
         valuesUpdate.put("status_ws",1);
+        valuesUpdate.put("admin",user.getAdmin());
 
         String where = "id_user = ?";
 
@@ -120,7 +121,7 @@ public class UserController {
     public UserModel login(UserModel user){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String[] args = new String[] {user.getUser(), user.getPassword(),"1"};
-        String[] column_names = {"id_user"};
+        String[] column_names = {"id_user","admin"};
 
         UserModel userModel = new UserModel(0);
 
@@ -132,10 +133,25 @@ public class UserController {
 
         do {
             userModel.setId_user(cursor.getInt(0));
-
+            userModel.setAdmin(cursor.getInt(1));
         } while (cursor.moveToNext());
 
         cursor.close();
+
+        // Actualizamos todos los usuarios y al que se encontro lo ponemos como el ultimo activo
+        SQLiteDatabase db_update = dbHelper.getWritableDatabase();
+        ContentValues valuesUpdate = new ContentValues();
+        valuesUpdate.put("is_last_active",0);
+        db_update.update(TABLE_NAME, valuesUpdate, null, null);
+
+        SQLiteDatabase db_update_is_active = dbHelper.getWritableDatabase();
+        ContentValues valuesUpdateIsActive = new ContentValues();
+        valuesUpdateIsActive.put("is_last_active",1);
+        String where = "id_user = ?";
+
+        String[] argsUpdate = {String.valueOf(userModel.getId_user())};
+        db_update.update(TABLE_NAME, valuesUpdateIsActive, where, argsUpdate);
+
         return userModel;
 
 
@@ -207,6 +223,28 @@ public class UserController {
 
         cursor.close();
         return password;
+    }
+
+    public int getLastUserActive(){
+
+        int id_user = 0;
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] column_names = {"id_user"};
+
+        Cursor cursor = db.query(TABLE_NAME,column_names,"is_last_active=1 ",null,null,null,null);
+        if(cursor == null){
+            return id_user;
+        }
+        if (!cursor.moveToFirst()) return id_user;
+
+        do {
+            id_user = cursor.getInt(0);
+
+        } while (cursor.moveToNext());
+
+        cursor.close();
+        return id_user;
     }
 
 }

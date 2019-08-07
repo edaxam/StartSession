@@ -9,12 +9,11 @@ public class HistoryModel {
 
     private long id_history;
 
-    public HistoryModel(Integer id_user, Integer id_config, String date_create, Integer status_ws, Integer admin) {
+    public HistoryModel(Integer id_user, Integer id_config, String date_create, Integer status_ws) {
         this.id_user = id_user;
         this.id_config = id_config;
         this.date_create = date_create;
         this.status_ws = status_ws;
-        this.admin = admin;
     }
 
     public Integer getId_user() {
