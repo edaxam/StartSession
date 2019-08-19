@@ -1,5 +1,6 @@
 package com.example.startsession;
 
+
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,11 +11,12 @@ import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -26,8 +28,9 @@ import com.example.startsession.db.controller.HistoryController;
 import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.AppModel;
 import com.example.startsession.db.model.HistoryModel;
-import com.example.startsession.db.model.UserModel;
+
 import com.example.startsession.ui.user.AppConfigAdapter;
+
 
 
 import java.text.DateFormat;
@@ -47,10 +50,13 @@ public class LauncherActivity extends AppCompatActivity {
     private UserController userController;
     private boolean saved_app;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
+        Intent intent = new Intent(getApplicationContext(), BlockService.class);
+        startService(intent);
         saved_app = false;
 
         userController = new UserController(this);
@@ -74,10 +80,12 @@ public class LauncherActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //UserModel userSelected = listUser.get(position);
+
                 AppModel appSelected = installedApps.get(i);
                 //Toast.makeText(getApplicationContext(),"Item:" + i + " Flag" + appSelected.getApp_flag_system(),Toast.LENGTH_SHORT).show();
                 Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
                 if (launchIntent != null) {
+
                     //INSERT user_history
                     Date date = Calendar.getInstance().getTime();
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
@@ -96,6 +104,7 @@ public class LauncherActivity extends AppCompatActivity {
                     }
 
                     startActivity(launchIntent);//null pointer check in case package name was not found
+
                 }
             }
         });
@@ -196,6 +205,7 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
+
         ActivityManager activityManager = (ActivityManager) getApplicationContext()
                 .getSystemService(Context.ACTIVITY_SERVICE);
         if(!saved_app){
@@ -209,4 +219,7 @@ public class LauncherActivity extends AppCompatActivity {
         // Do nothing or catch the keys you want to block
         return false;
     }
+
+
+
 }

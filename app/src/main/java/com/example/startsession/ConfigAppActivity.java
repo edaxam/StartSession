@@ -104,7 +104,7 @@ public class ConfigAppActivity extends AppCompatActivity {
         List<PackageInfo> packs = getPackageManager().getInstalledPackages(0);
         for (int i = 0; i < packs.size(); i++) {
             PackageInfo p = packs.get(i);
-            if ((isSystemPackage(p) == false)) {
+            //if ((isSystemPackage(p) == false)) {
                 String appName = p.applicationInfo.loadLabel(getPackageManager()).toString();
                 String appFlag = p.applicationInfo.packageName;
                 //getPackageManager().getLaunchIntentForPackage(ApplicationInfo info)
@@ -118,7 +118,7 @@ public class ConfigAppActivity extends AppCompatActivity {
                 if (!appFlag.equals("com.example.startsession")) {
                     res.add(new AppModel(appName, appFlag, icon, app_active));
                 }
-            }
+            //}
         }
         return res;
     }
