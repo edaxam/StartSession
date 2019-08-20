@@ -8,22 +8,25 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
-import com.rvalerio.fgchecker.AppChecker;
-
 public class BlockService extends AccessibilityService {
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        Log.e("AccessibilityService","Inicio ");
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
 
 
-            AppChecker appChecker = new AppChecker();
 
-            String packageName = appChecker.getForegroundApp(getApplicationContext());
-            /*if ( packageName.equals("com.android.settings")){
-                KillApplication(packageName);
-            }*/
-            Toast.makeText(getApplicationContext(), "Intent PAc" + packageName, Toast.LENGTH_LONG).show();
+
+        if(event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
+            Log.e("TYPE_VIEW_CLICKED_gPN","" + event.getPackageName());
+            Log.e("TYPE_VIEW_CLICKED_getCN","" + event.getClassName());
+
+
+        }
+
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ) {
+            if ( event.getPackageName().equals("com.android.settings") ){
+                KillApplication("" + event.getPackageName());
+            }
         }
     }
 
@@ -44,7 +47,7 @@ public class BlockService extends AccessibilityService {
 
 
         am.killBackgroundProcesses(KillPackage);
-        Toast.makeText(getBaseContext(),"Process Killed : " + KillPackage  ,Toast.LENGTH_LONG).show();
+        
     }
 
 }

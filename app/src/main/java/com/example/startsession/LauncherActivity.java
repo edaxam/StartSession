@@ -55,8 +55,8 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
-        Intent intent = new Intent(getApplicationContext(), BlockService.class);
-        startService(intent);
+        Intent intentService = new Intent(getApplicationContext(), BlockService.class);
+        startService(intentService);
         saved_app = false;
 
         userController = new UserController(this);
@@ -117,7 +117,7 @@ public class LauncherActivity extends AppCompatActivity {
         List<PackageInfo> packs = getPackageManager().getInstalledPackages(0);
         for (int i = 0; i < packs.size(); i++) {
             PackageInfo p = packs.get(i);
-            if ((isSystemPackage(p) == false)) {
+            //if ((isSystemPackage(p) == false)) {
                 String appName = p.applicationInfo.loadLabel(getPackageManager()).toString();
                 String appFlag = p.applicationInfo.packageName;
 
@@ -133,7 +133,7 @@ public class LauncherActivity extends AppCompatActivity {
                 }
 
 
-            }
+            //}
         }
         return res;
     }
