@@ -132,5 +132,11 @@ public class AdminActivity extends AppCompatActivity implements
         viewPager.setAdapter(adapter);
     }
 
-
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Intent intentService = new Intent(this, BlockService.class);
+        stopService(intentService);
+        Log.e("Servcio","Detenido");
+    }
 }

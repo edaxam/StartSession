@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -110,6 +111,8 @@ public class AdminImportExportFragment extends Fragment {
                                 boolean status =  export_db.doInBackground();
                                 if(status){
                                     Toast.makeText(getContext(), "Exportado Correctamente!", Toast.LENGTH_SHORT).show();
+                                    Intent launchIntent = getContext().getPackageManager().getLaunchIntentForPackage("com.cyanogenmod.filemanager");
+                                    startActivity(launchIntent);
                                 }else{
                                     Toast.makeText(getContext(), "Exportación Fallida", Toast.LENGTH_SHORT).show();
                                 }

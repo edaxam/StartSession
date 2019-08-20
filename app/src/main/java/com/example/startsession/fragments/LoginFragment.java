@@ -112,7 +112,6 @@ public class LoginFragment extends Fragment {
                         else{
                             Intent intent = new Intent(getActivity(), AdminActivity.class);
                             startActivity(intent);
-                            getActivity().finish();
                         }
 
                     }

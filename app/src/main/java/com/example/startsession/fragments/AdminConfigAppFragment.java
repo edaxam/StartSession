@@ -101,6 +101,8 @@ public class AdminConfigAppFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(userAdapter);
 
+
+
         EditText searchs=(EditText)view.findViewById(R.id.input_user);
         searchs.addTextChangedListener(new TextWatcher() {
             @Override
@@ -120,7 +122,7 @@ public class AdminConfigAppFragment extends Fragment {
             }
         });
 
-
+        reloadListUser("");
 
         pullToRefresh = (SwipeRefreshLayout) view.findViewById(R.id.pullToRefresh);
 
