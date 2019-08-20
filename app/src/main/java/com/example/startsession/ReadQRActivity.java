@@ -1,6 +1,7 @@
 package com.example.startsession;
 
 import android.Manifest;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -23,6 +24,7 @@ public class ReadQRActivity extends AppCompatActivity implements ZBarScannerView
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Log.e("OnCreate","Inicia");
 
         RxPermissions rxPermissions = new RxPermissions(this);

@@ -1,6 +1,7 @@
 package com.example.startsession;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
@@ -35,6 +36,7 @@ public class ConfigAppActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_config_app);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

@@ -56,7 +56,7 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Intent intentService = new Intent(getApplicationContext(), BlockService.class);
         startService(intentService);
         saved_app = false;
@@ -214,6 +214,13 @@ public class LauncherActivity extends AppCompatActivity {
             activityManager.moveTaskToFront(getTaskId(), 0);
         }
         saved_app = false;
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Intent intentService = new Intent(getApplicationContext(), BlockService.class);
+        startService(intentService);
     }
 
     @Override

@@ -19,7 +19,12 @@ public class AppController {
     }
 
     public long addApp(AppModel app_conf) {
+
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        /*String var = "UPDATE "+TABLE_NAME+" SET active=0 WHERE id_user= "+app_conf.getId_user();
+        db.execSQL(var);
+        Log.e("Insert Apps",var);*/
+
         ContentValues valuesInsert = new ContentValues();
         valuesInsert.put("id_user",app_conf.getId_user());
         valuesInsert.put("app_name",app_conf.getApp_name());
