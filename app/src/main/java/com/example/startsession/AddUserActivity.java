@@ -31,6 +31,9 @@ public class AddUserActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Intent intentService = new Intent(this, BlockService.class);
+        stopService(intentService);
+
         userController = new UserController(getApplicationContext());
 
         editTextUser  = findViewById(R.id.input_user);

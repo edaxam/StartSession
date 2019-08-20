@@ -42,7 +42,8 @@ public class AdminActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        Intent intentService = new Intent(getApplicationContext(), BlockService.class);
+
+        Intent intentService = new Intent(this, BlockService.class);
         stopService(intentService);
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewpager);

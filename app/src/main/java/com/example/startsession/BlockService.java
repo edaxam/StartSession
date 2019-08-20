@@ -4,24 +4,13 @@ import android.accessibilityservice.AccessibilityService;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.Toast;
+
 
 public class BlockService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-
-
-
-
-        if(event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED){
-            Log.e("TYPE_VIEW_CLICKED_gPN","" + event.getPackageName());
-            Log.e("TYPE_VIEW_CLICKED_getCN","" + event.getClassName());
-
-
-        }
 
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ) {
             if ( event.getPackageName().equals("com.android.settings") ){

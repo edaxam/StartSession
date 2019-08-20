@@ -38,6 +38,8 @@ public class ConfigAppActivity extends AppCompatActivity {
         setContentView(R.layout.activity_config_app);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Intent intentService = new Intent(this, BlockService.class);
+        stopService(intentService);
 
         Intent intent = getIntent();
 
@@ -87,11 +89,9 @@ public class ConfigAppActivity extends AppCompatActivity {
                         long id_app = appController.addApp(newApp);
                         Log.e("RESPONSE","Id :" + id_app);
                         if(id_app  == -1){
-                            Toast.makeText(getApplicationContext(), "Error al guardar. Intenta de nuevo", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Error al guardar '"+app_name+"' Intenta de nuevo", Toast.LENGTH_LONG).show();
                         }
-                        else{
-                            Toast.makeText(getApplicationContext(), "Guardado correctamente", Toast.LENGTH_LONG).show();
-                        }
+
                     }
                 }
             }
