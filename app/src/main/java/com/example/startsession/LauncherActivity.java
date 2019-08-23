@@ -3,6 +3,7 @@ package com.example.startsession;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -51,16 +53,21 @@ public class LauncherActivity extends AppCompatActivity {
     private int id_user;
     private UserController userController;
     private boolean saved_app;
+    private ConstraintLayout layout;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         setContentView(R.layout.activity_launcher);
         Intent intentService = new Intent(getApplicationContext(), BlockService.class);
         startService(intentService);
         saved_app = false;
+        final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        final Drawable fondo = wallpaperManager.getDrawable();
+        layout=(ConstraintLayout)findViewById(R.id.appLauncher);
+        layout.setBackground(fondo);
 
         userController = new UserController(this);
         id_user = userController.getLastUserActive();

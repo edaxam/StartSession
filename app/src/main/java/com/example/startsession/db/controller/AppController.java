@@ -27,7 +27,7 @@ public class AppController {
         valuesInsert.put("app_image",app_conf.getApp_icon_string());
         valuesInsert.put("active",1);
         valuesInsert.put("status_ws",0);
-        //Log.e("Insert Apps","id: " + app_conf.getId_user() + "  | app_name: " + app_conf.getApp_name() + "   | pack" + app_conf.getApp_flag_system());
+        Log.e("Insert Apps","id: " + app_conf.getId_user() + "  | app_name: " + app_conf.getApp_name() + "   | pack" + app_conf.getApp_flag_system());
         return db.insert(TABLE_NAME,null,valuesInsert);
     }
 

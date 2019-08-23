@@ -35,6 +35,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import io.reactivex.functions.Consumer;
 
@@ -111,8 +112,9 @@ public class AdminImportExportFragment extends Fragment {
                                 boolean status =  export_db.doInBackground();
                                 if(status){
                                     Toast.makeText(getContext(), "Exportado Correctamente!", Toast.LENGTH_SHORT).show();
-                                    Intent launchIntent = getContext().getPackageManager().getLaunchIntentForPackage("com.cyanogenmod.filemanager");
-                                    startActivity(launchIntent);
+                                    String [] archivos = new String[]{"csvs/user.csv", "csvs/user_config_launcher.csv", "csvs/user_history.csv"};
+                                    Exportaciones(archivos);
+
                                 }else{
                                     Toast.makeText(getContext(), "Exportación Fallida", Toast.LENGTH_SHORT).show();
                                 }
@@ -230,5 +232,27 @@ public class AdminImportExportFragment extends Fragment {
                 Toast.makeText(getContext(), "Exportación Fallida", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void Exportaciones(String [] archivos) {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        emailIntent.setType("text/html");
+        //emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {""}); // Correo a enviar
+        //emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");// Asunto
+        //emailIntent.putExtra(Intent.EXTRA_TEXT, "");//Cuerpo
+
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+        for (String file : archivos)
+        {
+            Log.e("Archivos",file);
+            File fileIn = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),file);
+            Log.e("Archivo Ruta",fileIn.toString());
+            Uri u = Uri.fromFile(fileIn);
+            Log.e("ArchivoUri",u.toString());
+            uris.add(u);
+        }
+
+        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        startActivity(Intent.createChooser(emailIntent, "Exportar"));
     }
 }

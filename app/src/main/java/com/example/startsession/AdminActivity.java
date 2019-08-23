@@ -11,6 +11,8 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.startsession.fragments.AdminConfigAppFragment;
@@ -137,5 +139,26 @@ public class AdminActivity extends AppCompatActivity implements
         Intent intentService = new Intent(this, BlockService.class);
         stopService(intentService);
         Log.e("Servcio","Detenido");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.setting,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.wallpaper:
+                Intent intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

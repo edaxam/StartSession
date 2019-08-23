@@ -34,7 +34,7 @@
 
         </service>
         <activity android:name=".ReadQRActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
 
         </activity>
         <activity
