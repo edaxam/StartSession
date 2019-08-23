@@ -71,13 +71,13 @@ public class ConfigAppActivity extends AppCompatActivity {
         //userInstalledApps.setOnItemClickListener();
 
         appController = new AppController(getApplicationContext());
-
+        appController.afterInsert(id_user);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CheckBox cb;
-                Log.e("Num APPS",""+userInstalledApps.getAdapter().getCount());
+                //Log.e("Num APPS",""+userInstalledApps.getAdapter().getCount());
                 int tam =userInstalledApps.getAdapter().getCount();
                 for (int x = 0; x< tam;x++){
                     if (installedApps.get(x).isChecked()) {
@@ -93,7 +93,9 @@ public class ConfigAppActivity extends AppCompatActivity {
                         if(id_app  == -1){
                             Toast.makeText(getApplicationContext(), "Error al guardar '"+app_name+"' Intenta de nuevo", Toast.LENGTH_LONG).show();
                         }
-
+                        else{
+                            //Toast.makeText(getApplicationContext(),"Cambio Guardado",Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             }
@@ -128,4 +130,12 @@ public class ConfigAppActivity extends AppCompatActivity {
     private boolean isSystemPackage(PackageInfo pkgInfo) {
         return ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) ? true : false;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+
 }

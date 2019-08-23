@@ -1,6 +1,7 @@
 package com.example.startsession;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -129,4 +130,11 @@ public class ReadQRActivity extends AppCompatActivity implements ZBarScannerView
         // If you would like to resume scanning, call this method below:
         //mScannerView.resumeCameraPreview(this);
     }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Intent intentService = new Intent(getApplicationContext(), BlockService.class);
+        startService(intentService);
+    }//
 }

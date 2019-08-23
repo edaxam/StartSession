@@ -156,7 +156,7 @@ public class AdminConfigAppFragment extends Fragment {
                         UserModel userSelected = listUser.get(position);
 
 
-                        Toast.makeText(getContext(),"Cargando la configuración de : " + userSelected.getName() ,Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(),"Cargando la configuración de : " + userSelected.getName() ,Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(getActivity(), ConfigAppActivity.class);
                         intent.putExtra("id_user",""+userSelected.getId_user());

@@ -40,9 +40,8 @@ public class AdminActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+        setContentView(R.layout.activity_admin);
         Intent intentService = new Intent(this, BlockService.class);
         stopService(intentService);
         //Initializing viewPager

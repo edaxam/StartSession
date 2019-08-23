@@ -140,7 +140,12 @@ public class EditUserActivity extends AppCompatActivity {
             }
         });
     }
-
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Intent intentService = new Intent(getApplicationContext(), BlockService.class);
+        startService(intentService);
+    }
 
     @Override
     protected void onResume() {

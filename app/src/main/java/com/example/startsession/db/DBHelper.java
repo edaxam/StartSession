@@ -14,8 +14,7 @@ public class DBHelper extends SQLiteOpenHelper {
             USER = "user",
             USER_CONFIG_LAUNCHER = "user_config_launcher",
             HISTORY_USER = "user_history",
-            LOG = "log_app"
-            ;
+            LOG = "log_app";
     private static final int VERSION_DATA_BASE = 1;
 
     public DBHelper(Context context) {

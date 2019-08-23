@@ -20,6 +20,7 @@ import android.view.View;
 
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -44,7 +45,7 @@ import java.util.List;
 
 public class LauncherActivity extends AppCompatActivity {
     private AppController appController;
-    ListView userInstalledApps;
+    GridView userInstalledApps;
     private HistoryController historyController;
     private List<AppModel> installedApps;
     private int id_user;
@@ -55,8 +56,8 @@ public class LauncherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launcher);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setContentView(R.layout.activity_launcher);
         Intent intentService = new Intent(getApplicationContext(), BlockService.class);
         startService(intentService);
         saved_app = false;
@@ -71,7 +72,7 @@ public class LauncherActivity extends AppCompatActivity {
             finish();
         }
 
-        userInstalledApps = (ListView)findViewById(R.id.recyclerViewApp);
+        userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
 
         installedApps = getInstalledApps(id_user);
         AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
