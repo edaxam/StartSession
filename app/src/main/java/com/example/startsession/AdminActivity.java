@@ -152,10 +152,8 @@ public class AdminActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.wallpaper:
-                Intent intent = new Intent();
-                intent.setAction(android.content.Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "content://media/internal/images/media"));
                 startActivity(intent);
                 return true;
         }
