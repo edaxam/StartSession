@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#212121</color>
     <color name="colorAccent">#C94F9F</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorLetter">#F15ABD</color>
 
     <!-- DASHBOARD -->
     <color name="colorLigthGrey">#ededed</color>

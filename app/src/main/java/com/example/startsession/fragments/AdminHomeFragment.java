@@ -11,6 +11,10 @@ import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,7 +83,6 @@ public class AdminHomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_home, container, false);
-
         TextView num_users = (TextView) view.findViewById(R.id.num_users);
         userController = new UserController(getContext());
         int num_user =  userController.users();
@@ -94,7 +97,6 @@ public class AdminHomeFragment extends Fragment {
         appController = new AppController(getContext());
         int num_app = appController.num_app();
         num_apps.setText("" + num_app);
-
 
         //Exit Mode Admin
         FloatingActionButton fab = view.findViewById(R.id.fab);

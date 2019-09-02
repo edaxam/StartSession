@@ -100,7 +100,7 @@ public class LoginFragment extends Fragment {
                 }
                 else{
                     UserModel userModel = validationLogin(userText,passwordText);
-                    Log.e("LOGIN","User: " + userText + " Password: " + passwordText + "id_user:" + userModel.getId_user());
+                    Log.e("LOGIN","User: " + userText + " Password: " + passwordText + " id_user:" + userModel.getId_user());
 
                     if( userModel.getId_user() != 0){
                         if(userModel.getId_user() > 0 && userModel.getAdmin() != 1){

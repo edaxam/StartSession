@@ -1,5 +1,6 @@
 package com.example.startsession;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.PorterDuff;
@@ -8,15 +9,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.VisibilityAwareImageButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.widget.LinearLayout;
 
 import com.example.startsession.fragments.AdminConfigAppFragment;
 import com.example.startsession.fragments.AdminConfigUserFragment;
+import com.example.startsession.fragments.AdminHomeCard;
 import com.example.startsession.fragments.AdminHomeFragment;
 import com.example.startsession.fragments.AdminImportExportFragment;
 import com.example.startsession.ui.admin.ViewPagerAdapter;
@@ -30,7 +37,6 @@ public class AdminActivity extends AppCompatActivity implements
     //This is our viewPager
     private ViewPager viewPager;
 
-
     //Fragments
 
     AdminHomeFragment homeFragment;
@@ -39,8 +45,9 @@ public class AdminActivity extends AppCompatActivity implements
     AdminConfigAppFragment adminConfigAppFragment;
     MenuItem prevMenuItem;
 
+    @SuppressLint("WrongConstant")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_admin);
@@ -51,7 +58,6 @@ public class AdminActivity extends AppCompatActivity implements
 
         //Initializing the bottomNavigationView
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -92,7 +98,6 @@ public class AdminActivity extends AppCompatActivity implements
                 Log.d("page", "onPageSelected: "+position);
                 bottomNavigationView.getMenu().getItem(position).setChecked(true);
                 prevMenuItem = bottomNavigationView.getMenu().getItem(position);
-
             }
 
             @Override
@@ -111,7 +116,6 @@ public class AdminActivity extends AppCompatActivity implements
             }
         });
         */
-
         setupViewPager(viewPager);
     }
 
