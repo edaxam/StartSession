@@ -1,6 +1,7 @@
 package com.example.startsession;
 
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.WallpaperManager;
@@ -11,20 +12,19 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
-
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.startsession.db.controller.AppController;
@@ -32,11 +32,9 @@ import com.example.startsession.db.controller.HistoryController;
 import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.AppModel;
 import com.example.startsession.db.model.HistoryModel;
-
 import com.example.startsession.ui.user.AppConfigAdapter;
 
-
-
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,6 +54,7 @@ public class LauncherActivity extends AppCompatActivity {
     private ConstraintLayout layout;
 
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +64,18 @@ public class LauncherActivity extends AppCompatActivity {
         startService(intentService);
         saved_app = false;
         final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        try {
+            wallpaperManager.setResource(R.drawable.wallpaper);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         final Drawable fondo = wallpaperManager.getDrawable();
         layout=(ConstraintLayout)findViewById(R.id.appLauncher);
+
+        if(getRotation(getApplicationContext()).equals("horizontal")){ // es horizontal o landscape.
+
+        }
+
         layout.setBackground(fondo);
 
         userController = new UserController(this);
@@ -237,6 +246,16 @@ public class LauncherActivity extends AppCompatActivity {
         return false;
     }
 
-
+    public String getRotation(Context context){
+        final int rotation = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+        switch (rotation) {
+            case Surface.ROTATION_0:
+            case Surface.ROTATION_180:
+                return "vertical";
+            case Surface.ROTATION_90:
+            default:
+                return "horizontal";
+        }
+    }
 
 }

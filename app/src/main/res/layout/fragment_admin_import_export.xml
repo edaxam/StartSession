@@ -16,36 +16,37 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <!--<android.support.v7.widget.CardView
+
+            <android.support.v7.widget.CardView
                 android:foreground="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:layout_width="160dp"
                 android:layout_height="190dp"
-                android:layout_margin="10dp">
+                android:layout_margin="10dp"
+                android:id="@+id/importa">
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:background="@drawable/backgroundcardback"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:gravity="center">
+
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:background="@drawable/circle_background_pink"
-                        android:src="@drawable/ic_import_export_black_24dp"
-                        android:padding="10dp"/>
+                        android:padding="10dp"
+                        android:src="@drawable/ic_mdi_download_progress" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
                         android:layout_marginTop="10dp"
-                        android:text="Importar"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/colorLigthGrey"
-                        android:layout_margin="10dp"/>
+                        android:text="Importar"
+                        android:textStyle="bold" />
+
                 </LinearLayout>
-            </android.support.v7.widget.CardView>-->
+            </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
                 android:foreground="?android:attr/selectableItemBackground"
@@ -56,6 +57,7 @@
                 android:id="@+id/exportar">
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:background="@drawable/backgroundcardfront"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:gravity="center">
@@ -64,7 +66,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:background="@drawable/circle_background_green"
-                        android:src="@drawable/ic_launch_black_24dp"
+                        android:src="@drawable/ic_mdi_upload_progress"
                         android:padding="10dp"/>
                     <TextView
                         android:layout_width="wrap_content"
@@ -72,11 +74,6 @@
                         android:textStyle="bold"
                         android:layout_marginTop="10dp"
                         android:text="Exportar"/>
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/colorLigthGrey"
-                        android:layout_margin="10dp"/>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
