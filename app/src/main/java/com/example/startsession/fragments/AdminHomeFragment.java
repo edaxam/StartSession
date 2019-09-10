@@ -98,6 +98,11 @@ public class AdminHomeFragment extends Fragment {
         int num_app = appController.num_app();
         num_apps.setText("" + num_app);
 
+        AdminHomeCard card = new AdminHomeCard();
+        card.Usuarios((ViewGroup) view);
+        /*card.Apps((ViewGroup) view);
+        card.Lanzamiento((ViewGroup) view);*/
+
         //Exit Mode Admin
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

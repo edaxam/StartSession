@@ -106,6 +106,7 @@ public class EditUserActivity extends AppCompatActivity {
 
                         editTextUser.setFocusableInTouchMode(true);
                         editTextUser.requestFocus();
+                        finish();
                     }
                 }
 

@@ -37,7 +37,7 @@
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:background="@drawable/circle_background_green"
+                        android:background="@drawable/circle_background_whiten"
                         android:src="@drawable/ic_account_circle_black_24dp"
                         android:padding="10dp"/>
                     <TextView
