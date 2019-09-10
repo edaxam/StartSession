@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.startsession.R;
 import com.example.startsession.db.DBHelper;
 import com.example.startsession.db.controller.AppController;
+import com.example.startsession.db.controller.UserController;
 import com.example.startsession.ui.admin.CSVWriter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -53,7 +54,9 @@ public class AdminImportExportFragment extends Fragment {
 
     private AppController appController;
 
-    private boolean hayConexion=false;
+    public boolean hayConexion;
+    private UserController userController;
+    public Uri rutaArchivo;
     private int VALOR_RETORNO = 1;
     public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
     public BottomSheetDialog bottomSheetDialog = BottomSheetDialog.newInstance();
@@ -96,6 +99,7 @@ public class AdminImportExportFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_import_export, container, false);
+        userController = new UserController(getContext());
         CardView exportar = (CardView) view.findViewById(R.id.exportar);
         exportar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +151,8 @@ public class AdminImportExportFragment extends Fragment {
                         });
             }
         });
+
+
 
         return view;
 
@@ -283,4 +289,5 @@ public class AdminImportExportFragment extends Fragment {
         ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
+
 }

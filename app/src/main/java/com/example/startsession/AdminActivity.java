@@ -3,29 +3,24 @@ package com.example.startsession;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.VisibilityAwareImageButton;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
-import android.widget.LinearLayout;
 
+import com.example.startsession.db.controller.UserController;
 import com.example.startsession.fragments.AdminConfigAppFragment;
 import com.example.startsession.fragments.AdminConfigUserFragment;
-import com.example.startsession.fragments.AdminHomeCard;
 import com.example.startsession.fragments.AdminHomeFragment;
 import com.example.startsession.fragments.AdminImportExportFragment;
+import com.example.startsession.fragments.BottomActionSheetConexion;
+import com.example.startsession.fragments.BottomSheetDialog;
 import com.example.startsession.ui.admin.ViewPagerAdapter;
 
 public class AdminActivity extends AppCompatActivity implements
@@ -45,6 +40,13 @@ public class AdminActivity extends AppCompatActivity implements
     AdminConfigAppFragment adminConfigAppFragment;
     MenuItem prevMenuItem;
 
+    //bottom
+    private UserController userController;
+    public Uri rutaArchivo;
+    private int VALOR_RETORNO = 1;
+    public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
+    public BottomSheetDialog bottomSheetDialog = BottomSheetDialog.newInstance();
+
     @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class AdminActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_admin);
         Intent intentService = new Intent(this, BlockService.class);
         stopService(intentService);
+        userController = new UserController(getApplicationContext());
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 

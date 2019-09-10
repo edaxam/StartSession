@@ -1,9 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:theme="@style/AppTheme.NoActionBar"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="@dimen/dp_8"
     android:layout_marginTop="@dimen/dp_8"
+    tools:context=".BottomActionSheet"
     android:orientation="vertical">
 
     <TextView
@@ -50,7 +52,8 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/OpcionNube"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:id="@+id/ONube"
         android:clickable="true"
         android:orientation="horizontal"
         android:layout_width="match_parent"
