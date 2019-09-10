@@ -84,11 +84,9 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp">
         <FrameLayout
-            android:clipToPadding="false"
-            android:gravity="center"
-            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:id="@+id/LTback"
                 android:layout_width="100dp"
@@ -117,6 +115,7 @@
                     android:textSize="11dp"
                     android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="100dp"
                 android:id="@+id/LTfront"
@@ -150,10 +149,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <FrameLayout
-            android:gravity="center"
-            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:id="@+id/ATback"
                 android:layout_width="100dp"
@@ -183,6 +181,7 @@
                     android:textSize="11dp"
                     android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="100dp"
                 android:id="@+id/ATfront"

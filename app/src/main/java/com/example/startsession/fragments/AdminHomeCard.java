@@ -30,7 +30,7 @@ public class AdminHomeCard extends AppCompatActivity {
     private ScaleAnimation cambioYA = new ScaleAnimation(0, 1, 1, 1,Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
 
     public void Usuarios(ViewGroup view){
-        initView(view);
+        roteUsuarios(view);
         if (usuCardFront.getVisibility() == View.VISIBLE) {
             usuCardFront.startAnimation(cambioXU);
         }else{
@@ -48,7 +48,7 @@ public class AdminHomeCard extends AppCompatActivity {
         usuCardBack.setVisibility(View.VISIBLE);
     }
 
-    private void initView(ViewGroup view){
+    private void roteUsuarios(ViewGroup view){
         usuCardFront = (LinearLayout) view.findViewById(R.id.UTfront);
         usuCardBack = (LinearLayout) view.findViewById(R.id.UTback);
         showCardF();
@@ -84,11 +84,8 @@ public class AdminHomeCard extends AppCompatActivity {
         });
     }
 
-
-
-
     public void Lanzamiento(ViewGroup view){
-        initViewL(view);
+        roteLanzamientos(view);
         if (lanCardFront.getVisibility() == View.VISIBLE) {
             lanCardFront.startAnimation(cambioXL);
         }else{
@@ -106,7 +103,7 @@ public class AdminHomeCard extends AppCompatActivity {
         lanCardBack.setVisibility(View.VISIBLE);
     }
 
-    private void initViewL(ViewGroup view){
+    private void roteLanzamientos(ViewGroup view){
         lanCardFront = (LinearLayout) view.findViewById(R.id.LTfront);
         lanCardBack = (LinearLayout) view.findViewById(R.id.LTback);
         showCardFL();
@@ -142,8 +139,9 @@ public class AdminHomeCard extends AppCompatActivity {
         });
     }
 
+
     public void Apps(ViewGroup view){
-        initViewA(view);
+        roteApps(view);
         if (appsCardFront.getVisibility() == View.VISIBLE) {
             appsCardFront.startAnimation(cambioXA);
         }else{
@@ -161,7 +159,7 @@ public class AdminHomeCard extends AppCompatActivity {
         appsCardBack.setVisibility(View.VISIBLE);
     }
 
-    private void initViewA(ViewGroup view){
+    private void roteApps(ViewGroup view){
         appsCardFront = (LinearLayout) view.findViewById(R.id.ATfront);
         appsCardBack = (LinearLayout) view.findViewById(R.id.ATback);
         showCardF();
