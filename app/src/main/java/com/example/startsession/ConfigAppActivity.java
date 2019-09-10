@@ -112,7 +112,6 @@ public class ConfigAppActivity extends AppCompatActivity {
             if ((isSystemPackage(p) == false)) {
                 String appName = p.applicationInfo.loadLabel(getPackageManager()).toString();
                 String appFlag = p.applicationInfo.packageName;
-                //getPackageManager().getLaunchIntentForPackage(ApplicationInfo info)
                 Drawable icon = p.applicationInfo.loadIcon(getPackageManager());
                 appController = new AppController(getApplicationContext());
                 AppModel loginUser = new AppModel(id_user,appFlag);
@@ -121,6 +120,7 @@ public class ConfigAppActivity extends AppCompatActivity {
                     resS.add(new AppModel(appName, appFlag, icon, app_active));
                 }
                 Collections.sort(resS,new sortAlphabetically());
+
             } else {
                 String appName = p.applicationInfo.loadLabel(getPackageManager()).toString();
                 String appFlag = p.applicationInfo.packageName;
@@ -135,8 +135,9 @@ public class ConfigAppActivity extends AppCompatActivity {
                 Collections.sort(resSN,new sortAlphabetically());
             }
         }
+        resS.add(0,new AppModel(0,"Aplicaiones de Usuario","",""));
+        resSN.add(0,new AppModel(0,"Aplicaiones del Sistema","",""));
         resS.addAll(resSN);
-        //Collections.sort(res.toArray());
         return resS;
     }
 

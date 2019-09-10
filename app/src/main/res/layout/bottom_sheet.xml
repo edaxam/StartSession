@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginBottom="@dimen/dp_8"
     android:layout_marginTop="@dimen/dp_8"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".fragments.BottomActionSheet">
 
     <TextView
-        android:id="@+id/tv_bottom_sheet_heading"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_16"
@@ -28,6 +28,7 @@
     <LinearLayout
         android:id="@+id/ArchivoS"
         android:clickable="true"
+        android:onClick="archivo"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="48dp">

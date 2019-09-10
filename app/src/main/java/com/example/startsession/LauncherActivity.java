@@ -34,7 +34,6 @@ import com.example.startsession.db.model.AppModel;
 import com.example.startsession.db.model.HistoryModel;
 import com.example.startsession.ui.user.AppConfigAdapter;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,11 +63,6 @@ public class LauncherActivity extends AppCompatActivity {
         startService(intentService);
         saved_app = false;
         final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-        try {
-            wallpaperManager.setResource(R.drawable.wallpaper);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         final Drawable fondo = wallpaperManager.getDrawable();
         layout=(ConstraintLayout)findViewById(R.id.appLauncher);
 
@@ -137,19 +131,19 @@ public class LauncherActivity extends AppCompatActivity {
         for (int i = 0; i < packs.size(); i++) {
             PackageInfo p = packs.get(i);
             //if ((isSystemPackage(p) == false)) {
-                String appName = p.applicationInfo.loadLabel(getPackageManager()).toString();
-                String appFlag = p.applicationInfo.packageName;
+            String appName = p.applicationInfo.loadLabel(getPackageManager()).toString();
+            String appFlag = p.applicationInfo.packageName;
 
-                Drawable icon = p.applicationInfo.loadIcon(getPackageManager());
+            Drawable icon = p.applicationInfo.loadIcon(getPackageManager());
 
-                appController = new AppController(getApplicationContext());
-                AppModel loginUser = new AppModel(id_user,appFlag);
+            appController = new AppController(getApplicationContext());
+            AppModel loginUser = new AppModel(id_user,appFlag);
 
-                boolean app_active = appController.appActiveByUser(loginUser);
+            boolean app_active = appController.appActiveByUser(loginUser);
 
-                if(app_active){
-                    res.add(new AppModel(appName, appFlag, icon));
-                }
+            if(app_active){
+                res.add(new AppModel(appName, appFlag, icon));
+            }
 
 
             //}

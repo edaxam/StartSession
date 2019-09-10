@@ -53,10 +53,9 @@ public class AdminImportExportFragment extends Fragment {
 
     private AppController appController;
 
-    public boolean hayConexion=false;
-    public Uri rutaArchivo;
+    private boolean hayConexion=false;
     private int VALOR_RETORNO = 1;
-    public BottomActionSheetConexion addPhotoBottomDialogFragment = BottomActionSheetConexion.newInstance();
+    public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
     public BottomSheetDialog bottomSheetDialog = BottomSheetDialog.newInstance();
 
     private OnFragmentInteractionListener mListener;
@@ -129,14 +128,23 @@ public class AdminImportExportFragment extends Fragment {
         importar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hayConexion=isNetworkAvailable(getContext());
-                if (hayConexion){
-                    addPhotoBottomDialogFragment.show(getFragmentManager(), "add_photo_dialog_fragment");
-                    Toast.makeText(getContext(),"Si hay conexion", LENGTH_SHORT).show();
-                }else {
-                    bottomSheetDialog.show(getFragmentManager(), "bottomsheetdialog");
-                    Toast.makeText(getContext(),"No hay conexion", LENGTH_SHORT).show();
-                }
+                RxPermissions permissions = new RxPermissions(getActivity());
+                permissions.setLogging(true);
+                permissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .subscribe(new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean aBoolean) throws Exception {
+                                hayConexion=isNetworkAvailable(getContext());
+                                if (hayConexion){
+                                    readBottomDialogFragment.show(getFragmentManager(), "bottomactionsheetconexion");
+                                    Toast.makeText(getContext(),"Si hay conexion", LENGTH_SHORT).show();
+                                }else {
+                                    bottomSheetDialog.show(getFragmentManager(), "bottomsheetdialog");
+                                    Toast.makeText(getContext(),"No hay conexion", LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
 
@@ -271,10 +279,8 @@ public class AdminImportExportFragment extends Fragment {
         startActivity(Intent.createChooser(emailIntent, "Exportar"));
     }
 
-
     public boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
-
 }
