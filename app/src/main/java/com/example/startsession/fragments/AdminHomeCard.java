@@ -19,22 +19,23 @@ public class AdminHomeCard extends AppCompatActivity {
     private LinearLayout appsCardFront;
     private LinearLayout appsCardBack;
 
-    private ScaleAnimation cambioX = new ScaleAnimation(1, 0, 1, 1, Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
-    private ScaleAnimation cambioY = new ScaleAnimation(0, 1, 1, 1,Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
+    private ScaleAnimation cambioXU = new ScaleAnimation(1, 0, 1, 1, Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
+    private ScaleAnimation cambioYU = new ScaleAnimation(0, 1, 1, 1,Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
 
+
+    private ScaleAnimation cambioXL = new ScaleAnimation(1, 0, 1, 1, Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
+    private ScaleAnimation cambioYL = new ScaleAnimation(0, 1, 1, 1,Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
+
+    private ScaleAnimation cambioXA = new ScaleAnimation(1, 0, 1, 1, Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
+    private ScaleAnimation cambioYA = new ScaleAnimation(0, 1, 1, 1,Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
 
     public void Usuarios(ViewGroup view){
         initView(view);
-        view.findViewById(R.id.FrameUser).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (usuCardFront.getVisibility() == View.VISIBLE) {
-                    usuCardFront.startAnimation(cambioX);
-                }else{
-                    usuCardBack.startAnimation(cambioX);
-                }
-            }
-        });
+        if (usuCardFront.getVisibility() == View.VISIBLE) {
+            usuCardFront.startAnimation(cambioXU);
+        }else{
+            usuCardBack.startAnimation(cambioXU);
+        }
     }
 
     private void showCardF(){
@@ -51,10 +52,10 @@ public class AdminHomeCard extends AppCompatActivity {
         usuCardFront = (LinearLayout) view.findViewById(R.id.UTfront);
         usuCardBack = (LinearLayout) view.findViewById(R.id.UTback);
         showCardF();
-        cambioX.setDuration(100);
-        cambioY.setDuration(100);
+        cambioXU.setDuration(100);
+        cambioYU.setDuration(100);
 
-        cambioX.setAnimationListener(new Animation.AnimationListener() {
+        cambioXU.setAnimationListener(new Animation.AnimationListener() {
 
             @Override
             public void onAnimationStart(Animation animation) {
@@ -73,11 +74,11 @@ public class AdminHomeCard extends AppCompatActivity {
                 if (usuCardFront.getVisibility() == View.VISIBLE) {
                     usuCardFront.setAnimation(null);
                     showCardB();
-                    usuCardBack.startAnimation(cambioY);
+                    usuCardBack.startAnimation(cambioYU);
                 }else{
                     usuCardBack.setAnimation(null);
                     showCardF();
-                    usuCardFront.startAnimation(cambioY);
+                    usuCardFront.startAnimation(cambioYU);
                 }
             }
         });
@@ -85,19 +86,14 @@ public class AdminHomeCard extends AppCompatActivity {
 
 
 
-/*
+
     public void Lanzamiento(ViewGroup view){
         initViewL(view);
-        view.findViewById(R.id.lanzamiento).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lanCardFront.getVisibility() == View.VISIBLE) {
-                    lanCardFront.startAnimation(cambioX);
-                }else{
-                    lanCardBack.startAnimation(cambioX);
-                }
-            }
-        });
+        if (lanCardFront.getVisibility() == View.VISIBLE) {
+            lanCardFront.startAnimation(cambioXL);
+        }else{
+            lanCardBack.startAnimation(cambioXL);
+        }
     }
 
     private void showCardFL(){
@@ -114,10 +110,10 @@ public class AdminHomeCard extends AppCompatActivity {
         lanCardFront = (LinearLayout) view.findViewById(R.id.LTfront);
         lanCardBack = (LinearLayout) view.findViewById(R.id.LTback);
         showCardFL();
-        cambioX.setDuration(100);
-        cambioY.setDuration(100);
+        cambioXL.setDuration(100);
+        cambioYL.setDuration(100);
 
-        cambioX.setAnimationListener(new Animation.AnimationListener() {
+        cambioXL.setAnimationListener(new Animation.AnimationListener() {
 
             @Override
             public void onAnimationStart(Animation animation) {
@@ -136,11 +132,11 @@ public class AdminHomeCard extends AppCompatActivity {
                 if (lanCardFront.getVisibility() == View.VISIBLE) {
                     lanCardFront.setAnimation(null);
                     showCardBL();
-                    lanCardBack.startAnimation(cambioY);
+                    lanCardBack.startAnimation(cambioYL);
                 }else{
                     lanCardBack.setAnimation(null);
                     showCardFL();
-                    lanCardFront.startAnimation(cambioY);
+                    lanCardFront.startAnimation(cambioYL);
                 }
             }
         });
@@ -148,16 +144,11 @@ public class AdminHomeCard extends AppCompatActivity {
 
     public void Apps(ViewGroup view){
         initViewA(view);
-        view.findViewById(R.id.apps).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (appsCardFront.getVisibility() == View.VISIBLE) {
-                    appsCardFront.startAnimation(cambioX);
-                }else{
-                    appsCardBack.startAnimation(cambioX);
-                }
-            }
-        });
+        if (appsCardFront.getVisibility() == View.VISIBLE) {
+            appsCardFront.startAnimation(cambioXA);
+        }else{
+            appsCardBack.startAnimation(cambioXA);
+        }
     }
 
     private void showCardFA(){
@@ -174,10 +165,10 @@ public class AdminHomeCard extends AppCompatActivity {
         appsCardFront = (LinearLayout) view.findViewById(R.id.ATfront);
         appsCardBack = (LinearLayout) view.findViewById(R.id.ATback);
         showCardF();
-        cambioX.setDuration(100);
-        cambioY.setDuration(100);
+        cambioXA.setDuration(100);
+        cambioYA.setDuration(100);
 
-        cambioX.setAnimationListener(new Animation.AnimationListener() {
+        cambioXA.setAnimationListener(new Animation.AnimationListener() {
 
             @Override
             public void onAnimationStart(Animation animation) {
@@ -196,13 +187,13 @@ public class AdminHomeCard extends AppCompatActivity {
                 if (appsCardFront.getVisibility() == View.VISIBLE) {
                     appsCardFront.setAnimation(null);
                     showCardBA();
-                    appsCardBack.startAnimation(cambioY);
+                    appsCardBack.startAnimation(cambioYA);
                 }else{
                     appsCardBack.setAnimation(null);
                     showCardFA();
-                    appsCardFront.startAnimation(cambioY);
+                    appsCardFront.startAnimation(cambioYA);
                 }
             }
         });
-    }*/
+    }
 }
