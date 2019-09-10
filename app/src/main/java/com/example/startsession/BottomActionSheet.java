@@ -1,19 +1,13 @@
 package com.example.startsession;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.UserModel;
-import com.example.startsession.fragments.BottomActionSheetConexion;
-import com.example.startsession.fragments.BottomSheetDialog;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,73 +16,11 @@ import java.io.File;
 public class BottomActionSheet  extends AppCompatActivity {
 
     private UserController userController;
-    public Uri rutaArchivo;
-    private int VALOR_RETORNO = 1;
-    public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
-    public BottomSheetDialog bottomSheetDialog = BottomSheetDialog.newInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userController = new UserController(getApplicationContext());
-
-        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-
-        findViewById(R.id.ArchivoC).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                startActivityForResult(intent, VALOR_RETORNO);
-                Toast.makeText(getApplicationContext(),"archivo",Toast.LENGTH_SHORT).show();
-                readBottomDialogFragment.dismiss();
-            }
-        });
-
-        findViewById(R.id.ArchivoS).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(intent, VALOR_RETORNO);
-                Toast.makeText(getApplicationContext(),"archivo",Toast.LENGTH_SHORT).show();
-                bottomSheetDialog.dismiss();
-            }
-        });
-    }
-/*
-    public void archivo(View view) {
-        boolean hayConexion=isNetworkAvailable(getApplicationContext());
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*//*");
-        startActivityForResult(intent, VALOR_RETORNO);
-        Toast.makeText(getApplicationContext(),"archivo",Toast.LENGTH_SHORT).show();
-        if (hayConexion){
-            readBottomDialogFragment.dismiss();
-        }else {
-            bottomSheetDialog.dismiss();
-        }
-    }*/
-
-    public boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1 && data != null)
-        {
-            //Log.e("TAG", data.getStringExtra("Note"));
-            if(resultCode == RESULT_OK)
-            {
-                rutaArchivo = data.getData(); //obtener el uri content
-                ImportarDatos(rutaArchivo);
-            }
-            if (resultCode == RESULT_CANCELED)
-            {
-
-            }
-        }
     }
 
     //Metodo para manejar el Archivo lecutura e insersion de datos
@@ -100,7 +32,7 @@ public class BottomActionSheet  extends AppCompatActivity {
         String tabla = getNameFile(rutaArchivo);
 
         //imprimimos el nombre del archivo en un TOAS
-        Toast.makeText(getApplicationContext(), tabla,  Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, tabla,  Toast.LENGTH_SHORT).show();
 
         //Creamos la variable usuariosLeidos
         String[]usuariosLeidos=LeerArchivo(path[1]).split("\\n");
@@ -108,7 +40,7 @@ public class BottomActionSheet  extends AppCompatActivity {
         //creamos una lista de tipo Usuarios con el nombre de registros para posterior llenarla con los datos del archivo
         //List<UserModel> registros = new ArrayList<UserModel>();
 
-        Toast.makeText(getApplicationContext(), "Next", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Next", Toast.LENGTH_LONG).show();
         for (int i=1;i<usuariosLeidos.length;i++)
         {
             String[] tupla = usuariosLeidos[i].split("[a-z A-Z 0-9]+");
@@ -116,10 +48,10 @@ public class BottomActionSheet  extends AppCompatActivity {
             long id_user = userController.importTables(tabla,newUser);
 
             if(id_user == -1){
-                Toast.makeText(getApplicationContext(), "Error al importar. Intenta de nuevo", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Error al importar. Intenta de nuevo", Toast.LENGTH_LONG).show();
             }
             else{
-                Toast.makeText(getApplicationContext(), "Guardado correctamente", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Guardado correctamente", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -157,7 +89,7 @@ public class BottomActionSheet  extends AppCompatActivity {
             //Cerramos el archivo
             fileReader.close();
         } catch (Exception ex) {
-            Toast.makeText(getApplicationContext(), "Error en la Lectura del Archivo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error en la Lectura del Archivo", Toast.LENGTH_SHORT).show();
             //SI no se puede encontrar el archivo mostrara el siguiente texto
             //text.append("Error en la Lectura del Archivo");
         }
