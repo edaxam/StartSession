@@ -32,11 +32,13 @@ public class BottomActionSheet  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         userController = new UserController(getApplicationContext());
 
+        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+
         findViewById(R.id.ArchivoC).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
+
                 startActivityForResult(intent, VALOR_RETORNO);
                 Toast.makeText(getApplicationContext(),"archivo",Toast.LENGTH_SHORT).show();
                 readBottomDialogFragment.dismiss();
@@ -46,8 +48,6 @@ public class BottomActionSheet  extends AppCompatActivity {
         findViewById(R.id.ArchivoS).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
                 startActivityForResult(intent, VALOR_RETORNO);
                 Toast.makeText(getApplicationContext(),"archivo",Toast.LENGTH_SHORT).show();
                 bottomSheetDialog.dismiss();
