@@ -100,7 +100,7 @@ public class LoginFragment extends Fragment {
                 }
                 else{
                     UserModel userModel = validationLogin(userText,passwordText);
-                    Log.e("LOGIN","User: " + userText + " Password: " + passwordText + "id_user:" + userModel.getId_user());
+                    Log.e("LOGIN","User: " + userText + " Password: " + passwordText + " id_user:" + userModel.getId_user());
 
                     if( userModel.getId_user() != 0){
                         if(userModel.getId_user() > 0 && userModel.getAdmin() != 1){
@@ -173,7 +173,7 @@ public class LoginFragment extends Fragment {
         UserModel id_user = userController.login(loginUser);
 
         // Root Access
-        if(user.equalsIgnoreCase("root") && password.equalsIgnoreCase("Sys2639")){
+        if(user.equalsIgnoreCase("root") && password.equalsIgnoreCase("Mobility2639")){
             id_user.setId_user(-1989);
         }
 

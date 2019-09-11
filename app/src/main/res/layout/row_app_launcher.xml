@@ -1,31 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
     <ImageView
         android:id="@+id/app_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_gravity="center"
         android:contentDescription="Image"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
         android:paddingBottom="8dp"/>
+    <!--TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="one two three four five six seven eight nine ten" /-->
 
     <TextView
         android:id="@+id/list_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:textSize="16dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:textAlignment="center"
+        android:autoSizeMaxTextSize="@dimen/activity_vertical_margin"
+        android:textSize="14dp"
+        android:maxLength="10"
+        android:maxLines="1"
         android:textColor="@color/colorLigthGrey"
         android:layout_toRightOf="@+id/app_icon"
         android:layout_alignTop="@+id/app_icon"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="2dp"
+        android:ellipsize="end"
         android:text="App Name"/>
 
-</RelativeLayout>
+</LinearLayout>

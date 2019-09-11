@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.IntegerRes;
 import android.util.Log;
 
 import com.example.startsession.db.DBHelper;
@@ -245,6 +244,23 @@ public class UserController {
 
         cursor.close();
         return id_user;
+    }
+
+    public long importTables(String tabla, UserModel userModel){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues valuesInsert = new ContentValues();
+        valuesInsert.put("mail",userModel.getMail());
+        valuesInsert.put("user",userModel.getUser());
+        valuesInsert.put("password",userModel.getPassword());
+        valuesInsert.put("name",userModel.getName());
+        valuesInsert.put("last_name",userModel.getLast_name());
+        valuesInsert.put("mother_last_name",userModel.getMother_last_name());
+        valuesInsert.put("active",userModel.getActive());
+        valuesInsert.put("date_create",userModel.getDate_create());
+        valuesInsert.put("status_ws",userModel.getStatus_ws());
+        valuesInsert.put("admin",userModel.getAdmin());
+
+        return db.insert(tabla,null,valuesInsert);
     }
 
 }

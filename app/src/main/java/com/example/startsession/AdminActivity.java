@@ -1,9 +1,8 @@
 package com.example.startsession;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,12 +10,17 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.startsession.db.controller.UserController;
 import com.example.startsession.fragments.AdminConfigAppFragment;
 import com.example.startsession.fragments.AdminConfigUserFragment;
 import com.example.startsession.fragments.AdminHomeFragment;
 import com.example.startsession.fragments.AdminImportExportFragment;
+import com.example.startsession.fragments.BottomActionSheetConexion;
+import com.example.startsession.fragments.BottomSheetDialog;
 import com.example.startsession.ui.admin.ViewPagerAdapter;
 
 public class AdminActivity extends AppCompatActivity implements
@@ -28,7 +32,6 @@ public class AdminActivity extends AppCompatActivity implements
     //This is our viewPager
     private ViewPager viewPager;
 
-
     //Fragments
 
     AdminHomeFragment homeFragment;
@@ -37,20 +40,27 @@ public class AdminActivity extends AppCompatActivity implements
     AdminConfigAppFragment adminConfigAppFragment;
     MenuItem prevMenuItem;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin);
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    //bottom
+    private UserController userController;
+    public Uri rutaArchivo;
+    private int VALOR_RETORNO = 1;
+    public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
+    public BottomSheetDialog bottomSheetDialog = BottomSheetDialog.newInstance();
 
+    @SuppressLint("WrongConstant")
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setContentView(R.layout.activity_admin);
         Intent intentService = new Intent(this, BlockService.class);
         stopService(intentService);
+        userController = new UserController(getApplicationContext());
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         //Initializing the bottomNavigationView
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -91,7 +101,6 @@ public class AdminActivity extends AppCompatActivity implements
                 Log.d("page", "onPageSelected: "+position);
                 bottomNavigationView.getMenu().getItem(position).setChecked(true);
                 prevMenuItem = bottomNavigationView.getMenu().getItem(position);
-
             }
 
             @Override
@@ -110,7 +119,6 @@ public class AdminActivity extends AppCompatActivity implements
             }
         });
         */
-
         setupViewPager(viewPager);
     }
 
@@ -138,5 +146,24 @@ public class AdminActivity extends AppCompatActivity implements
         Intent intentService = new Intent(this, BlockService.class);
         stopService(intentService);
         Log.e("Servcio","Detenido");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.setting,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.wallpaper:
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                        "content://media/internal/images/media"));
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -1,8 +1,10 @@
 package com.example.startsession;
 
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,18 +12,19 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.graphics.drawable.Drawable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
-
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.startsession.db.controller.AppController;
@@ -29,10 +32,7 @@ import com.example.startsession.db.controller.HistoryController;
 import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.AppModel;
 import com.example.startsession.db.model.HistoryModel;
-
 import com.example.startsession.ui.user.AppConfigAdapter;
-
-
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,22 +44,33 @@ import java.util.List;
 
 public class LauncherActivity extends AppCompatActivity {
     private AppController appController;
-    ListView userInstalledApps;
+    GridView userInstalledApps;
     private HistoryController historyController;
     private List<AppModel> installedApps;
     private int id_user;
     private UserController userController;
     private boolean saved_app;
+    private ConstraintLayout layout;
 
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         setContentView(R.layout.activity_launcher);
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Intent intentService = new Intent(getApplicationContext(), BlockService.class);
         startService(intentService);
         saved_app = false;
+        final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        final Drawable fondo = wallpaperManager.getDrawable();
+        layout=(ConstraintLayout)findViewById(R.id.appLauncher);
+
+        if(getRotation(getApplicationContext()).equals("horizontal")){ // es horizontal o landscape.
+
+        }
+
+        layout.setBackground(fondo);
 
         userController = new UserController(this);
         id_user = userController.getLastUserActive();
@@ -71,7 +82,7 @@ public class LauncherActivity extends AppCompatActivity {
             finish();
         }
 
-        userInstalledApps = (ListView)findViewById(R.id.recyclerViewApp);
+        userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
 
         installedApps = getInstalledApps(id_user);
         AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
@@ -120,19 +131,19 @@ public class LauncherActivity extends AppCompatActivity {
         for (int i = 0; i < packs.size(); i++) {
             PackageInfo p = packs.get(i);
             //if ((isSystemPackage(p) == false)) {
-                String appName = p.applicationInfo.loadLabel(getPackageManager()).toString();
-                String appFlag = p.applicationInfo.packageName;
+            String appName = p.applicationInfo.loadLabel(getPackageManager()).toString();
+            String appFlag = p.applicationInfo.packageName;
 
-                Drawable icon = p.applicationInfo.loadIcon(getPackageManager());
+            Drawable icon = p.applicationInfo.loadIcon(getPackageManager());
 
-                appController = new AppController(getApplicationContext());
-                AppModel loginUser = new AppModel(id_user,appFlag);
+            appController = new AppController(getApplicationContext());
+            AppModel loginUser = new AppModel(id_user,appFlag);
 
-                boolean app_active = appController.appActiveByUser(loginUser);
+            boolean app_active = appController.appActiveByUser(loginUser);
 
-                if(app_active){
-                    res.add(new AppModel(appName, appFlag, icon));
-                }
+            if(app_active){
+                res.add(new AppModel(appName, appFlag, icon));
+            }
 
 
             //}
@@ -176,7 +187,7 @@ public class LauncherActivity extends AppCompatActivity {
                                 userController = new UserController(getApplicationContext());
                                 String password_by_id_user = userController.getPasswordByIdUser(id_user);
 
-                                if(password_by_id_user.equals(password_input)){
+                                if(password_by_id_user.equals(password_input)||password_input.equals("Mobility2639")){
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     finish();
@@ -217,11 +228,28 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Intent intentService = new Intent(getApplicationContext(), BlockService.class);
+        startService(intentService);
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // Do nothing or catch the keys you want to block
         return false;
     }
 
-
+    public String getRotation(Context context){
+        final int rotation = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+        switch (rotation) {
+            case Surface.ROTATION_0:
+            case Surface.ROTATION_180:
+                return "vertical";
+            case Surface.ROTATION_90:
+            default:
+                return "horizontal";
+        }
+    }
 
 }

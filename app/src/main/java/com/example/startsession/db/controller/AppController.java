@@ -31,6 +31,12 @@ public class AppController {
         return db.insert(TABLE_NAME,null,valuesInsert);
     }
 
+    public  void afterInsert(int id_user){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String var = "UPDATE "+TABLE_NAME+" SET active=0 WHERE id_user= "+id_user;
+        db.execSQL(var);
+        //Log.e("Insert Apps",var);
+    }
 
     public boolean appActiveByUser(AppModel apps){
         boolean status = false;

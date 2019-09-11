@@ -1,22 +1,16 @@
 package com.example.startsession.fragments;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,19 +18,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.startsession.MainActivity;
+import com.example.startsession.BottomActionSheet;
 import com.example.startsession.R;
-import com.example.startsession.ReadQRActivity;
 import com.example.startsession.db.DBHelper;
 import com.example.startsession.db.controller.AppController;
+import com.example.startsession.db.controller.UserController;
 import com.example.startsession.ui.admin.CSVWriter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import io.reactivex.functions.Consumer;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,6 +54,14 @@ public class AdminImportExportFragment extends Fragment {
     private String mParam2;
 
     private AppController appController;
+
+    public boolean hayConexion;
+    private UserController userController;
+    public BottomActionSheet actionSheet ;
+    public Uri rutaArchivo;
+    private int VALOR_RETORNO = 1;
+    public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
+    public BottomSheetDialog bottomSheetDialog = BottomSheetDialog.newInstance();
 
     private OnFragmentInteractionListener mListener;
 
@@ -96,6 +101,8 @@ public class AdminImportExportFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_import_export, container, false);
+        userController = new UserController(getContext());
+        actionSheet = new BottomActionSheet();
         CardView exportar = (CardView) view.findViewById(R.id.exportar);
         exportar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,11 +117,12 @@ public class AdminImportExportFragment extends Fragment {
                                 ExportDatabaseCSVTask export_db =  new ExportDatabaseCSVTask();
                                 boolean status =  export_db.doInBackground();
                                 if(status){
-                                    Toast.makeText(getContext(), "Exportado Correctamente!", Toast.LENGTH_SHORT).show();
-                                    Intent launchIntent = getContext().getPackageManager().getLaunchIntentForPackage("com.cyanogenmod.filemanager");
-                                    startActivity(launchIntent);
+                                    Toast.makeText(getContext(), "Exportado Correctamente!", LENGTH_SHORT).show();
+                                    String [] archivos = new String[]{"csvs/user.csv", "csvs/user_config_launcher.csv", "csvs/user_history.csv"};
+                                    Exportaciones(archivos);
+
                                 }else{
-                                    Toast.makeText(getContext(), "Exportación Fallida", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Exportación Fallida", LENGTH_SHORT).show();
                                 }
                                 //LogUtils.error(TAG, "checkPermission22--:" + aBoolean);
                             }
@@ -123,6 +131,29 @@ public class AdminImportExportFragment extends Fragment {
             }
         });
 
+        CardView importar =(CardView)view.findViewById(R.id.importa);
+        importar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RxPermissions permissions = new RxPermissions(getActivity());
+                permissions.setLogging(true);
+                permissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .subscribe(new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean aBoolean) throws Exception {
+                                hayConexion=isNetworkAvailable(getContext());
+                                if (hayConexion){
+                                    readBottomDialogFragment.show(getFragmentManager(), "bottomactionsheetconexion");
+                                    //Toast.makeText(getContext(),"Si hay conexion", LENGTH_SHORT).show();
+                                }else {
+                                    bottomSheetDialog.show(getFragmentManager(), "bottomsheetdialog");
+                                    //Toast.makeText(getContext(),"No hay conexion", LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
         return view;
 
     }
@@ -224,11 +255,38 @@ public class AdminImportExportFragment extends Fragment {
                 this.dialog.dismiss();
             }
             if (success) {
-                Toast.makeText(getContext(), "Exportado Correctamente!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Exportado Correctamente!", LENGTH_SHORT).show();
                 //ShareGif();
             } else {
-                Toast.makeText(getContext(), "Exportación Fallida", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Exportación Fallida", LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void Exportaciones(String [] archivos) {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        emailIntent.setType("text/html");
+        //emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {""}); // Correo a enviar
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Importacion de datos");// Asunto
+        //emailIntent.putExtra(Intent.EXTRA_TEXT, "");//Cuerpo
+
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+        for (String file : archivos)
+        {
+            Log.e("Archivos",file);
+            File fileIn = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),file);
+            Log.e("Archivo Ruta",fileIn.toString());
+            Uri u = Uri.fromFile(fileIn);
+            Log.e("ArchivoUri",u.toString());
+            uris.add(u);
+        }
+
+        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        startActivity(Intent.createChooser(emailIntent, "Exportar"));
+    }
+
+    public boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 }

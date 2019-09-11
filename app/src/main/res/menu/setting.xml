@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/settings"
+        android:icon="@drawable/ic_more_vert_black_24dp"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item
+                android:id="@+id/item1"
+                android:title="Configuracion"
+                app:showAsAction="never"
+                android:enabled="false"
+                android:checked="false"/>
+            <item
+                android:id="@+id/wallpaper"
+                android:title="Cambiar fondo de pantalla"
+                app:showAsAction="never"/>
+        </menu>
+
+    </item>
+
+</menu>
