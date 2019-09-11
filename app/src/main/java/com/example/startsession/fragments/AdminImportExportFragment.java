@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.startsession.BottomActionSheet;
 import com.example.startsession.R;
 import com.example.startsession.db.DBHelper;
 import com.example.startsession.db.controller.AppController;
@@ -56,6 +57,7 @@ public class AdminImportExportFragment extends Fragment {
 
     public boolean hayConexion;
     private UserController userController;
+    public BottomActionSheet actionSheet ;
     public Uri rutaArchivo;
     private int VALOR_RETORNO = 1;
     public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
@@ -100,6 +102,7 @@ public class AdminImportExportFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_import_export, container, false);
         userController = new UserController(getContext());
+        actionSheet = new BottomActionSheet();
         CardView exportar = (CardView) view.findViewById(R.id.exportar);
         exportar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,18 +145,15 @@ public class AdminImportExportFragment extends Fragment {
                                 hayConexion=isNetworkAvailable(getContext());
                                 if (hayConexion){
                                     readBottomDialogFragment.show(getFragmentManager(), "bottomactionsheetconexion");
-                                    Toast.makeText(getContext(),"Si hay conexion", LENGTH_SHORT).show();
+                                    //Toast.makeText(getContext(),"Si hay conexion", LENGTH_SHORT).show();
                                 }else {
                                     bottomSheetDialog.show(getFragmentManager(), "bottomsheetdialog");
-                                    Toast.makeText(getContext(),"No hay conexion", LENGTH_SHORT).show();
+                                    //Toast.makeText(getContext(),"No hay conexion", LENGTH_SHORT).show();
                                 }
                             }
                         });
             }
         });
-
-
-
         return view;
 
     }
@@ -289,5 +289,4 @@ public class AdminImportExportFragment extends Fragment {
         ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
-
 }

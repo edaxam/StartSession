@@ -27,6 +27,7 @@
     <LinearLayout
         android:id="@+id/ArchivoC"
         android:clickable="true"
+        android:onClick="archivo"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="48dp">

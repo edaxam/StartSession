@@ -1,13 +1,20 @@
 package com.example.startsession;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.UserModel;
+import com.example.startsession.fragments.BottomActionSheetConexion;
+import com.example.startsession.fragments.BottomSheetDialog;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,11 +23,63 @@ import java.io.File;
 public class BottomActionSheet  extends AppCompatActivity {
 
     private UserController userController;
+    public  BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
+    public  BottomSheetDialog bottomSheetDialog = BottomSheetDialog.newInstance();
+    public  int VALOR_RETORNO=1;
+    public  Uri rutaArchivo;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userController = new UserController(getApplicationContext());
+    }
+
+    //Metodo para ejecutar el Dialog
+    /*public void conectando(View view,boolean connected) {
+        if (connected){
+            readBottomDialogFragment.show(getSupportFragmentManager(), "bottomactionsheetconexion");
+            //Toast.makeText(getApplicationContext(),"Si hay conexion",Toast.LENGTH_SHORT).show();
+        }else {
+            bottomSheetDialog.show(getSupportFragmentManager(), "bottomsheetdialog");
+            //Toast.makeText(this,"No hay conexion",Toast.LENGTH_SHORT).show();
+        }
+    }*/
+
+    //Metodo para el boton de archivos
+    public void archivo(View view) {
+        boolean hayConexion=isNetworkAvailable(this);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        startActivityForResult(intent, VALOR_RETORNO);
+        Toast.makeText(getBaseContext(),"archivo",Toast.LENGTH_SHORT).show();
+        if (hayConexion){
+            readBottomDialogFragment.dismiss();
+        }else {
+            bottomSheetDialog.dismiss();
+        }
+    }
+
+    //Metodo que atrapa el objeto que seleccionamos
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && data != null)
+        {
+            //Log.e("TAG", data.getStringExtra("Note"));
+            if(resultCode == RESULT_OK)
+            {
+                rutaArchivo = data.getData(); //obtener el uri content
+                ImportarDatos(rutaArchivo);
+            }
+            if (resultCode == RESULT_CANCELED)
+            {
+
+            }
+        }
+    }
+
+    //Metodo para la verificacion de conexion a internet
+    public boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
     //Metodo para manejar el Archivo lecutura e insersion de datos
@@ -57,7 +116,7 @@ public class BottomActionSheet  extends AppCompatActivity {
 
     }
 
-
+    //Metodo de Lectura de archivo
     public String LeerArchivo(String archivo) {
         //Creamos una variable de tipo StringBuilder para ir recolectando todos los datos
         StringBuilder text = new StringBuilder();
@@ -97,7 +156,6 @@ public class BottomActionSheet  extends AppCompatActivity {
         return text.toString();
     }
 
-
     //Metodo para obtener el nombre del Archivo
     public String getNameFile(Uri rutaArchivo){
 
@@ -114,5 +172,4 @@ public class BottomActionSheet  extends AppCompatActivity {
         //retornamos el nombre en la pocision 0 ya que es el unico valor
         return nombre[0];
     }
-
 }
