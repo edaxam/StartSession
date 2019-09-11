@@ -14,11 +14,25 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.startsession.APIUtils;
 import com.example.startsession.AdminActivity;
 import com.example.startsession.LauncherActivity;
 import com.example.startsession.R;
 import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.UserModel;
+import com.example.startsession.interfaces.UserService;
+import com.example.startsession.ui.admin.UserAdapter;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +59,7 @@ public class LoginFragment extends Fragment {
     private String passwordText;
     private OnFragmentInteractionListener mListener;
     private UserController userController;
+    UserService userService;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -167,6 +182,36 @@ public class LoginFragment extends Fragment {
 
     private UserModel validationLogin(String user, String password){
         // Consumo de WS
+        userService = APIUtils.getUserService();
+        Call<String> call = userService.getSomething();
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.e("onResponse: ", response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("ERROR: ", t.getMessage());
+            }
+        });
+        /*Call<List<UserModel>> call = userService.getUsers();
+
+        call.enqueue(new Callback<List<UserModel>>() {
+            @Override
+            public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
+                if(response.isSuccessful()){
+                     Log.e("Response","" + response.body()) ;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UserModel>> call, Throwable t) {
+
+            }
+
+        });*/
+
 
         userController = new UserController(getContext());
         UserModel loginUser = new UserModel(user,password);
