@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:pv_icon="@drawable/mobility_logo_round"
-        app:pv_alpha="30"
+        app:pv_alpha="70"
         app:pv_color="@color/colorPink"
         app:pv_count="8"
         app:pv_measure="height"
