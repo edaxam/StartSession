@@ -13,18 +13,22 @@
         <activity
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:name=".InstructionsActivity">
+            android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".InstructionsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity android:name=".AdminHomeCard" />
-
         <activity
             android:name=".ReadQRActivity"
             android:screenOrientation="fullSensor" />
-
         <activity
             android:name=".LauncherActivity"
             android:screenOrientation="portrait">
@@ -58,6 +62,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <service
             android:name=".BlockService"
             android:enabled="true"

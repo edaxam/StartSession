@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,15 +19,17 @@ import com.example.startsession.ui.main.SliderAdapter;
 
 public class InstructionsActivity extends AppCompatActivity {
 
-    public static final String SHARED_PREFS="PreferenciasLaunch";
-    public static final String LAUNCH_INSTRUCCIONS="Preferencias";
+    public  static final String SHARED_PREFS="PreferenciasLaunch";
+    public  static final String LAUNCH_INSTRUCCIONS="Preferencias";
     private boolean muestra;
-    public int width;
+    public  int width;
 
     private ViewPager viewPager;
     private SliderAdapter myAdapter;
-    public Button btnNext;
-    public Button btnSkip;
+    public  Button btnNext;
+    public  Button btnSkip;
+    public  Button btnAcction;
+    public  LinearLayout linearLayout;
 
     private LinearLayout dots_layout;
     private ImageView[] dots;
@@ -45,10 +48,13 @@ public class InstructionsActivity extends AppCompatActivity {
         viewPager=(ViewPager)findViewById(R.id.viewpager);
         myAdapter=new SliderAdapter(this);
         viewPager.setAdapter(myAdapter);
+
+        linearLayout=(LinearLayout)findViewById(R.id.slidelinearlayout);
         dots_layout = (LinearLayout)findViewById(R.id.dotsLayout);
 
         btnNext = (Button)findViewById(R.id.btnnext);
         btnSkip = (Button)findViewById(R.id.btnskip);
+        btnAcction = (Button)findViewById(R.id.bntAccion);
 
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,24 +72,59 @@ public class InstructionsActivity extends AppCompatActivity {
 
         crearteDots(0);
 
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
-            public void onPageSelected(int position) {
+            public void onPageSelected(final int position) {
                 crearteDots(position);
+                Handler handler = new Handler();
+
                 if (position==myAdapter.lst_title.length-1){
                     btnNext.setText("START");
                     btnSkip.setVisibility(View.INVISIBLE);
+                }else if (position==0){
+                    btnAcction.setVisibility(View.INVISIBLE);
                 }else{
                     btnNext.setText("NEXT");
                     btnSkip.setVisibility(View.VISIBLE);
                 }
-            }
 
+                if (myAdapter.lst_title[position].equals("Configuracion de Launcher")){
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            //Snackbar.make(viewPager, "Habilitar pantalla pequeña", Snackbar.LENGTH_LONG).show();
+
+                        }
+                    }, 1000);
+                }else {
+                    handler.removeCallbacksAndMessages(null);
+                }
+                if (myAdapter.lst_title[position].equals("Configuración de Pantalla")){
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            //Snackbar.make(viewPager, "Habilitar pantalla pequeña", Snackbar.LENGTH_LONG).show();
+                            startActivityForResult(new Intent(android.provider.Settings.ACTION_DISPLAY_SETTINGS), 0);
+                        }
+                    }, 1000);
+                }else {
+                    handler.removeCallbacksAndMessages(null);
+                }
+                if (myAdapter.lst_title[position].equals("Habilitar Accesibilidad")){
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            //Snackbar.make(viewPager, "Habilitar pantalla pequeña", Snackbar.LENGTH_LONG).show();
+                            startActivityForResult(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS), 0);
+                        }
+                    }, 15000);
+
+                }else {
+                    handler.removeCallbacksAndMessages(null);
+                }
+            }
             @Override
             public void onPageScrollStateChanged(int state) {
 
@@ -127,12 +168,12 @@ public class InstructionsActivity extends AppCompatActivity {
             viewPager.setCurrentItem(next_slide);
         } else {
             loadHome();
-            //guardarDatos(false);
+            guardarDatos(false);
         }
     }
 
     //Metodo para guardar datos de preferencias
-    public void guardarDatos(boolean isFirst){
+    private void guardarDatos(boolean isFirst){
         SharedPreferences preferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(LAUNCH_INSTRUCCIONS,isFirst);
@@ -140,16 +181,17 @@ public class InstructionsActivity extends AppCompatActivity {
     }
 
     //Metodo para cargar datos de preferencias
-    public void cargarDatos(){
+    public boolean cargarDatos(){
         SharedPreferences preferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-        muestra=preferences.getBoolean(LAUNCH_INSTRUCCIONS,true);
+        return muestra=preferences.getBoolean(LAUNCH_INSTRUCCIONS,true);
     }
 
     //Metodo para verificacion de Resolucion
-    public void displayResolution(){
+    private void displayResolution(){
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         width = metrics.widthPixels; // ancho absoluto en pixels
         int height = metrics.heightPixels; // alto absoluto en pixels
     }
+
 }

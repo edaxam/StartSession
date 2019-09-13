@@ -7,37 +7,54 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-    <TextView
-        android:id="@+id/titulo"
+    <LinearLayout
+        android:layout_marginTop="-100dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Titulo"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:layout_marginTop="-100dp"/>
+        android:orientation="vertical"
+        android:gravity="center">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Descripcion"
-        android:textAlignment="center"
-        android:textSize="17sp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:id="@+id/txtdescipcion"/>
+        <TextView
+            android:id="@+id/titulo"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Titulo"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="A>B"
-        android:textAlignment="center"
-        android:textSize="15sp"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/txtruta"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Descripcion"
+            android:textAlignment="center"
+            android:textSize="17sp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/txtdescipcion"/>
 
-    <ImageView
-        android:id="@+id/imagen"
-        android:layout_width="300dp"
-        android:layout_height="300dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A>B"
+            android:textAlignment="center"
+            android:textSize="15sp"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/txtruta"/>
+
+        <ImageView
+            android:layout_marginTop="@dimen/dp_8"
+            android:id="@+id/imagen"
+            android:layout_width="250dp"
+            android:layout_height="250dp"/>
+
+        <Button
+            android:id="@+id/bntAccion"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dp_16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
 
 </LinearLayout>
