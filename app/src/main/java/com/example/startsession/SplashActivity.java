@@ -29,7 +29,6 @@ public class SplashActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             public void run() {
                 //que hacer despues de 10 segundos
-                pulseView.finishPulse();
                 startActivity(intent);
             }
         }, 5000);

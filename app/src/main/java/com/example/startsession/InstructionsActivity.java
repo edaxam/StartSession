@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -19,17 +18,17 @@ import com.example.startsession.ui.main.SliderAdapter;
 
 public class InstructionsActivity extends AppCompatActivity {
 
-    public  static final String SHARED_PREFS="PreferenciasLaunch";
-    public  static final String LAUNCH_INSTRUCCIONS="Preferencias";
+    public static final String SHARED_PREFS = "PreferenciasLaunch";
+    public static final String LAUNCH_INSTRUCCIONS = "Preferencias";
     private boolean muestra;
-    public  int width;
+    public int width;
 
     private ViewPager viewPager;
     private SliderAdapter myAdapter;
-    public  Button btnNext;
-    public  Button btnSkip;
-    public  Button btnAcction;
-    public  LinearLayout linearLayout;
+    public Button btnNext;
+    public Button btnSkip;
+    public Button btnAcction;
+    public LinearLayout linearLayout;
 
     private LinearLayout dots_layout;
     private ImageView[] dots;
@@ -39,22 +38,21 @@ public class InstructionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         cargarDatos();
-        if (!muestra){
+        if (!muestra) {
             loadHome();
         }
 
         setContentView(R.layout.activity_instructions);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        viewPager=(ViewPager)findViewById(R.id.viewpager);
-        myAdapter=new SliderAdapter(this);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        myAdapter = new SliderAdapter(this);
         viewPager.setAdapter(myAdapter);
 
-        linearLayout=(LinearLayout)findViewById(R.id.slidelinearlayout);
-        dots_layout = (LinearLayout)findViewById(R.id.dotsLayout);
+        linearLayout = (LinearLayout) findViewById(R.id.slidelinearlayout);
+        dots_layout = (LinearLayout) findViewById(R.id.dotsLayout);
 
-        btnNext = (Button)findViewById(R.id.btnnext);
-        btnSkip = (Button)findViewById(R.id.btnskip);
-        btnAcction = (Button)findViewById(R.id.bntAccion);
+        btnNext = (Button) findViewById(R.id.btnnext);
+        btnSkip = (Button) findViewById(R.id.btnskip);
 
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +70,6 @@ public class InstructionsActivity extends AppCompatActivity {
 
         crearteDots(0);
 
-
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -81,50 +78,16 @@ public class InstructionsActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(final int position) {
                 crearteDots(position);
-                Handler handler = new Handler();
-
-                if (position==myAdapter.lst_title.length-1){
+                if (position == myAdapter.lst_title.length - 1) {
                     btnNext.setText("START");
                     btnSkip.setVisibility(View.INVISIBLE);
-                }else if (position==0){
-                    btnAcction.setVisibility(View.INVISIBLE);
-                }else{
+                } else {
                     btnNext.setText("NEXT");
                     btnSkip.setVisibility(View.VISIBLE);
                 }
 
-                if (myAdapter.lst_title[position].equals("Configuracion de Launcher")){
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            //Snackbar.make(viewPager, "Habilitar pantalla pequeña", Snackbar.LENGTH_LONG).show();
-
-                        }
-                    }, 1000);
-                }else {
-                    handler.removeCallbacksAndMessages(null);
-                }
-                if (myAdapter.lst_title[position].equals("Configuración de Pantalla")){
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            //Snackbar.make(viewPager, "Habilitar pantalla pequeña", Snackbar.LENGTH_LONG).show();
-                            startActivityForResult(new Intent(android.provider.Settings.ACTION_DISPLAY_SETTINGS), 0);
-                        }
-                    }, 1000);
-                }else {
-                    handler.removeCallbacksAndMessages(null);
-                }
-                if (myAdapter.lst_title[position].equals("Habilitar Accesibilidad")){
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            //Snackbar.make(viewPager, "Habilitar pantalla pequeña", Snackbar.LENGTH_LONG).show();
-                            startActivityForResult(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS), 0);
-                        }
-                    }, 15000);
-
-                }else {
-                    handler.removeCallbacksAndMessages(null);
-                }
             }
+
             @Override
             public void onPageScrollStateChanged(int state) {
 
@@ -138,33 +101,31 @@ public class InstructionsActivity extends AppCompatActivity {
             dots_layout.removeAllViews();
         }
 
-        dots=new ImageView[myAdapter.lst_image.length];
+        dots = new ImageView[myAdapter.lst_image.length];
 
-        for (int i=0;i<dots.length;i++){
-            dots[i]=new ImageView(this);
-            if (i==current_position)
-            {
-                dots[i].setImageDrawable(ContextCompat.getDrawable(this,R.drawable.active_dots));
+        for (int i = 0; i < dots.length; i++) {
+            dots[i] = new ImageView(this);
+            if (i == current_position) {
+                dots[i].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.active_dots));
+            } else {
+                dots[i].setImageDrawable(ContextCompat.getDrawable(this, R.drawable.default_dots));
             }
-            else {
-                dots[i].setImageDrawable(ContextCompat.getDrawable(this,R.drawable.default_dots));
-            }
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(4,0,4,0);
-            dots_layout.addView(dots[i],params);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(4, 0, 4, 0);
+            dots_layout.addView(dots[i], params);
         }
     }
 
     //Metodo para cargar el login
-    private void loadHome(){
-        startActivity(new Intent(this,MainActivity.class));
+    private void loadHome() {
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
     //Metodo para mostrar la siguiente ventana
-    private void loadNextSlide(){
-        int next_slide=viewPager.getCurrentItem()+1;
-        if (next_slide<myAdapter.lst_image.length){
+    private void loadNextSlide() {
+        int next_slide = viewPager.getCurrentItem() + 1;
+        if (next_slide < myAdapter.lst_image.length) {
             viewPager.setCurrentItem(next_slide);
         } else {
             loadHome();
@@ -173,21 +134,21 @@ public class InstructionsActivity extends AppCompatActivity {
     }
 
     //Metodo para guardar datos de preferencias
-    private void guardarDatos(boolean isFirst){
-        SharedPreferences preferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+    private void guardarDatos(boolean isFirst) {
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(LAUNCH_INSTRUCCIONS,isFirst);
+        editor.putBoolean(LAUNCH_INSTRUCCIONS, isFirst);
         editor.apply();
     }
 
     //Metodo para cargar datos de preferencias
-    public boolean cargarDatos(){
-        SharedPreferences preferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-        return muestra=preferences.getBoolean(LAUNCH_INSTRUCCIONS,true);
+    public boolean cargarDatos() {
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        return muestra = preferences.getBoolean(LAUNCH_INSTRUCCIONS, true);
     }
 
     //Metodo para verificacion de Resolucion
-    private void displayResolution(){
+    private void displayResolution() {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         width = metrics.widthPixels; // ancho absoluto en pixels

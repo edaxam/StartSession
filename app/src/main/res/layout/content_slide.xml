@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/dp_16"
     android:gravity="center">
 
     <LinearLayout
@@ -48,9 +49,9 @@
             android:layout_height="250dp"/>
 
         <Button
-            android:id="@+id/bntAccion"
-            android:textColor="@color/white"
-            android:textSize="@dimen/dp_16"
+            android:tag="btnAccion"
+            android:layout_marginTop="10dp"
+            android:padding="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

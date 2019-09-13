@@ -11,14 +11,14 @@
         android:id="@+id/pv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:pv_icon="@mipmap/ic_logo_round"
-        app:pv_alpha="70"
+        app:pv_icon="@drawable/mobility_logo_round"
+        app:pv_alpha="30"
         app:pv_color="@color/colorPink"
-        app:pv_count="5"
+        app:pv_count="8"
         app:pv_measure="height"
         app:pv_icon_width="200dp"
         app:pv_icon_height="200dp"
-        app:pv_spawn_period="300"
+        app:pv_spawn_period="700"
         app:pv_interpolator="@android:anim/linear_interpolator"/>
 
 </RelativeLayout>
