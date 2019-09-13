@@ -19,6 +19,7 @@ import com.example.startsession.AdminActivity;
 import com.example.startsession.LauncherActivity;
 import com.example.startsession.R;
 import com.example.startsession.db.controller.UserController;
+import com.example.startsession.db.model.ResponseServiceModel;
 import com.example.startsession.db.model.UserModel;
 import com.example.startsession.interfaces.UserService;
 import com.example.startsession.ui.admin.UserAdapter;
@@ -28,6 +29,8 @@ import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -108,7 +111,7 @@ public class LoginFragment extends Fragment {
             public void onClick(View v) {
                 userText = user.getText().toString();
                 passwordText = password.getText().toString();
-                Toast.makeText(getActivity(),"Conectando ...",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"Conectando ...",Toast.LENGTH_SHORT).show();
 
                 if(userText.equals("") || passwordText.equals("")){
                     Toast.makeText(getActivity(),"Usuario o contraseña VACIOS",Toast.LENGTH_LONG).show();
@@ -181,44 +184,54 @@ public class LoginFragment extends Fragment {
     }
 
     private UserModel validationLogin(String user, String password){
+        final boolean[] user_ws = {false};
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
         // Consumo de WS
-        userService = APIUtils.getUserService();
-        Call<String> call = userService.getSomething();
-        call.enqueue(new Callback<String>() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.15.39/Mobility-app/api/login_admin/TGVvbmFyZG9kaXNlclBpZXJvZGFWaW5jaQ==/")
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UserService usrService = retrofit.create(UserService.class);
+        Call<ResponseServiceModel> callUser = usrService.getUsers(user,password);
+        callUser.enqueue(new Callback<ResponseServiceModel>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Log.e("onResponse: ", response.body().toString());
+            public void onResponse(Call<ResponseServiceModel> call, Response<ResponseServiceModel> response) {
+                ResponseServiceModel responseServiceModel = response.body();
+                Log.e("onResponse","" + responseServiceModel.getMessage());
+                Toast.makeText(getContext(),responseServiceModel.getMessage(),Toast.LENGTH_LONG).show();
+                if(responseServiceModel.isStatus()) {
+                    user_ws[0] = true;
+                    int size = responseServiceModel.getLog().size();
+                    Log.e("Size:", "" + size);
+                    for (int i = 0; i < responseServiceModel.getLog().size(); i++){
+                        UserModel userWS = responseServiceModel.getLog().get(i);
+                        //UserModel newUser = new UserModel(stringUser,stringMail,stringPassword,stringName,stringLastName,stringMotherLastName,strDate,1,0, admin);
+                        UserModel newUser = new UserModel(userWS.getUser(),userWS.getMail(),userWS.getPassword(),userWS.getName(),userWS.getLast_name(),userWS.getMother_last_name(),userWS.getDate_create(),1,1, userWS.getAdmin());
+                        long id_user = userController.addUser(newUser);
+                        Log.e("ID User",""+ id_user);
+                    }
+                }
+
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.e("ERROR: ", t.getMessage());
+            public void onFailure(Call<ResponseServiceModel> call, Throwable t) {
+                Log.e("Error", t.getMessage());
             }
         });
-        /*Call<List<UserModel>> call = userService.getUsers();
-
-        call.enqueue(new Callback<List<UserModel>>() {
-            @Override
-            public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
-                if(response.isSuccessful()){
-                     Log.e("Response","" + response.body()) ;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<UserModel>> call, Throwable t) {
-
-            }
-
-        });*/
-
 
         userController = new UserController(getContext());
         UserModel loginUser = new UserModel(user,password);
         UserModel id_user = userController.login(loginUser);
 
         // Root Access
-        if(user.equalsIgnoreCase("root") && password.equalsIgnoreCase("Mobility2639")){
+        if((user.equalsIgnoreCase("root") && password.equalsIgnoreCase("Mobility2639")) || user_ws[0] ){
             id_user.setId_user(-1989);
         }
 
