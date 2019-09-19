@@ -91,31 +91,28 @@ public class AdminHomeFragment extends Fragment {
         int num_app = appController.num_app();
         num_apps.setText("" + num_app);
 
-
-        final AdminHomeCard card = new AdminHomeCard();
         view.findViewById(R.id.FrameUser).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                card.Usuarios(view);
+                AdminHomeCard cardU = new AdminHomeCard();
+                cardU.Usuarios(view);
              }
         });
         view.findViewById(R.id.lanzamiento).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                card.Lanzamiento(view);
+                AdminHomeCard cardL = new AdminHomeCard();
+                cardL.Lanzamiento(view);
             }
         });
 
         view.findViewById(R.id.apps).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                card.Apps(view);
+                AdminHomeCard cardA = new AdminHomeCard();
+                cardA.Apps(view);
             }
         });
-
-
-        /*card.Apps((ViewGroup) view);
-        card.Lanzamiento((ViewGroup) view);*/
 
         //Exit Mode Admin
         FloatingActionButton fab = view.findViewById(R.id.fab);

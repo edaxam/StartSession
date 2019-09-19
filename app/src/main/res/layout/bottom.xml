@@ -25,7 +25,6 @@
         android:layout_marginTop="@dimen/md_bottom_sheet_separator_top_margin" />
 
     <LinearLayout
-        android:id="@+id/ArchivoC"
         android:clickable="true"
         android:onClick="archivo"
         android:orientation="horizontal"
