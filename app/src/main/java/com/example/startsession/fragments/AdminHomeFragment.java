@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import com.example.startsession.MainActivity;
 import com.example.startsession.R;
 import com.example.startsession.db.controller.AppController;
 import com.example.startsession.db.controller.UserController;
+import com.github.clans.fab.FloatingActionButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -115,7 +115,7 @@ public class AdminHomeFragment extends Fragment {
         });
 
         //Exit Mode Admin
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+        FloatingActionButton fab = view.findViewById(R.id.exit_mode_admi);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

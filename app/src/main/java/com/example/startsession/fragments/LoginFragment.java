@@ -1,11 +1,14 @@
 package com.example.startsession.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,13 +25,8 @@ import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.ResponseServiceModel;
 import com.example.startsession.db.model.UserModel;
 import com.example.startsession.interfaces.UserService;
-import com.example.startsession.ui.admin.UserAdapter;
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import java.util.List;
-
+import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -36,6 +34,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,6 +54,7 @@ public class LoginFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private CircularProgressButton circularProgressButton;
 
     private EditText user;
     private String userText;
@@ -100,43 +100,67 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+        circularProgressButton = (CircularProgressButton)view.findViewById(R.id.btn_login);
+
         user   = (EditText) view.findViewById(R.id.input_user);
-
-
         password = (EditText) view.findViewById(R.id.input_password);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        circularProgressButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View view) {
                 userText = user.getText().toString();
                 passwordText = password.getText().toString();
                 Toast.makeText(getActivity(),"Conectando ...",Toast.LENGTH_SHORT).show();
-
-                if(userText.equals("") || passwordText.equals("")){
-                    Toast.makeText(getActivity(),"Usuario o contraseña VACIOS",Toast.LENGTH_LONG).show();
-                }
-                else{
-                    UserModel userModel = validationLogin(userText,passwordText);
-                    Log.e("LOGIN","User: " + userText + " Password: " + passwordText + " id_user:" + userModel.getId_user());
-
-                    if( userModel.getId_user() != 0){
-                        if(userModel.getId_user() > 0 && userModel.getAdmin() != 1){
-                            Intent intent = new Intent(getActivity(), LauncherActivity.class);
-                            intent.putExtra("id_user","" + userModel.getId_user());
-                            startActivity(intent);
-                            getActivity().finish();
+                @SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> demoDownload = new AsyncTask<String, String, String>() {
+                    @Override
+                    protected String doInBackground(String... voids) {
+                        String result = "";
+                        try {
+                            Thread.sleep(3000);
+                            if(userText.equals("") || passwordText.equals("")){
+                                result="fail";
+                            }else{
+                                result="done";
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                        else{
-                            Intent intent = new Intent(getActivity(), AdminActivity.class);
-                            startActivity(intent);
-                        }
+                        return result;
+                    }
 
+                    @Override
+                    protected void onPostExecute(String s) {
+                        if (s.equals("done")){
+                            //circularProgressButton.doneLoadingAnimation(Color.parseColor("#333639"), BitmapFactory.decodeResource(getResources(),R.drawable.ic_done_white_48dp));
+                            UserModel userModel = validationLogin(userText,passwordText);
+                            Log.e("LOGIN","User: " + userText + " Password: " + passwordText + " id_user: " + userModel.getId_user());
+
+                            if( userModel.getId_user() != 0){
+                                if(userModel.getId_user() > 0 && userModel.getAdmin() != 1){
+                                    Intent intent = new Intent(getActivity(), LauncherActivity.class);
+                                    intent.putExtra("id_user","" + userModel.getId_user());
+                                    startActivity(intent);
+                                    getActivity().finish();
+                                    circularProgressButton.revertAnimation();
+                                }
+                                else{
+                                    Intent intent = new Intent(getActivity(), AdminActivity.class);
+                                    startActivity(intent);
+                                    circularProgressButton.revertAnimation();
+                                }
+                            }
+                            else{
+                                Toast.makeText(getActivity(),"Usuario o contraseña Incorrectos",Toast.LENGTH_LONG).show();
+                                circularProgressButton.revertAnimation();
+                            }
+                        }else {
+                            Toast.makeText(getActivity(),"Usuario o contraseña VACIOS",Toast.LENGTH_LONG).show();
+                            circularProgressButton.revertAnimation();
+                        }
                     }
-                    else{
-                        Toast.makeText(getActivity(),"Usuario o contraseña Incorrectos",Toast.LENGTH_LONG).show();
-                    }
-                }
+                };
+                circularProgressButton.startAnimation();
+                demoDownload.execute();
 
             }
         });
@@ -192,7 +216,7 @@ public class LoginFragment extends Fragment {
 
         // Consumo de WS
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.15.39/Mobility-app/api/login_admin/TGVvbmFyZG9kaXNlclBpZXJvZGFWaW5jaQ==/")
+                .baseUrl("http://192.168.15.2/Roberto/Mobility-app/api/login_admin/TGVvbmFyZG9kaXNlclBpZXJvZGFWaW5jaQ==/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -217,7 +241,7 @@ public class LoginFragment extends Fragment {
                         Log.e("ID User",""+ id_user);
                     }
                 }
-
+                Toast.makeText(getContext(),"Importacion completa",Toast.LENGTH_LONG).show();
             }
 
             @Override

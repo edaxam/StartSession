@@ -11,8 +11,11 @@ public class BlockService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+//si es apagado
 
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ) {
+            //consula la db
+            //si es encendido
             if ( event.getPackageName().equals("com.android.settings") ){
                 KillApplication("" + event.getPackageName());
             }
