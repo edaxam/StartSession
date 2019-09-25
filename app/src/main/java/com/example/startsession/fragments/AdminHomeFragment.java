@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.startsession.AdminHomeCard;
+import com.example.startsession.BlockService;
 import com.example.startsession.MainActivity;
 import com.example.startsession.R;
 import com.example.startsession.db.controller.AppController;
@@ -121,6 +122,19 @@ public class AdminHomeFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);
+            }
+        });
+
+
+        //Exit APP
+        FloatingActionButton exitFabApp = view.findViewById(R.id.exit_app);
+        exitFabApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentService = new Intent(getContext(), BlockService.class);
+                getActivity().stopService(intentService);
+                getActivity().finish();
+                getActivity().moveTaskToBack(true);
             }
         });
         return view;
