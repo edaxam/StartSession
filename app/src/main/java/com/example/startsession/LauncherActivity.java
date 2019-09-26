@@ -1,6 +1,7 @@
 package com.example.startsession;
 
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -11,9 +12,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -51,7 +55,7 @@ public class LauncherActivity extends AppCompatActivity {
     private UserController userController;
     private boolean saved_app;
     private ConstraintLayout layout;
-
+    private  int REQUEST_ACCES_FINE=0;
 
     @SuppressLint("ResourceType")
     @Override
@@ -62,65 +66,65 @@ public class LauncherActivity extends AppCompatActivity {
         Intent intentService = new Intent(getApplicationContext(), BlockService.class);
         startService(intentService);
         saved_app = false;
-        final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-        final Drawable fondo = wallpaperManager.getDrawable();
-        layout=(ConstraintLayout)findViewById(R.id.appLauncher);
 
-        if(getRotation(getApplicationContext()).equals("horizontal")){ // es horizontal o landscape.
+      /*  if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE},REQUEST_ACCES_FINE);
+        }else{*/
+            WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+            Drawable fondo = wallpaperManager.getDrawable();
+            layout=(ConstraintLayout)findViewById(R.id.appLauncher);
+            layout.setBackground(fondo);
 
-        }
-
-        layout.setBackground(fondo);
-
-        userController = new UserController(this);
-        id_user = userController.getLastUserActive();
+            /*userController = new UserController(this);
+            id_user = userController.getLastUserActive();
 
 
-        if(id_user == 0){
-            Intent intent_login = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent_login);
-            finish();
-        }
+            if(id_user == 0){
+                Intent intent_login = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent_login);
+                finish();
+            }*/
 
-        userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
+            userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
 
-        installedApps = getInstalledApps(id_user);
-        AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
-        userInstalledApps.setAdapter(installedAppAdapter);
+            installedApps = getInstalledApps(id_user);
+            AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
+            userInstalledApps.setAdapter(installedAppAdapter);
 
-        userInstalledApps.setClickable(true);
-        userInstalledApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //UserModel userSelected = listUser.get(position);
+            userInstalledApps.setClickable(true);
+            userInstalledApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //UserModel userSelected = listUser.get(position);
 
-                AppModel appSelected = installedApps.get(i);
-                //Toast.makeText(getApplicationContext(),"Item:" + i + " Flag" + appSelected.getApp_flag_system(),Toast.LENGTH_SHORT).show();
-                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
-                if (launchIntent != null) {
+                    AppModel appSelected = installedApps.get(i);
+                    //Toast.makeText(getApplicationContext(),"Item:" + i + " Flag" + appSelected.getApp_flag_system(),Toast.LENGTH_SHORT).show();
+                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
+                    if (launchIntent != null) {
 
-                    //INSERT user_history
-                    Date date = Calendar.getInstance().getTime();
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-                    String strDate = dateFormat.format(date);
-                    appController = new AppController(getApplicationContext());
-                    int id_config = appController.getIdConfigByUser(id_user);
+                        //INSERT user_history
+                        Date date = Calendar.getInstance().getTime();
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                        String strDate = dateFormat.format(date);
+                        appController = new AppController(getApplicationContext());
+                        int id_config = appController.getIdConfigByUser(id_user);
 
-                    historyController = new HistoryController(getApplicationContext());
-                    HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1);
-                    long id_history = historyController.addHistory(historyModel);
-                    if(id_history == -1){
-                        saved_app = false ;
+                        historyController = new HistoryController(getApplicationContext());
+                        HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1);
+                        long id_history = historyController.addHistory(historyModel);
+                        if(id_history == -1){
+                            saved_app = false ;
+                        }
+                        else{
+                            saved_app = true;
+                        }
+
+                        startActivity(launchIntent);//null pointer check in case package name was not found
+
                     }
-                    else{
-                        saved_app = true;
-                    }
-
-                    startActivity(launchIntent);//null pointer check in case package name was not found
-
                 }
-            }
-        });
+            });
+        //}
 
     }
 
@@ -249,6 +253,22 @@ public class LauncherActivity extends AppCompatActivity {
             case Surface.ROTATION_90:
             default:
                 return "horizontal";
+        }
+    }
+
+    /*public void setBackground(){
+
+    }*/
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode==REQUEST_ACCES_FINE){
+            if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this,"Permiso consedido",Toast.LENGTH_LONG).show();
+            }else {
+                Toast.makeText(this,"Permiso denegado",Toast.LENGTH_LONG).show();
+            }
         }
     }
 

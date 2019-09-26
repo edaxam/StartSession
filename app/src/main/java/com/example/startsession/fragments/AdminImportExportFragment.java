@@ -179,6 +179,7 @@ public class AdminImportExportFragment extends Fragment {
             Log.e("Args: ", "" + args);
 
             File exportDir = new File(Environment.getExternalStorageDirectory(), "/csvs/");
+            Log.e("carpetas",""+exportDir);
             if (!exportDir.exists()) {
                 exportDir.mkdirs();
             }
@@ -187,7 +188,6 @@ public class AdminImportExportFragment extends Fragment {
             Log.e("Tamanio", "" + tables.length);
             for (int j=0; j<tables.length; j++) {
                 File file_user = new File(exportDir,  tables[j]+".csv");
-
                 try {
                     file_user.createNewFile();
                     CSVWriter csvWrite = new CSVWriter(new FileWriter(file_user));
@@ -240,10 +240,10 @@ public class AdminImportExportFragment extends Fragment {
         for (String file : archivos)
         {
             Log.e("Archivos",file);
-            File fileIn = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),file);
-            Log.e("Archivo Ruta",fileIn.toString());
-            Uri u = Uri.fromFile(fileIn);
-            Log.e("ArchivoUri",u.toString());
+            File fileOutn = new File(Environment.getExternalStorageDirectory(),file);
+            Log.e("Archivo Ruta",fileOutn.toString());
+            Uri u = Uri.fromFile(fileOutn);
+            Log.e("ArchivoUri",""+u);
             uris.add(u);
         }
 

@@ -5,20 +5,36 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.startsession.db.controller.UserController;
 import com.gigamole.library.PulseView;
 
 public class SplashActivity extends AppCompatActivity {
 
     private PulseView pulseView;
+    private int id_user;
+    private UserController userController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         pulseView = (PulseView)findViewById(R.id.pv);
 
-        final Intent intent = new Intent (this, InstructionsActivity.class);
+        userController = new UserController(this);
+        id_user = userController.getLastUserActive();
 
-        InstructionsActivity activity = new InstructionsActivity();
+        final Intent intent;
+
+        if(id_user == 0){
+            intent = new Intent (this, InstructionsActivity.class);
+        }else
+        {
+            intent = new Intent (this, LauncherActivity.class);
+        }
+
+
+
+        //InstructionsActivity activity = new InstructionsActivity();
 
 
         pulseView.startPulse();
@@ -33,4 +49,6 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, 5000);
     }
+
+
 }
