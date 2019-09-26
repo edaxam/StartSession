@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.startsession.BuildConfig;
 import com.example.startsession.R;
 import com.example.startsession.db.DBHelper;
 import com.example.startsession.db.controller.AppController;
@@ -240,10 +242,19 @@ public class AdminImportExportFragment extends Fragment {
         for (String file : archivos)
         {
             Log.e("Archivos",file);
-            File fileOutn = new File(Environment.getExternalStorageDirectory(),file);
-            Log.e("Archivo Ruta",fileOutn.toString());
-            Uri u = Uri.fromFile(fileOutn);
+            File fileOut = new File(Environment.getExternalStorageDirectory(),file);
+            Log.e("Archivo Ruta",fileOut.toString());
+           /* Uri u = Uri.fromFile(fileOut);
             Log.e("ArchivoUri",""+u);
+            if (android.os.Build.VERSION.SDK_INT >= 24){
+                // Do something for SDK 24 and above versions
+                String fileUp=u.toString().substring(4,u.toString().length());
+                uris.add(Uri.parse("content"+fileUp));
+            } else{
+                // do something for phones running an SDK before 24
+                uris.add(u);
+            }*/
+            Uri u = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID+".provider",fileOut);
             uris.add(u);
         }
 
