@@ -133,64 +133,7 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
                 pullToRefresh.setRefreshing(false);
             }
         });
-
-
-        final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                return true;
-            }
-        });
-
-
-        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-                try {
-                    View child = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
-
-                    Log.e("Event click", String.valueOf(mGestureDetector.onTouchEvent(motionEvent)));
-                    if (child != null && mGestureDetector.onTouchEvent(motionEvent)) {
-
-                        int position = recyclerView.getChildAdapterPosition(child);
-                        UserModel userSelected = listUser.get(position);
-
-                        Toast.makeText(getContext(),"Cargando ..." ,Toast.LENGTH_SHORT).show();
-                        Log.e("Es admin",""+userSelected.getAdmin());
-                        Intent intent = new Intent(getActivity(), EditUserActivity.class);
-                        intent.putExtra("id_user","" + userSelected.getId_user());
-                        intent.putExtra("user",userSelected.getUser());
-                        intent.putExtra("mail",userSelected.getMail());
-                        intent.putExtra("password",userSelected.getPassword());
-                        intent.putExtra("name",userSelected.getName());
-                        intent.putExtra("last_name",userSelected.getLast_name());
-                        intent.putExtra("mother_last_name",userSelected.getMother_last_name());
-                        intent.putExtra("admin",""+userSelected.getAdmin());
-
-                        startActivity(intent);
-
-                        return true;
-                    }
-
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean b) {
-
-            }
-        });
-
-
+        
         return view ;
     }
 
@@ -250,7 +193,6 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
     public void applyTexts(String mail, String user, String password) {
         Toast.makeText(getContext(), "Guardando ... Mail :  " + mail + " Usuario: " + user + " Contraseña: " + password,Toast.LENGTH_LONG).show();
     }
-
 
 
 }
