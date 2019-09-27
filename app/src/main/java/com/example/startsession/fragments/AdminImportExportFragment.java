@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.startsession.BottomActionSheet;
+import com.example.startsession.BuildConfig;
 import com.example.startsession.R;
 import com.example.startsession.db.DBHelper;
 import com.example.startsession.db.controller.AppController;
@@ -54,14 +55,6 @@ public class AdminImportExportFragment extends Fragment {
     private String mParam2;
 
     private AppController appController;
-
-    public boolean hayConexion;
-    private UserController userController;
-    public BottomActionSheet actionSheet ;
-    public Uri rutaArchivo;
-    private int VALOR_RETORNO = 1;
-    public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
-    public BottomSheetDialog bottomSheetDialog = BottomSheetDialog.newInstance();
 
     private OnFragmentInteractionListener mListener;
 
@@ -101,8 +94,6 @@ public class AdminImportExportFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_admin_import_export, container, false);
-        userController = new UserController(getContext());
-        actionSheet = new BottomActionSheet();
         CardView exportar = (CardView) view.findViewById(R.id.exportar);
         exportar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,29 +122,6 @@ public class AdminImportExportFragment extends Fragment {
             }
         });
 
-        CardView importar =(CardView)view.findViewById(R.id.importa);
-        importar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RxPermissions permissions = new RxPermissions(getActivity());
-                permissions.setLogging(true);
-                permissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .subscribe(new Consumer<Boolean>() {
-                            @Override
-                            public void accept(Boolean aBoolean) throws Exception {
-                                hayConexion=isNetworkAvailable(getContext());
-                                if (hayConexion){
-                                    readBottomDialogFragment.show(getFragmentManager(), "bottomactionsheetconexion");
-                                    //Toast.makeText(getContext(),"Si hay conexion", LENGTH_SHORT).show();
-                                }else {
-                                    bottomSheetDialog.show(getFragmentManager(), "bottomsheetdialog");
-                                    //Toast.makeText(getContext(),"No hay conexion", LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-            }
-        });
         return view;
 
     }
@@ -213,6 +181,7 @@ public class AdminImportExportFragment extends Fragment {
             Log.e("Args: ", "" + args);
 
             File exportDir = new File(Environment.getExternalStorageDirectory(), "/csvs/");
+            Log.e("carpetas",""+exportDir);
             if (!exportDir.exists()) {
                 exportDir.mkdirs();
             }
@@ -221,7 +190,6 @@ public class AdminImportExportFragment extends Fragment {
             Log.e("Tamanio", "" + tables.length);
             for (int j=0; j<tables.length; j++) {
                 File file_user = new File(exportDir,  tables[j]+".csv");
-
                 try {
                     file_user.createNewFile();
                     CSVWriter csvWrite = new CSVWriter(new FileWriter(file_user));
@@ -274,19 +242,23 @@ public class AdminImportExportFragment extends Fragment {
         for (String file : archivos)
         {
             Log.e("Archivos",file);
-            File fileIn = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),file);
-            Log.e("Archivo Ruta",fileIn.toString());
-            Uri u = Uri.fromFile(fileIn);
-            Log.e("ArchivoUri",u.toString());
+            File fileOut = new File(Environment.getExternalStorageDirectory(),file);
+            Log.e("Archivo Ruta",fileOut.toString());
+           /* Uri u = Uri.fromFile(fileOut);
+            Log.e("ArchivoUri",""+u);
+            if (android.os.Build.VERSION.SDK_INT >= 24){
+                // Do something for SDK 24 and above versions
+                String fileUp=u.toString().substring(4,u.toString().length());
+                uris.add(Uri.parse("content"+fileUp));
+            } else{
+                // do something for phones running an SDK before 24
+                uris.add(u);
+            }*/
+            Uri u = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID+".provider",fileOut);
             uris.add(u);
         }
 
         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
         startActivity(Intent.createChooser(emailIntent, "Exportar"));
-    }
-
-    public boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 }

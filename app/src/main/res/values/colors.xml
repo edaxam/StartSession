@@ -3,7 +3,7 @@
     <color name="colorAccentDark">#581FD5</color>
     <color name="colorPrimary">#303030</color>
     <color name="colorPrimaryDark">#212121</color>
-    <color name="colorAccent">#C94F9F</color>
+    <color name="colorAccent">#FF79D1</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorLetter">#F15ABD</color>
 
@@ -13,5 +13,11 @@
     <color name="colorYellow">#ffb300</color>
     <color name="colorGreen">#00bfa5</color>
     <color name="colorPink">#C94F9F</color>
+
+
+    <!-- DOTS -->
+    <color name="active_dots">#FF79D1</color>
+    <color name="inactive_dots">#83878b</color>
+    <color name="white">#fff</color>
 
 </resources>

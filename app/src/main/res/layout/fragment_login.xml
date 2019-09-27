@@ -43,15 +43,23 @@
                 android:hint="@string/input_text_password"/>
         </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
+            android:id="@+id/btn_login"
+            android:text="iniciar sesión"
             android:layout_gravity="bottom|center"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@drawable/ic_done_all"
-            android:tint="@color/colorWhite"/>
+            android:textColor="@android:color/white"
+            android:layout_width="wrap_content"
+            android:padding="5dp"
+            android:textSize="16dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_radius"
+            app:spinning_bar_color="#FFF"
+            app:spinning_bar_padding="6dp"
+            app:initialCornerAngle="27dp"
+            app:spinning_bar_width="4dp"/>
+
         <TextView android:id="@+id/link_signup"
+            android:layout_marginTop="5dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"

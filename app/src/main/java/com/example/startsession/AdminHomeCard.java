@@ -8,6 +8,8 @@ import android.widget.LinearLayout;
 
 import com.example.startsession.R;
 
+import org.jetbrains.annotations.NotNull;
+
 public class AdminHomeCard extends AppCompatActivity {
     private LinearLayout usuCardFront;
     private LinearLayout usuCardBack;
@@ -28,6 +30,8 @@ public class AdminHomeCard extends AppCompatActivity {
     private ScaleAnimation cambioXA = new ScaleAnimation(1, 0, 1, 1, Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
     private ScaleAnimation cambioYA = new ScaleAnimation(0, 1, 1, 1,Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
 
+
+
     public void Usuarios(View view){
         roteUsuarios(view);
         if (usuCardFront.getVisibility() == View.VISIBLE) {
@@ -47,7 +51,7 @@ public class AdminHomeCard extends AppCompatActivity {
         usuCardBack.setVisibility(View.VISIBLE);
     }
 
-    private void roteUsuarios(View view){
+    private void roteUsuarios(@NotNull View view){
         usuCardFront = (LinearLayout) view.findViewById(R.id.UTfront);
         usuCardBack = (LinearLayout) view.findViewById(R.id.UTback);
         showCardF();
@@ -83,6 +87,8 @@ public class AdminHomeCard extends AppCompatActivity {
         });
     }
 
+
+
     public void Lanzamiento(View view){
         roteLanzamientos(view);
         if (lanCardFront.getVisibility() == View.VISIBLE) {
@@ -102,7 +108,7 @@ public class AdminHomeCard extends AppCompatActivity {
         lanCardBack.setVisibility(View.VISIBLE);
     }
 
-    private void roteLanzamientos(View view){
+    private void roteLanzamientos(@NotNull View view){
         lanCardFront = (LinearLayout) view.findViewById(R.id.LTfront);
         lanCardBack = (LinearLayout) view.findViewById(R.id.LTback);
         showCardFL();
@@ -139,6 +145,7 @@ public class AdminHomeCard extends AppCompatActivity {
     }
 
 
+
     public void Apps(View view){
         roteApps(view);
         if (appsCardFront.getVisibility() == View.VISIBLE) {
@@ -158,10 +165,10 @@ public class AdminHomeCard extends AppCompatActivity {
         appsCardBack.setVisibility(View.VISIBLE);
     }
 
-    private void roteApps(View view){
+    private void roteApps(@NotNull View view){
         appsCardFront = (LinearLayout) view.findViewById(R.id.ATfront);
         appsCardBack = (LinearLayout) view.findViewById(R.id.ATback);
-        showCardF();
+        showCardFA();
         cambioXA.setDuration(100);
         cambioYA.setDuration(100);
 
@@ -193,4 +200,5 @@ public class AdminHomeCard extends AppCompatActivity {
             }
         });
     }
+
 }

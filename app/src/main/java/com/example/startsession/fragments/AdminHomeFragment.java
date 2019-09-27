@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +11,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.startsession.AdminHomeCard;
+import com.example.startsession.BlockService;
 import com.example.startsession.MainActivity;
 import com.example.startsession.R;
 import com.example.startsession.db.controller.AppController;
 import com.example.startsession.db.controller.UserController;
+import com.github.clans.fab.FloatingActionButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,39 +92,49 @@ public class AdminHomeFragment extends Fragment {
         int num_app = appController.num_app();
         num_apps.setText("" + num_app);
 
-
-        final AdminHomeCard card = new AdminHomeCard();
         view.findViewById(R.id.FrameUser).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                card.Usuarios(view);
+                AdminHomeCard cardU = new AdminHomeCard();
+                cardU.Usuarios(view);
              }
         });
         view.findViewById(R.id.lanzamiento).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                card.Lanzamiento(view);
+                AdminHomeCard cardL = new AdminHomeCard();
+                cardL.Lanzamiento(view);
             }
         });
 
         view.findViewById(R.id.apps).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                card.Apps(view);
+                AdminHomeCard cardA = new AdminHomeCard();
+                cardA.Apps(view);
             }
         });
 
-
-        /*card.Apps((ViewGroup) view);
-        card.Lanzamiento((ViewGroup) view);*/
-
         //Exit Mode Admin
-        FloatingActionButton fab = view.findViewById(R.id.fab);
+        FloatingActionButton fab = view.findViewById(R.id.exit_mode_admi);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);
+            }
+        });
+
+
+        //Exit APP
+        FloatingActionButton exitFabApp = view.findViewById(R.id.exit_app);
+        exitFabApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentService = new Intent(getContext(), BlockService.class);
+                getActivity().stopService(intentService);
+                getActivity().finish();
+                getActivity().moveTaskToBack(true);
             }
         });
         return view;
