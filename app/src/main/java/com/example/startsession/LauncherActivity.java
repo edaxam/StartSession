@@ -85,6 +85,8 @@ public class LauncherActivity extends AppCompatActivity {
                 finish();
             }*/
 
+            //String titulo = findViewById(R.string.app_name);
+
             userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
 
             installedApps = getInstalledApps(id_user);
@@ -255,10 +257,6 @@ public class LauncherActivity extends AppCompatActivity {
                 return "horizontal";
         }
     }
-
-    /*public void setBackground(){
-
-    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
