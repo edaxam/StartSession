@@ -88,4 +88,14 @@ public class AppController {
         return registos_tablas;
     }
 
+    public String getUserName(int id_user){
+        String user_name="";
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        Cursor c_user = database.rawQuery("SELECT user FROM user WHERE id_user="+id_user,null);
+        if(c_user.moveToFirst()){
+            user_name = c_user.getString(0);
+        }
+        return user_name;
+    }
+
 }

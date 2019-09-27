@@ -32,6 +32,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.startsession.db.controller.AppController;
 import com.example.startsession.db.controller.HistoryController;
@@ -69,69 +70,53 @@ public class LauncherActivity extends AppCompatActivity {
         startService(intentService);
         saved_app = false;
 
-      /*  if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE},REQUEST_ACCES_FINE);
-        }else{*/
-            WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-            Drawable fondo = wallpaperManager.getDrawable();
-            layout=(ConstraintLayout)findViewById(R.id.appLauncher);
-            layout.setBackground(fondo);
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        Drawable fondo = wallpaperManager.getDrawable();
+        layout=(ConstraintLayout)findViewById(R.id.appLauncher);
+        layout.setBackground(fondo);
 
-            /*userController = new UserController(this);
-            id_user = userController.getLastUserActive();
+        String valor = getIntent().getStringExtra("id_user");
+        id_user=Integer.parseInt(valor);
 
+        userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
 
-            if(id_user == 0){
-                Intent intent_login = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent_login);
-                finish();
-            }*/
-            String valor = getIntent().getStringExtra("id_user");
-            Log.e("HOLA",""+valor);
+        installedApps = getInstalledApps(id_user);
+        AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
+        userInstalledApps.setAdapter(installedAppAdapter);
 
-            id_user=Integer.parseInt(valor);
+        //Log.e("HOLA",""+appController.getUserName(id_user));
+        getSupportActionBar().setTitle("Mobility App Lock - "+appController.getUserName(id_user));
 
-            userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
+        userInstalledApps.setClickable(true);
+        userInstalledApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AppModel appSelected = installedApps.get(i);
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
+                if (launchIntent != null) {
 
-            installedApps = getInstalledApps(id_user);
-            AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
-            userInstalledApps.setAdapter(installedAppAdapter);
+                    //INSERT user_history
+                    Date date = Calendar.getInstance().getTime();
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                    String strDate = dateFormat.format(date);
+                    appController = new AppController(getApplicationContext());
+                    int id_config = appController.getIdConfigByUser(id_user);
 
-            userInstalledApps.setClickable(true);
-            userInstalledApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    //UserModel userSelected = listUser.get(position);
-
-                    AppModel appSelected = installedApps.get(i);
-                    //Toast.makeText(getApplicationContext(),"Item:" + i + " Flag" + appSelected.getApp_flag_system(),Toast.LENGTH_SHORT).show();
-                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
-                    if (launchIntent != null) {
-
-                        //INSERT user_history
-                        Date date = Calendar.getInstance().getTime();
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-                        String strDate = dateFormat.format(date);
-                        appController = new AppController(getApplicationContext());
-                        int id_config = appController.getIdConfigByUser(id_user);
-
-                        historyController = new HistoryController(getApplicationContext());
-                        HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1);
-                        long id_history = historyController.addHistory(historyModel);
-                        if(id_history == -1){
-                            saved_app = false ;
-                        }
-                        else{
-                            saved_app = true;
-                        }
-
-                        startActivity(launchIntent);//null pointer check in case package name was not found
-
+                    historyController = new HistoryController(getApplicationContext());
+                    HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1);
+                    long id_history = historyController.addHistory(historyModel);
+                    if(id_history == -1){
+                        saved_app = false ;
                     }
-                }
-            });
-        //}
+                    else{
+                        saved_app = true;
+                    }
 
+                    startActivity(launchIntent);//null pointer check in case package name was not found
+
+                }
+            }
+        });
     }
 
 
@@ -140,23 +125,16 @@ public class LauncherActivity extends AppCompatActivity {
         List<PackageInfo> packs = getPackageManager().getInstalledPackages(0);
         for (int i = 0; i < packs.size(); i++) {
             PackageInfo p = packs.get(i);
-            //if ((isSystemPackage(p) == false)) {
             String appName = p.applicationInfo.loadLabel(getPackageManager()).toString();
             String appFlag = p.applicationInfo.packageName;
 
             Drawable icon = p.applicationInfo.loadIcon(getPackageManager());
-
             appController = new AppController(getApplicationContext());
             AppModel loginUser = new AppModel(id_user,appFlag);
-
             boolean app_active = appController.appActiveByUser(loginUser);
-
             if(app_active){
                 res.add(new AppModel(appName, appFlag, icon));
             }
-
-
-            //}
         }
         return res;
     }
