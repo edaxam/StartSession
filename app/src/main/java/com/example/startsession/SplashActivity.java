@@ -36,14 +36,14 @@ public class SplashActivity extends AppCompatActivity {
     public void loadActivity(){
         userController = new UserController(this);
         id_user = userController.getLastUserActive();
-        Log.e("HOLA",""+id_user);
+        //Log.e("HOLA",""+id_user);
         if(id_user == 0){
             Intent intent = new Intent (SplashActivity.this, InstructionsActivity.class);
             startActivity(intent);
         }else{
             Intent intent = new Intent (SplashActivity.this, LauncherActivity.class);
             intent.putExtra("id_user",""+id_user);
-            Log.e("HOLA",""+id_user);
+            //Log.e("HOLA",""+id_user);
             startActivity(intent);
         }
 
