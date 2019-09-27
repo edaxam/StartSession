@@ -7,6 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".LauncherActivity">
 
+    <!--android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorPrimaryDark">
+
+    </android.support.v7.widget.Toolbar-->
+
     <LinearLayout
         android:padding="10dp"
         android:layout_width="match_parent"

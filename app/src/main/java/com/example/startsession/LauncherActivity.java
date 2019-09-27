@@ -19,6 +19,8 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -84,8 +86,10 @@ public class LauncherActivity extends AppCompatActivity {
                 startActivity(intent_login);
                 finish();
             }*/
+            String valor = getIntent().getStringExtra("id_user");
+            Log.e("HOLA",""+valor);
 
-            //String titulo = findViewById(R.string.app_name);
+            id_user=Integer.parseInt(valor);
 
             userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
 
@@ -182,6 +186,7 @@ public class LauncherActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);
                 input.setLayoutParams(lp);
+                input.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 alertDialog.setView(input);
                 //alertDialog.setIcon(R.drawable.key);
 
@@ -193,7 +198,7 @@ public class LauncherActivity extends AppCompatActivity {
                                 userController = new UserController(getApplicationContext());
                                 String password_by_id_user = userController.getPasswordByIdUser(id_user);
 
-                                if(password_by_id_user.equals(password_input)||password_input.equals("Mobility2639")){
+                                if(password_by_id_user.equals(password_input)|| password_input.equals("Mobility2639")){
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     finish();
