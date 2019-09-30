@@ -90,7 +90,7 @@ public class AppController {
 
     public Cursor exportTablaConfig(){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor registos_tablas = db.rawQuery("SELECT user.mail,user_config_launcher.app_name,user_config_launcher.app_flag_system,user_config_launcher.app_image,user_config_launcher.active,user_config_launcher.status_ws FROM user INNER JOIN user_config_launcher using (id_user);" , null);
+        Cursor registos_tablas = db.rawQuery("SELECT user.mail,user_config_launcher.app_name,user_config_launcher.app_flag_system,user_config_launcher.app_image,user_config_launcher.date_create,user_config_launcher.active,user_config_launcher.status_ws FROM user INNER JOIN user_config_launcher using (id_user);" , null);
         Log.e("Consulta: ", "" + registos_tablas);
         return registos_tablas;
     }
@@ -108,7 +108,7 @@ public class AppController {
     public int getUserId(String email){
         int user_name=0;
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        Cursor c_user = database.rawQuery("SELECT id_user FROM user WHERE mail="+email,null);
+        Cursor c_user = database.rawQuery("SELECT id_user FROM user WHERE mail='"+email+"';",null);
         if(c_user.moveToFirst()){
             user_name = c_user.getInt(0);
         }

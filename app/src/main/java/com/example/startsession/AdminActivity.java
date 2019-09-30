@@ -6,7 +6,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.util.List;
 
 import io.reactivex.functions.Consumer;
 
@@ -79,6 +83,7 @@ public class AdminActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_admin);
         Intent intentService = new Intent(this, BlockService.class);
         stopService(intentService);
+        appController = new AppController(getApplicationContext());
         userController = new UserController(getApplicationContext());
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -369,20 +374,23 @@ public class AdminActivity extends AppCompatActivity implements
     //Metodo para importar configuraciones de usuarios
     public  void importConfigLauncher(String configLaunchLeidos, String tabla){
         String [] datos = configLaunchLeidos.split("\",\"|\"\"|\"");
-        int columna=6;
+        int columna=7;
         int fila=(datos.length-1)/columna;
 
         String [][] datosM=vectorToMatrix(fila,columna,datos);
 
         for (int i=1;i<datosM.length;i++)
         {
-            Log.e("Datos",""+datosM[i][0]+" "+datosM[i][1]+" "+datosM[i][2]+" "+datosM[i][3]+" "+datosM[i][4]+" "+datosM[i][5]);
+            Log.e("Datos",""+datosM[i][0]+" "+datosM[i][1]+" "+datosM[i][2]+" "+datosM[i][3]+" "+datosM[i][5]+" "+datosM[i][6]);
             int id_user=appController.getUserId(datosM[i][0]);
+            String app_icon_string = getIcon(datosM[i][2]);
+
             if (id_user<=0){
                 Toast.makeText(this, "Error No se encontro el usuario", Toast.LENGTH_LONG).show();
             }else{
-                AppModel newApp = new AppModel(id_user,datosM[i][1],datosM[i][2],datosM[i][3]);
-                int []status={Integer.parseInt(datosM[i][4]), Integer.parseInt(datosM[i][5])};
+                                //new AppModel(id_user, app_name, app_flag_system, app_icon_string);
+                AppModel newApp = new AppModel(id_user,datosM[i][1],datosM[i][2],app_icon_string);
+                int []status={Integer.parseInt(datosM[i][5]), Integer.parseInt(datosM[i][6])};
                 long id_app=appController.importConfigApps(newApp,status);
 
                 if (id_app==-1){
@@ -392,5 +400,23 @@ public class AdminActivity extends AppCompatActivity implements
                 }
             }
         }
+    }
+
+    public String getIcon(String packageFlag){
+        String icon="";
+        List<ApplicationInfo> packages;
+        PackageManager pm;
+        pm = getPackageManager();
+        packages = pm.getInstalledApplications(0);
+
+        for (ApplicationInfo packageInfo : packages){
+            if (packageInfo.packageName.equals(packageFlag)){
+                Drawable ico = packageInfo.loadIcon(getPackageManager());
+                icon=ico.toString();
+                break;
+            }
+        }
+
+        return icon;
     }
 }
