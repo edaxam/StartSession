@@ -14,10 +14,13 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -31,6 +34,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -59,6 +63,7 @@ public class LauncherActivity extends AppCompatActivity {
     private boolean saved_app;
     private ConstraintLayout layout;
     private  int REQUEST_ACCES_FINE=0;
+    private ProgressBar progressBar;
 
     @SuppressLint("ResourceType")
     @Override
@@ -69,6 +74,10 @@ public class LauncherActivity extends AppCompatActivity {
         Intent intentService = new Intent(getApplicationContext(), BlockService.class);
         startService(intentService);
         saved_app = false;
+
+        progressBar = (ProgressBar)findViewById(R.id.progressLaunch);
+
+        new AsyncTasck_load().execute();
 
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         Drawable fondo = wallpaperManager.getDrawable();
@@ -250,6 +259,39 @@ public class LauncherActivity extends AppCompatActivity {
             }else {
                 Toast.makeText(this,"Permiso denegado",Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    public class AsyncTasck_load extends AsyncTask<Void,Integer,Void>{
+        int progress;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress=0;
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            while (progress<100){
+                progress++;
+                publishProgress(progress);
+                SystemClock.sleep(20);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            progressBar.setProgress(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressBar.setVisibility(View.GONE);
         }
     }
 
