@@ -21,10 +21,15 @@ import com.example.startsession.APIUtils;
 import com.example.startsession.AdminActivity;
 import com.example.startsession.LauncherActivity;
 import com.example.startsession.R;
+import com.example.startsession.db.controller.AppController;
 import com.example.startsession.db.controller.UserController;
+import com.example.startsession.db.model.AppModel;
 import com.example.startsession.db.model.ResponseServiceModel;
 import com.example.startsession.db.model.UserModel;
 import com.example.startsession.interfaces.UserService;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import okhttp3.OkHttpClient;
@@ -62,6 +67,7 @@ public class LoginFragment extends Fragment {
     private String passwordText;
     private OnFragmentInteractionListener mListener;
     private UserController userController;
+    private AppController appController;
     UserService userService;
 
     public LoginFragment() {
@@ -238,10 +244,25 @@ public class LoginFragment extends Fragment {
                         //UserModel newUser = new UserModel(stringUser,stringMail,stringPassword,stringName,stringLastName,stringMotherLastName,strDate,1,0, admin);
                         UserModel newUser = new UserModel(userWS.getUser(),userWS.getMail(),userWS.getPassword(),userWS.getName(),userWS.getLast_name(),userWS.getMother_last_name(),userWS.getDate_create(),1,1, userWS.getAdmin());
                         long id_user = userController.addUser(newUser);
-                        Log.e("ID User",""+ id_user);
+                        Log.e("ID User",""+ id_user+" "+userWS.getConf());
+                        String json =userWS.getConf().replace("[","");
+                        String jsonC =json.replace("]","");
+                        try {
+                            JSONObject conf = new JSONObject(jsonC);
+
+                            Log.e("JSON", conf.toString());
+                            for (int j=0;j<conf.length();j++){
+                                //AppModel AppWS = (AppModel) conf.get(String.valueOf(j));
+                                AppModel newApp = new AppModel((int) id_user,conf.get("app_name").toString(),conf.get("app_flag_system").toString(),conf.get("app_icon_string").toString(),conf.getInt("active"),conf.getInt("status_ws"));
+                                long id_conf = appController.importConfigAppsWS(newApp);
+                                Log.e("ID Configuracion",""+id_conf);
+                                Toast.makeText(getContext(),"Importacion completa",Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Throwable t) {
+                            Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
+                        }
                     }
                 }
-                Toast.makeText(getContext(),"Importacion completa",Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -251,6 +272,7 @@ public class LoginFragment extends Fragment {
         });
 
         userController = new UserController(getContext());
+        appController = new AppController(getContext());
         UserModel loginUser = new UserModel(user,password);
         UserModel id_user = userController.login(loginUser);
 

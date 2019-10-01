@@ -1,5 +1,7 @@
 package com.example.startsession.db.model;
 
+import java.util.List;
+
 public class UserModel {
     private String user;
     private String password;
@@ -16,6 +18,8 @@ public class UserModel {
     private Integer admin;
 
     private long id_user;
+
+    private String conf;
 
     //CONSTRUCTOR PARA INSERTAR
     public UserModel(String user, String mail, String password,  String name, String last_name, String mother_last_name, String date_create, Integer active, Integer status_ws, Integer admin) {
@@ -107,6 +111,14 @@ public class UserModel {
         return date_create;
     }
 
+    public String getConf() {
+        return conf;
+    }
+
+    public void setConf(String conf) {
+        this.conf = conf;
+    }
+
     public void setDate_create(String date_create) {
         this.date_create = date_create;
     }
@@ -138,6 +150,7 @@ public class UserModel {
     public Integer getAdmin() { return admin; }
 
     public void setAdmin(Integer admin) { this.admin = admin; }
+
 
     @Override
     public String toString() {

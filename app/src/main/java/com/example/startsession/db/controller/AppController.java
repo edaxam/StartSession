@@ -127,4 +127,16 @@ public class AppController {
         return db.insert(TABLE_NAME,null,valuesInsert);
     }
 
+    public long importConfigAppsWS(AppModel app_conf){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues valuesInsert = new ContentValues();
+        valuesInsert.put("id_user",app_conf.getId_user());
+        valuesInsert.put("app_name",app_conf.getApp_name());
+        valuesInsert.put("app_flag_system",app_conf.getApp_flag_system());
+        valuesInsert.put("app_image",app_conf.getApp_icon_string());
+        valuesInsert.put("active",app_conf.getActive());
+        valuesInsert.put("status_ws",app_conf.getStatus_ws());
+        return db.insert(TABLE_NAME,null,valuesInsert);
+    }
+
 }
