@@ -6,6 +6,7 @@ public class ResponseServiceModel {
     private boolean status ;
     private String message ;
     private List<UserModel> log ;
+    //private List<AppModel> conf ;
 
     public ResponseServiceModel() {
     }
@@ -39,4 +40,5 @@ public class ResponseServiceModel {
     public void setLog(List<UserModel> log) {
         this.log = log;
     }
+
 }

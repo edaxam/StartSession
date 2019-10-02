@@ -88,4 +88,55 @@ public class AppController {
         return registos_tablas;
     }
 
+    public Cursor exportTablaConfig(){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor registos_tablas = db.rawQuery("SELECT user.mail,user_config_launcher.app_name,user_config_launcher.app_flag_system,user_config_launcher.app_image,user_config_launcher.date_create,user_config_launcher.active,user_config_launcher.status_ws FROM user INNER JOIN user_config_launcher using (id_user);" , null);
+        Log.e("Consulta: ", "" + registos_tablas);
+        return registos_tablas;
+    }
+
+    public String getUserName(int id_user){
+        String user_name="";
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        Cursor c_user = database.rawQuery("SELECT user FROM user WHERE id_user="+id_user,null);
+        if(c_user.moveToFirst()){
+            user_name = c_user.getString(0);
+        }
+        return user_name;
+    }
+
+    public int getUserId(String email){
+        int user_name=0;
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        Cursor c_user = database.rawQuery("SELECT id_user FROM user WHERE mail='"+email+"';",null);
+        if(c_user.moveToFirst()){
+            user_name = c_user.getInt(0);
+        }
+        return user_name;
+    }
+
+    public long importConfigApps(AppModel app_conf,int[]status){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues valuesInsert = new ContentValues();
+        valuesInsert.put("id_user",app_conf.getId_user());
+        valuesInsert.put("app_name",app_conf.getApp_name());
+        valuesInsert.put("app_flag_system",app_conf.getApp_flag_system());
+        valuesInsert.put("app_image",app_conf.getApp_icon_string());
+        valuesInsert.put("active",status[0]);
+        valuesInsert.put("status_ws",status[1]);
+        return db.insert(TABLE_NAME,null,valuesInsert);
+    }
+
+    public long importConfigAppsWS(AppModel app_conf){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues valuesInsert = new ContentValues();
+        valuesInsert.put("id_user",app_conf.getId_user());
+        valuesInsert.put("app_name",app_conf.getApp_name());
+        valuesInsert.put("app_flag_system",app_conf.getApp_flag_system());
+        valuesInsert.put("app_image",app_conf.getApp_icon_string());
+        valuesInsert.put("active",app_conf.getActive());
+        valuesInsert.put("status_ws",app_conf.getStatus_ws());
+        return db.insert(TABLE_NAME,null,valuesInsert);
+    }
+
 }

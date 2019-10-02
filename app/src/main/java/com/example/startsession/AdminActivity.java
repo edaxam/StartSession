@@ -6,7 +6,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,7 +28,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.startsession.db.controller.AppController;
 import com.example.startsession.db.controller.UserController;
+import com.example.startsession.db.model.AppModel;
 import com.example.startsession.db.model.UserModel;
 import com.example.startsession.fragments.AdminConfigAppFragment;
 import com.example.startsession.fragments.AdminConfigUserFragment;
@@ -40,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.util.List;
 
 import io.reactivex.functions.Consumer;
 
@@ -62,6 +68,7 @@ public class AdminActivity extends AppCompatActivity implements
 
     //bottom
     private UserController userController;
+    private AppController appController;
     public Uri rutaArchivo;
     private int VALOR_RETORNO = 1;
     private  int REQUEST_ACCES_FINE=0;
@@ -76,6 +83,7 @@ public class AdminActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_admin);
         Intent intentService = new Intent(this, BlockService.class);
         stopService(intentService);
+        appController = new AppController(getApplicationContext());
         userController = new UserController(getApplicationContext());
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -188,7 +196,6 @@ public class AdminActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-
     //Metodo de ejecucio
     public  void Importacion(View view){
         if (ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
@@ -208,8 +215,8 @@ public class AdminActivity extends AppCompatActivity implements
     public void archivo(View view) {
         boolean hayConexion=isNetworkAvailable(this);
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        startActivityForResult(intent, VALOR_RETORNO);
+        intent.setType("text/*");
+        startActivityForResult(Intent.createChooser(intent, "Importación"), VALOR_RETORNO);
         if (hayConexion){
             readBottomDialogFragment.dismiss();
         }else {
@@ -266,7 +273,7 @@ public class AdminActivity extends AppCompatActivity implements
 
         if (tabla.equals("user")){
             importUsers(datosLeidos,tabla);
-        }else {
+        }else if(tabla.equals("user_config_launcher")){
             importConfigLauncher(datosLeidos,tabla);
         }
 
@@ -357,8 +364,7 @@ public class AdminActivity extends AppCompatActivity implements
 
             if(id_user == -1){
                 Toast.makeText(this, "Error al importar. Intenta de nuevo", Toast.LENGTH_LONG).show();
-            }
-            else{
+            }else{
                 Toast.makeText(this, "Guardado correctamente", Toast.LENGTH_LONG).show();
             }
         }
@@ -368,19 +374,49 @@ public class AdminActivity extends AppCompatActivity implements
     //Metodo para importar configuraciones de usuarios
     public  void importConfigLauncher(String configLaunchLeidos, String tabla){
         String [] datos = configLaunchLeidos.split("\",\"|\"\"|\"");
-        int columna=8;
+        int columna=7;
         int fila=(datos.length-1)/columna;
 
         String [][] datosM=vectorToMatrix(fila,columna,datos);
 
         for (int i=1;i<datosM.length;i++)
         {
-/*
-            if(id_user == -1){
-                Toast.makeText(this, "Error al importar. Intenta de nuevo", Toast.LENGTH_LONG).show();
+            Log.e("Datos",""+datosM[i][0]+" "+datosM[i][1]+" "+datosM[i][2]+" "+datosM[i][3]+" "+datosM[i][5]+" "+datosM[i][6]);
+            int id_user=appController.getUserId(datosM[i][0]);
+            String app_icon_string = getIcon(datosM[i][2]);
+
+            if (id_user<=0){
+                Toast.makeText(this, "Error No se encontro el usuario", Toast.LENGTH_LONG).show();
             }else{
-                Toast.makeText(this, "Guardado correctamente", Toast.LENGTH_LONG).show();
-            }*/
+                                //new AppModel(id_user, app_name, app_flag_system, app_icon_string);
+                AppModel newApp = new AppModel(id_user,datosM[i][1],datosM[i][2],app_icon_string);
+                int []status={Integer.parseInt(datosM[i][5]), Integer.parseInt(datosM[i][6])};
+                long id_app=appController.importConfigApps(newApp,status);
+
+                if (id_app==-1){
+                    Toast.makeText(this, "Error al importar. Intenta de nuevo", Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(this, "Guardado correctamente", Toast.LENGTH_LONG).show();
+                }
+            }
         }
+    }
+
+    public String getIcon(String packageFlag){
+        String icon="";
+        List<ApplicationInfo> packages;
+        PackageManager pm;
+        pm = getPackageManager();
+        packages = pm.getInstalledApplications(0);
+
+        for (ApplicationInfo packageInfo : packages){
+            if (packageInfo.packageName.equals(packageFlag)){
+                Drawable ico = packageInfo.loadIcon(getPackageManager());
+                icon=ico.toString();
+                break;
+            }
+        }
+
+        return icon;
     }
 }

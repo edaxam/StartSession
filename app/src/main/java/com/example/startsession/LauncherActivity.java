@@ -14,11 +14,16 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +34,9 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.startsession.db.controller.AppController;
 import com.example.startsession.db.controller.HistoryController;
@@ -56,6 +63,7 @@ public class LauncherActivity extends AppCompatActivity {
     private boolean saved_app;
     private ConstraintLayout layout;
     private  int REQUEST_ACCES_FINE=0;
+    private ProgressBar progressBar;
 
     @SuppressLint("ResourceType")
     @Override
@@ -67,67 +75,57 @@ public class LauncherActivity extends AppCompatActivity {
         startService(intentService);
         saved_app = false;
 
-      /*  if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_PHONE_STATE},REQUEST_ACCES_FINE);
-        }else{*/
-            WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
-            Drawable fondo = wallpaperManager.getDrawable();
-            layout=(ConstraintLayout)findViewById(R.id.appLauncher);
-            layout.setBackground(fondo);
+        progressBar = (ProgressBar)findViewById(R.id.progressLaunch);
 
-            /*userController = new UserController(this);
-            id_user = userController.getLastUserActive();
+        new AsyncTasck_load().execute();
 
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
+        Drawable fondo = wallpaperManager.getDrawable();
+        layout=(ConstraintLayout)findViewById(R.id.appLauncher);
+        layout.setBackground(fondo);
 
-            if(id_user == 0){
-                Intent intent_login = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent_login);
-                finish();
-            }*/
+        String valor = getIntent().getStringExtra("id_user");
+        id_user=Integer.parseInt(valor);
 
-            //String titulo = findViewById(R.string.app_name);
+        userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
 
-            userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
+        installedApps = getInstalledApps(id_user);
+        AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
+        userInstalledApps.setAdapter(installedAppAdapter);
 
-            installedApps = getInstalledApps(id_user);
-            AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
-            userInstalledApps.setAdapter(installedAppAdapter);
+        //Log.e("HOLA",""+appController.getUserName(id_user));
+        getSupportActionBar().setTitle("Mobility App Lock - "+appController.getUserName(id_user));
 
-            userInstalledApps.setClickable(true);
-            userInstalledApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    //UserModel userSelected = listUser.get(position);
+        userInstalledApps.setClickable(true);
+        userInstalledApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AppModel appSelected = installedApps.get(i);
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
+                if (launchIntent != null) {
 
-                    AppModel appSelected = installedApps.get(i);
-                    //Toast.makeText(getApplicationContext(),"Item:" + i + " Flag" + appSelected.getApp_flag_system(),Toast.LENGTH_SHORT).show();
-                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
-                    if (launchIntent != null) {
+                    //INSERT user_history
+                    Date date = Calendar.getInstance().getTime();
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                    String strDate = dateFormat.format(date);
+                    appController = new AppController(getApplicationContext());
+                    int id_config = appController.getIdConfigByUser(id_user);
 
-                        //INSERT user_history
-                        Date date = Calendar.getInstance().getTime();
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-                        String strDate = dateFormat.format(date);
-                        appController = new AppController(getApplicationContext());
-                        int id_config = appController.getIdConfigByUser(id_user);
-
-                        historyController = new HistoryController(getApplicationContext());
-                        HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1);
-                        long id_history = historyController.addHistory(historyModel);
-                        if(id_history == -1){
-                            saved_app = false ;
-                        }
-                        else{
-                            saved_app = true;
-                        }
-
-                        startActivity(launchIntent);//null pointer check in case package name was not found
-
+                    historyController = new HistoryController(getApplicationContext());
+                    HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1);
+                    long id_history = historyController.addHistory(historyModel);
+                    if(id_history == -1){
+                        saved_app = false ;
                     }
-                }
-            });
-        //}
+                    else{
+                        saved_app = true;
+                    }
 
+                    startActivity(launchIntent);//null pointer check in case package name was not found
+
+                }
+            }
+        });
     }
 
 
@@ -136,23 +134,16 @@ public class LauncherActivity extends AppCompatActivity {
         List<PackageInfo> packs = getPackageManager().getInstalledPackages(0);
         for (int i = 0; i < packs.size(); i++) {
             PackageInfo p = packs.get(i);
-            //if ((isSystemPackage(p) == false)) {
             String appName = p.applicationInfo.loadLabel(getPackageManager()).toString();
             String appFlag = p.applicationInfo.packageName;
 
             Drawable icon = p.applicationInfo.loadIcon(getPackageManager());
-
             appController = new AppController(getApplicationContext());
             AppModel loginUser = new AppModel(id_user,appFlag);
-
             boolean app_active = appController.appActiveByUser(loginUser);
-
             if(app_active){
                 res.add(new AppModel(appName, appFlag, icon));
             }
-
-
-            //}
         }
         return res;
     }
@@ -182,6 +173,7 @@ public class LauncherActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);
                 input.setLayoutParams(lp);
+                input.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 alertDialog.setView(input);
                 //alertDialog.setIcon(R.drawable.key);
 
@@ -193,7 +185,7 @@ public class LauncherActivity extends AppCompatActivity {
                                 userController = new UserController(getApplicationContext());
                                 String password_by_id_user = userController.getPasswordByIdUser(id_user);
 
-                                if(password_by_id_user.equals(password_input)||password_input.equals("Mobility2639")){
+                                if(password_by_id_user.equals(password_input)|| password_input.equals("Mobility2639")){
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     finish();
@@ -267,6 +259,39 @@ public class LauncherActivity extends AppCompatActivity {
             }else {
                 Toast.makeText(this,"Permiso denegado",Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    public class AsyncTasck_load extends AsyncTask<Void,Integer,Void>{
+        int progress;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress=0;
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            while (progress<100){
+                progress++;
+                publishProgress(progress);
+                SystemClock.sleep(20);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            progressBar.setProgress(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressBar.setVisibility(View.GONE);
         }
     }
 
