@@ -8,8 +8,8 @@ public class AppModel {
     private String app_name;
     private String app_flag_system;
     private String app_icon_string;
-    private Integer active;
-    private Integer status_ws;
+    private int active;
+    private int status_ws;
     Drawable app_icon;
     CheckBox app_check;
     boolean checked;
@@ -34,7 +34,7 @@ public class AppModel {
         this.app_icon_string = app_icon_string;
     }
 
-    public AppModel(String app_name, String app_flag_system, String app_icon_string,Integer active, Integer status_ws){
+    public AppModel(String app_name, String app_flag_system, String app_icon_string,int active, int status_ws){
         this.app_name=app_name;
         this.app_flag_system=app_flag_system;
         this.app_icon_string=app_icon_string;
@@ -42,7 +42,7 @@ public class AppModel {
         this.status_ws=status_ws;
     }
 
-    public AppModel(int id_user,String app_name, String app_flag_system, String app_icon_string,Integer active, Integer status_ws){
+    public AppModel(int id_user,String app_name, String app_flag_system, String app_icon_string,int active, int status_ws){
         this.id_user=id_user;
         this.app_name=app_name;
         this.app_flag_system=app_flag_system;
@@ -112,19 +112,19 @@ public class AppModel {
         this.app_icon_string = app_icon_string;
     }
 
-    public Integer getActive() {
+    public int getActive() {
         return active;
     }
 
-    public void setActive(Integer active) {
+    public void setActive(int active) {
         this.active = active;
     }
 
-    public Integer getStatus_ws() {
+    public int getStatus_ws() {
         return status_ws;
     }
 
-    public void setStatus_ws(Integer status_ws) {
+    public void setStatus_ws(int status_ws) {
         this.status_ws = status_ws;
     }
 }

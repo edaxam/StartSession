@@ -3,8 +3,11 @@ package com.example.startsession.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,6 +33,8 @@ import com.example.startsession.interfaces.UserService;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
+
+import java.util.List;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import okhttp3.OkHttpClient;
@@ -253,13 +258,15 @@ public class LoginFragment extends Fragment {
                             Log.e("JSON", conf.toString());
                             for (int j=0;j<conf.length();j++){
                                 //AppModel AppWS = (AppModel) conf.get(String.valueOf(j));
-                                AppModel newApp = new AppModel((int) id_user,conf.get("app_name").toString(),conf.get("app_flag_system").toString(),conf.get("app_icon_string").toString(),conf.getInt("active"),conf.getInt("status_ws"));
+                                String app_name=getNameApp(conf.getString("app_flag_system").toLowerCase());
+                                String icon=getIcon(conf.getString("app_flag_system").toLowerCase());
+                                AppModel newApp = new AppModel((int) id_user,app_name,conf.get("app_flag_system").toString().toLowerCase(),icon,conf.getInt("active"),conf.getInt("status_ws"));
                                 long id_conf = appController.importConfigAppsWS(newApp);
                                 Log.e("ID Configuracion",""+id_conf);
-                                Toast.makeText(getContext(),"Importacion completa",Toast.LENGTH_LONG).show();
                             }
+                            Toast.makeText(getContext(),"Importacion completa",Toast.LENGTH_LONG).show();
                         } catch (Throwable t) {
-                            Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
+                            Log.e("LOG", "Could not parse malformed JSON: \"" + json + "\"");
                         }
                     }
                 }
@@ -282,5 +289,37 @@ public class LoginFragment extends Fragment {
         }
 
         return id_user;
+    }
+
+    public String getIcon(String packageFlag){
+        String icon="";
+        List<ApplicationInfo> packages;
+        PackageManager pm;
+        pm = getActivity().getPackageManager();
+        packages = pm.getInstalledApplications(0);
+
+        for (ApplicationInfo packageInfo : packages){
+            if (packageInfo.packageName.equals(packageFlag)){
+                Drawable ico = packageInfo.loadIcon(getActivity().getPackageManager());
+                icon=ico.toString();
+                break;
+            }
+        }
+
+        return icon;
+    }
+
+    public String getNameApp(String packageFlag){
+        String appName="";
+        List<ApplicationInfo> packages;
+        PackageManager pm;
+        pm = getActivity().getPackageManager();
+        packages = pm.getInstalledApplications(0);
+        for (ApplicationInfo packageInfo : packages){
+            if (packageInfo.packageName.equals(packageFlag)){
+                appName = packageInfo.loadIcon(getActivity().getPackageManager()).toString();
+            }
+        }
+        return appName;
     }
 }
