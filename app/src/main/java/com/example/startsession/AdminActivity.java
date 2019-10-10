@@ -2,12 +2,10 @@ package com.example.startsession;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -19,13 +17,11 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.startsession.db.controller.AppController;
@@ -37,9 +33,7 @@ import com.example.startsession.fragments.AdminConfigUserFragment;
 import com.example.startsession.fragments.AdminHomeFragment;
 import com.example.startsession.fragments.AdminImportExportFragment;
 import com.example.startsession.fragments.BottomActionSheetConexion;
-import com.example.startsession.fragments.BottomSheetDialog;
 import com.example.startsession.ui.admin.ViewPagerAdapter;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -47,13 +41,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.util.List;
 
-import io.reactivex.functions.Consumer;
-
 public class AdminActivity extends AppCompatActivity implements
         AdminHomeFragment.OnFragmentInteractionListener,
         AdminImportExportFragment.OnFragmentInteractionListener,
         AdminConfigUserFragment.OnFragmentInteractionListener, AdminConfigAppFragment.OnFragmentInteractionListener{
-    BottomNavigationView bottomNavigationView;
+        BottomNavigationView bottomNavigationView;
 
     //This is our viewPager
     private ViewPager viewPager;
@@ -73,7 +65,6 @@ public class AdminActivity extends AppCompatActivity implements
     private int VALOR_RETORNO = 1;
     private  int REQUEST_ACCES_FINE=0;
     public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
-    public BottomSheetDialog bottomSheetDialog = BottomSheetDialog.newInstance();
 
     @SuppressLint("WrongConstant")
     @Override
@@ -206,8 +197,7 @@ public class AdminActivity extends AppCompatActivity implements
             readBottomDialogFragment.show(getSupportFragmentManager(), "bottomactionsheetconexion");
             //Toast.makeText(getContext(),"Si hay conexion", LENGTH_SHORT).show();
         }else {
-            bottomSheetDialog.show(getSupportFragmentManager(), "bottomsheetdialog");
-            //Toast.makeText(getContext(),"No hay conexion", LENGTH_SHORT).show();
+            archivo(view);
         }
     }
 
@@ -219,8 +209,6 @@ public class AdminActivity extends AppCompatActivity implements
         startActivityForResult(Intent.createChooser(intent, "Importación"), VALOR_RETORNO);
         if (hayConexion){
             readBottomDialogFragment.dismiss();
-        }else {
-            bottomSheetDialog.dismiss();
         }
     }
 
