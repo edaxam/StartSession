@@ -5,13 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.startsession.APIUtils;
 import com.example.startsession.AdminActivity;
 import com.example.startsession.LauncherActivity;
 import com.example.startsession.R;
@@ -30,7 +26,6 @@ import com.example.startsession.db.model.AppModel;
 import com.example.startsession.db.model.ResponseServiceModel;
 import com.example.startsession.db.model.UserModel;
 import com.example.startsession.interfaces.UserService;
-import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
@@ -248,25 +243,28 @@ public class LoginFragment extends Fragment {
                         UserModel userWS = responseServiceModel.getLog().get(i);
                         //UserModel newUser = new UserModel(stringUser,stringMail,stringPassword,stringName,stringLastName,stringMotherLastName,strDate,1,0, admin);
                         UserModel newUser = new UserModel(userWS.getUser(),userWS.getMail(),userWS.getPassword(),userWS.getName(),userWS.getLast_name(),userWS.getMother_last_name(),userWS.getDate_create(),1,1, userWS.getAdmin());
-                        long id_user = userController.addUser(newUser);
-                        Log.e("ID User",""+ id_user+" "+userWS.getConf());
-                        String json =userWS.getConf().replace("[","");
-                        String jsonC =json.replace("]","");
-                        try {
-                            JSONObject conf = new JSONObject(jsonC);
+                        boolean existe = userController.searchUser(newUser);
+                        if (!existe){
+                            long id_user = userController.addUser(newUser);
+                            Log.e("ID User",""+ id_user+" "+userWS.getConf());
+                            String json =userWS.getConf().replace("[","");
+                            String jsonC =json.replace("]","");
+                            try {
+                                JSONObject conf = new JSONObject(jsonC);
 
-                            Log.e("JSON", conf.toString());
-                            for (int j=0;j<conf.length();j++){
-                                //AppModel AppWS = (AppModel) conf.get(String.valueOf(j));
-                                String app_name=getNameApp(conf.getString("app_flag_system").toLowerCase());
-                                String icon=getIcon(conf.getString("app_flag_system").toLowerCase());
-                                AppModel newApp = new AppModel((int) id_user,app_name,conf.get("app_flag_system").toString().toLowerCase(),icon,conf.getInt("active"),conf.getInt("status_ws"));
-                                long id_conf = appController.importConfigAppsWS(newApp);
-                                Log.e("ID Configuracion",""+id_conf);
+                                Log.e("JSON", conf.toString());
+                                for (int j=0;j<conf.length();j++){
+                                    //AppModel AppWS = (AppModel) conf.get(String.valueOf(j));
+                                    String app_name=getNameApp(conf.getString("app_flag_system").toLowerCase());
+                                    String icon=getIcon(conf.getString("app_flag_system").toLowerCase());
+                                    AppModel newApp = new AppModel((int) id_user,app_name,conf.get("app_flag_system").toString().toLowerCase(),icon,conf.getInt("active"),conf.getInt("status_ws"));
+                                    long id_conf = appController.importConfigAppsWS(newApp);
+                                    Log.e("ID Configuracion",""+id_conf);
+                                }
+                                Toast.makeText(getContext(),"Importacion completa",Toast.LENGTH_LONG).show();
+                            } catch (Throwable t) {
+                                Log.e("LOG", "Could not parse malformed JSON: \"" + json + "\"");
                             }
-                            Toast.makeText(getContext(),"Importacion completa",Toast.LENGTH_LONG).show();
-                        } catch (Throwable t) {
-                            Log.e("LOG", "Could not parse malformed JSON: \"" + json + "\"");
                         }
                     }
                 }

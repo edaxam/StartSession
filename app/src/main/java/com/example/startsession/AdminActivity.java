@@ -348,12 +348,15 @@ public class AdminActivity extends AppCompatActivity implements
         for (int i=1;i<datosM.length;i++)
         {
             UserModel newUser = new UserModel(datosM[i][2],datosM[i][1],datosM[i][3],datosM[i][4],datosM[i][5],datosM[i][6],datosM[i][8],Integer.parseInt(datosM[i][7]),Integer.parseInt(datosM[i][9]),Integer.parseInt(datosM[i][10]));
-            long id_user = userController.importTables(tabla,newUser);
+            boolean existe=userController.searchUser(newUser);
+            if (!existe){
+                long id_user = userController.importTables(tabla,newUser);
 
-            if(id_user == -1){
-                Toast.makeText(this, "Error al importar. Intenta de nuevo", Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(this, "Guardado correctamente", Toast.LENGTH_LONG).show();
+                if(id_user == -1){
+                    Toast.makeText(this, "Error al importar. Intenta de nuevo", Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(this, "Guardado correctamente", Toast.LENGTH_LONG).show();
+                }
             }
         }
 
