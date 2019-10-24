@@ -19,6 +19,8 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v7.app.AppCompatActivity;
@@ -167,14 +169,18 @@ public class LauncherActivity extends AppCompatActivity {
                 AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                 alertDialog.setTitle("CONTRASEÑA");
                 alertDialog.setMessage("Por favor ingresa tu contraseña");
-
-                final EditText input = new EditText(this);
+                final TextInputEditText input = new TextInputEditText(this);
+                final TextInputLayout cajaPassword = new TextInputLayout(this);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);
                 input.setLayoutParams(lp);
                 input.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                alertDialog.setView(input);
+                input.setHint("Contraseña");
+                cajaPassword.setPasswordVisibilityToggleEnabled(true);
+                cajaPassword.setLayoutParams(lp);
+                cajaPassword.addView(input,lp);
+                alertDialog.setView(cajaPassword);
                 //alertDialog.setIcon(R.drawable.key);
 
                 alertDialog.setPositiveButton("Confirmar",

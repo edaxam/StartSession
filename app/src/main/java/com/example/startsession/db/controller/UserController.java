@@ -262,11 +262,23 @@ public class UserController {
         boolean existUser=false;
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] parametros={user.getUser(),user.getMail(),user.getName()};
+        String[] campos = {String.valueOf(user.getId_user())};
 
-        Cursor cursor = db.rawQuery("SELECT * FROM user WHERE user='"+user.getUser()+"' AND mail='"+user.getMail()+"' AND name='"+user.getName()+"';",null);
-        if(cursor != null){
-            existUser=true;
+        try {
+            //Cursor cursor = db.rawQuery("SELECT * FROM user WHERE user='"+user.getUser()+"' AND mail='"+user.getMail()+"' AND name='"+user.getName()+"';",null);
+            Cursor cursor =db.query(TABLE_NAME,campos,"user=? AND mail=? AND name=?",parametros,null,null,null);
+            cursor.moveToFirst();
+            Log.e("Existe",cursor.getString(0));
+            cursor.close();
+            if(cursor != null){
+                existUser=true;
+            }
+        }catch (Exception e){
+            Log.e("Error","No se encontro");
         }
+
+
 
         return existUser;
     }

@@ -70,6 +70,12 @@ public class LoginFragment extends Fragment {
     private AppController appController;
     UserService userService;
 
+    public static final String SHARED_PREFS = "Preferencias";
+    public static final String CLOUD_PREFS = "EsPrimera";
+    public static final String CLOUD_USER = "user";
+    public static final String CLOUD_PASSWORD = "password";
+    private boolean muestra;
+
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -108,6 +114,10 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         circularProgressButton = (CircularProgressButton)view.findViewById(R.id.btn_login);
 
+        if (!muestra){
+
+        }
+
         user   = (EditText) view.findViewById(R.id.input_user);
         password = (EditText) view.findViewById(R.id.input_password);
 
@@ -117,7 +127,7 @@ public class LoginFragment extends Fragment {
                 userText = user.getText().toString();
                 passwordText = password.getText().toString();
                 Toast.makeText(getActivity(),"Conectando ...",Toast.LENGTH_SHORT).show();
-                @SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> demoDownload = new AsyncTask<String, String, String>() {
+                @SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> inicioSession = new AsyncTask<String, String, String>() {
                     @Override
                     protected String doInBackground(String... voids) {
                         String result = "";
@@ -152,6 +162,7 @@ public class LoginFragment extends Fragment {
                                 else{
                                     Intent intent = new Intent(getActivity(), AdminActivity.class);
                                     startActivity(intent);
+                                    getActivity().finish();
                                     circularProgressButton.revertAnimation();
                                 }
                             }
@@ -166,8 +177,7 @@ public class LoginFragment extends Fragment {
                     }
                 };
                 circularProgressButton.startAnimation();
-                demoDownload.execute();
-
+                inicioSession.execute();
             }
         });
 
@@ -213,68 +223,8 @@ public class LoginFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private UserModel validationLogin(String user, String password){
-        final boolean[] user_ws = {false};
-
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-
-        // Consumo de WS
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.15.2/Roberto/Mobility-app/api/login_admin/TGVvbmFyZG9kaXNlclBpZXJvZGFWaW5jaQ==/")
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        UserService usrService = retrofit.create(UserService.class);
-        Call<ResponseServiceModel> callUser = usrService.getUsers(user,password);
-        callUser.enqueue(new Callback<ResponseServiceModel>() {
-            @Override
-            public void onResponse(Call<ResponseServiceModel> call, Response<ResponseServiceModel> response) {
-                ResponseServiceModel responseServiceModel = response.body();
-                Log.e("onResponse","" + responseServiceModel.getMessage());
-                Toast.makeText(getContext(),responseServiceModel.getMessage(),Toast.LENGTH_LONG).show();
-                if(responseServiceModel.isStatus()) {
-                    user_ws[0] = true;
-                    int size = responseServiceModel.getLog().size();
-                    Log.e("Size:", "" + size);
-                    for (int i = 0; i < responseServiceModel.getLog().size(); i++){
-                        UserModel userWS = responseServiceModel.getLog().get(i);
-                        //UserModel newUser = new UserModel(stringUser,stringMail,stringPassword,stringName,stringLastName,stringMotherLastName,strDate,1,0, admin);
-                        UserModel newUser = new UserModel(userWS.getUser(),userWS.getMail(),userWS.getPassword(),userWS.getName(),userWS.getLast_name(),userWS.getMother_last_name(),userWS.getDate_create(),1,1, userWS.getAdmin());
-                        boolean existe = userController.searchUser(newUser);
-                        if (!existe){
-                            long id_user = userController.addUser(newUser);
-                            Log.e("ID User",""+ id_user+" "+userWS.getConf());
-                            String json =userWS.getConf().replace("[","");
-                            String jsonC =json.replace("]","");
-                            try {
-                                JSONObject conf = new JSONObject(jsonC);
-
-                                Log.e("JSON", conf.toString());
-                                for (int j=0;j<conf.length();j++){
-                                    //AppModel AppWS = (AppModel) conf.get(String.valueOf(j));
-                                    String app_name=getNameApp(conf.getString("app_flag_system").toLowerCase());
-                                    String icon=getIcon(conf.getString("app_flag_system").toLowerCase());
-                                    AppModel newApp = new AppModel((int) id_user,app_name,conf.get("app_flag_system").toString().toLowerCase(),icon,conf.getInt("active"),conf.getInt("status_ws"));
-                                    long id_conf = appController.importConfigAppsWS(newApp);
-                                    Log.e("ID Configuracion",""+id_conf);
-                                }
-                                Toast.makeText(getContext(),"Importacion completa",Toast.LENGTH_LONG).show();
-                            } catch (Throwable t) {
-                                Log.e("LOG", "Could not parse malformed JSON: \"" + json + "\"");
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseServiceModel> call, Throwable t) {
-                Log.e("Error", t.getMessage());
-            }
-        });
+    public UserModel validationLogin(String user, String password){
+        boolean[]user_ws = ConectedCloud(user,password,getContext());
 
         userController = new UserController(getContext());
         appController = new AppController(getContext());
@@ -282,7 +232,7 @@ public class LoginFragment extends Fragment {
         UserModel id_user = userController.login(loginUser);
 
         // Root Access
-        if((user.equalsIgnoreCase("root") && password.equalsIgnoreCase("Mobility2639")) || user_ws[0] ){
+        if((user.equalsIgnoreCase("root") && password.equals("Mobility2639")) || user_ws[0] ){
             id_user.setId_user(-1989);
         }
 
@@ -320,4 +270,70 @@ public class LoginFragment extends Fragment {
         }
         return appName;
     }
+
+    public boolean[] ConectedCloud(String user, String password, final Context context){
+        final boolean[] user_ws = {false};
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+        // Consumo de WS
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://mobility.sysandweb.com/api/login_admin/TGVvbmFyZG9kaXNlclBpZXJvZGFWaW5jaQ==/")
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UserService usrService = retrofit.create(UserService.class);
+        Call<ResponseServiceModel> callUser = usrService.getUsers(user,password);
+        callUser.enqueue(new Callback<ResponseServiceModel>() {
+            @Override
+            public void onResponse(Call<ResponseServiceModel> call, Response<ResponseServiceModel> response) {
+                ResponseServiceModel responseServiceModel = response.body();
+                Log.e("onResponse","" + responseServiceModel.getMessage());
+                Toast.makeText(context,responseServiceModel.getMessage(),Toast.LENGTH_LONG).show();
+                if(responseServiceModel.isStatus()) {
+                    user_ws[0] = true;
+                    int size = responseServiceModel.getLog().size();
+                    Log.e("Size:", "" + size);
+                    for (int i = 0; i < responseServiceModel.getLog().size(); i++){
+                        UserModel userWS = responseServiceModel.getLog().get(i);
+                        //UserModel newUser = new UserModel(stringUser,stringMail,stringPassword,stringName,stringLastName,stringMotherLastName,strDate,1,0, admin);
+                        UserModel newUser = new UserModel(userWS.getUser(),userWS.getMail(),userWS.getPassword(),userWS.getName(),userWS.getLast_name(),userWS.getMother_last_name(),userWS.getDate_create(),1,1, userWS.getAdmin());
+                         boolean existe = userController.searchUser(newUser);
+                        if (!existe){
+                            long id_user = userController.addUser(newUser);
+                            Log.e("ID User",""+ id_user+" "+userWS.getConf());
+                            String json =userWS.getConf().replace("[","");
+                            String jsonC =json.replace("]","");
+                            try {
+                                JSONObject conf = new JSONObject(jsonC);
+
+                                Log.e("JSON", conf.toString());
+                                for (int j=0;j<conf.length();j++){
+                                    //AppModel AppWS = (AppModel) conf.get(String.valueOf(j));
+                                    String app_name=getNameApp(conf.getString("app_flag_system").toLowerCase());
+                                    String icon=getIcon(conf.getString("app_flag_system").toLowerCase());
+                                    AppModel newApp = new AppModel((int) id_user,app_name,conf.get("app_flag_system").toString().toLowerCase(),icon,conf.getInt("active"),conf.getInt("status_ws"));
+                                    long id_conf = appController.importConfigAppsWS(newApp);
+                                    Log.e("ID Configuracion",""+id_conf);
+                                }
+                                Toast.makeText(context,"Importacion completa",Toast.LENGTH_LONG).show();
+                            } catch (Throwable t) {
+                                Log.e("LOG", "Could not parse malformed JSON: \"" + json + "\"");
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseServiceModel> call, Throwable t) {
+                Log.e("Error", t.getMessage());
+            }
+        });
+        return user_ws ;
+    }
+
 }

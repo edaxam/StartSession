@@ -18,8 +18,8 @@ import com.example.startsession.ui.main.SliderAdapter;
 
 public class InstructionsActivity extends AppCompatActivity {
 
-    public static final String SHARED_PREFS = "PreferenciasLaunch";
-    public static final String LAUNCH_INSTRUCCIONS = "Preferencias";
+    public static final String SHARED_PREFS = "Preferencias";
+    public static final String LAUNCH_INSTRUCCIONS = "Instrucciones";
     private boolean muestra;
     public int width;
 
