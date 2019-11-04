@@ -29,7 +29,7 @@ public class UserController {
         valuesInsert.put("last_name", user.getLast_name());
         valuesInsert.put("mother_last_name", user.getMother_last_name());
         valuesInsert.put("active", 1);
-        valuesInsert.put("status_ws", 1);
+        valuesInsert.put("status_ws", 0);
         valuesInsert.put("admin", user.getAdmin());
         return db.insert(TABLE_NAME, null, valuesInsert);
     }
@@ -251,35 +251,34 @@ public class UserController {
         valuesInsert.put("mother_last_name",userModel.getMother_last_name());
         valuesInsert.put("active",userModel.getActive());
         valuesInsert.put("date_create",userModel.getDate_create());
-        valuesInsert.put("status_ws",userModel.getStatus_ws());
+        valuesInsert.put("status_ws",1);
         valuesInsert.put("admin",userModel.getAdmin());
 
         return db.insert(tabla,null,valuesInsert);
     }
 
-
     public boolean searchUser(UserModel user) {
         boolean existUser=false;
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] parametros={user.getUser(),user.getMail(),user.getName()};
-        String[] campos = {String.valueOf(user.getId_user())};
 
-        try {
-            //Cursor cursor = db.rawQuery("SELECT * FROM user WHERE user='"+user.getUser()+"' AND mail='"+user.getMail()+"' AND name='"+user.getName()+"';",null);
-            Cursor cursor =db.query(TABLE_NAME,campos,"user=? AND mail=? AND name=?",parametros,null,null,null);
-            cursor.moveToFirst();
-            Log.e("Existe",cursor.getString(0));
-            cursor.close();
-            if(cursor != null){
-                existUser=true;
-            }
-        }catch (Exception e){
-            Log.e("Error","No se encontro");
+        Cursor cursor =db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE  user='"+user.getUser()+"' AND mail='"+user.getMail()+"' AND name= '"+user.getName()+"';",null);
+        cursor.moveToFirst();
+        if(cursor != null){
+            existUser=true;
         }
-
-
+        //cursor.close();
 
         return existUser;
+    }
+
+    public int getUserId(String email){
+        int user_name=0;
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        Cursor c_user = database.rawQuery("SELECT id_user FROM user WHERE mail='"+email+"';",null);
+        if(c_user.moveToFirst()){
+            user_name = c_user.getInt(0);
+        }
+        return user_name;
     }
 }

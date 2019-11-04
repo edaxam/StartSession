@@ -198,9 +198,7 @@ public class AdminImportExportFragment extends Fragment {
                     Cursor curCSV = null;
                     if (tables[j].equals("user_config_launcher")){
                         curCSV = appController.exportTablaConfig();
-                        //Log.e("HOLA","user");
                     }else{
-                        //Log.e("HOLA","tablas");
                         curCSV = appController.exportTablas(tables[j]);
                     }
                     csvWrite.writeNext(curCSV.getColumnNames());

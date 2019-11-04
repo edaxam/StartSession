@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import com.example.startsession.db.DBHelper;
@@ -83,14 +82,14 @@ public class AppController {
 
     public Cursor exportTablas(String tabla){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor registos_tablas = db.rawQuery("SELECT * FROM " + tabla , null);
+        Cursor registos_tablas = db.rawQuery("SELECT * FROM " + tabla +";", null);
         Log.e("Consulta: ", "" + registos_tablas);
         return registos_tablas;
     }
 
     public Cursor exportTablaConfig(){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor registos_tablas = db.rawQuery("SELECT user.mail,user_config_launcher.app_name,user_config_launcher.app_flag_system,user_config_launcher.app_image,user_config_launcher.date_create,user_config_launcher.active,user_config_launcher.status_ws FROM user INNER JOIN user_config_launcher using (id_user);" , null);
+        Cursor registos_tablas = db.rawQuery("SELECT user.mail,user_config_launcher.app_name,user_config_launcher.app_flag_system,user_config_launcher.app_image,user_config_launcher.date_create,user_config_launcher.active,user_config_launcher.status_ws FROM user INNER JOIN user_config_launcher USING (id_user) WHERE user_config_launcher.status_ws <> 1 ;" , null);
         Log.e("Consulta: ", "" + registos_tablas);
         return registos_tablas;
     }
@@ -105,16 +104,6 @@ public class AppController {
         return user_name;
     }
 
-    public int getUserId(String email){
-        int user_name=0;
-        SQLiteDatabase database = dbHelper.getReadableDatabase();
-        Cursor c_user = database.rawQuery("SELECT id_user FROM user WHERE mail='"+email+"';",null);
-        if(c_user.moveToFirst()){
-            user_name = c_user.getInt(0);
-        }
-        return user_name;
-    }
-
     public long importConfigApps(AppModel app_conf,int[]status){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues valuesInsert = new ContentValues();
@@ -123,7 +112,7 @@ public class AppController {
         valuesInsert.put("app_flag_system",app_conf.getApp_flag_system());
         valuesInsert.put("app_image",app_conf.getApp_icon_string());
         valuesInsert.put("active",status[0]);
-        valuesInsert.put("status_ws",status[1]);
+        valuesInsert.put("status_ws",1);
         return db.insert(TABLE_NAME,null,valuesInsert);
     }
 
@@ -135,8 +124,26 @@ public class AppController {
         valuesInsert.put("app_flag_system",app_conf.getApp_flag_system());
         valuesInsert.put("app_image",app_conf.getApp_icon_string());
         valuesInsert.put("active",app_conf.getActive());
-        valuesInsert.put("status_ws",app_conf.getStatus_ws());
+        valuesInsert.put("status_ws",1);
         return db.insert(TABLE_NAME,null,valuesInsert);
     }
 
+    public void clearDatabases(String nameTable){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        db.delete(nameTable,null,null);
+    }
+
+    public Cursor searchAppConfigByID(int id_user) {
+        Cursor cursor=null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String query="SELECT app_name,app_flag_system,date_create,active,status_ws FROM "+TABLE_NAME+" WHERE id_user="+id_user;
+        try {
+            cursor=db.rawQuery(query,null);
+            cursor.moveToNext();
+        } catch (Exception e) {
+            Log.e("Error APPS",e.getMessage());
+        }
+
+        return cursor;
+    }
 }

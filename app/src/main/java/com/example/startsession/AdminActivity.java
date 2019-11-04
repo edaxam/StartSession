@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -29,7 +30,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -44,10 +44,13 @@ import com.example.startsession.fragments.AdminHomeFragment;
 import com.example.startsession.fragments.AdminImportExportFragment;
 import com.example.startsession.fragments.BottomActionSheetConexion;
 import com.example.startsession.fragments.LoginFragment;
+import com.example.startsession.interfaces.SendInfo;
 import com.example.startsession.interfaces.UserService;
 import com.example.startsession.ui.admin.ViewPagerAdapter;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -55,6 +58,7 @@ import java.io.File;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,9 +67,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AdminActivity extends AppCompatActivity implements
-        AdminHomeFragment.OnFragmentInteractionListener,
-        AdminImportExportFragment.OnFragmentInteractionListener,
-        AdminConfigUserFragment.OnFragmentInteractionListener, AdminConfigAppFragment.OnFragmentInteractionListener {
+    AdminHomeFragment.OnFragmentInteractionListener,
+    AdminImportExportFragment.OnFragmentInteractionListener,
+    AdminConfigUserFragment.OnFragmentInteractionListener, AdminConfigAppFragment.OnFragmentInteractionListener {
     BottomNavigationView bottomNavigationView;
 
     //This is our viewPager
@@ -165,7 +169,6 @@ public class AdminActivity extends AppCompatActivity implements
         setupViewPager(viewPager);
     }
 
-
     //El Back Press retorna a la dashboard
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -176,7 +179,6 @@ public class AdminActivity extends AppCompatActivity implements
         }
         return super.onKeyDown(keyCode, event);
     }
-
 
     @Override
     public void onFragmentInteraction(Uri uri){
@@ -223,76 +225,6 @@ public class AdminActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-
-    public void Nube(View view){
-
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Importación de la nube").setMessage("Ingrese usuario y contraseña para poder cargar los datos");
-
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-
-        final TextInputEditText usuario = new TextInputEditText(this);
-        final TextInputLayout cajaUser = new TextInputLayout(this);
-        final TextInputEditText password = new TextInputEditText(this);
-        final TextInputLayout cajaPassword = new TextInputLayout(this);
-
-        usuario.setLayoutParams(lp);
-        usuario.setInputType(InputType.TYPE_CLASS_TEXT);
-        usuario.setHint("Usario");
-        cajaUser.setLayoutParams(lp);
-        cajaUser.addView(usuario,lp);
-
-        layout.addView(cajaUser);
-
-        password.setHint("Contraseña");
-        password.setInputType(InputType.TYPE_CLASS_TEXT| InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        cajaPassword.setPasswordVisibilityToggleEnabled(true);
-        cajaPassword.setLayoutParams(lp);
-        cajaPassword.addView(password,lp);
-
-        //dialog.setView(cajaPassword);
-        layout.addView(cajaPassword);
-        dialog.setView(layout);
-
-        dialog.setPositiveButton("Conectar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-
-                String password_text = password.getText().toString();
-                String user_text = usuario.getText().toString();
-
-                cargarDatos();
-
-                if (user_text.equals("")|| password_text.equals("")){
-                    Toast.makeText(getApplication(),"Alguno de los campos esta vacio",Toast.LENGTH_SHORT).show();
-                }else {
-                    if (isFirts){
-                        LoadDataCloud(user_text,password_text);
-                    }else {
-                        String [] datos=cargarUserPassword();
-                        if (datos[0].equals(user_text)&& datos[1].equals(password_text)){
-                            LoadDataCloud(user_text,password_text);
-                        }else {
-                            UreSecure(user_text,password_text);
-                        }
-                    }
-                }
-                readBottomDialogFragment.dismiss();
-            }
-        });
-
-        dialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                dialog.cancel();
-            }
-        });
-        dialog.show();
-    }
-
     //Metodo de ejecucio
     public  void Importacion(View view){
         if (ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
@@ -301,14 +233,21 @@ public class AdminActivity extends AppCompatActivity implements
         boolean hayConexion=isNetworkAvailable(this);
         if (hayConexion){
             readBottomDialogFragment.show(getSupportFragmentManager(), "bottomactionsheetconexion");
-            //Toast.makeText(getContext(),"Si hay conexion", LENGTH_SHORT).show();
         }else {
-            archivo(view);
+            Archivo(view);
         }
     }
 
+    //Metodo para el boton de nube
+    public void Nube(View view){
+        cargarDatos();
+        String [] datos=cargarUserPassword();
+        LoadDataCloud(datos[0],datos[1]);
+        readBottomDialogFragment.dismiss();
+    }
+
     //Metodo para el boton de archivos
-    public void archivo(View view) {
+    public void Archivo(View view) {
         boolean hayConexion=isNetworkAvailable(this);
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("text/*");
@@ -476,10 +415,9 @@ public class AdminActivity extends AppCompatActivity implements
 
         String [][] datosM=vectorToMatrix(fila,columna,datos);
 
-        for (int i=1;i<datosM.length;i++)
-        {
+        for (int i=1;i<datosM.length;i++){
             Log.e("Datos",""+datosM[i][0]+" "+datosM[i][1]+" "+datosM[i][2]+" "+datosM[i][3]+" "+datosM[i][5]+" "+datosM[i][6]);
-            int id_user=appController.getUserId(datosM[i][0]);
+            int id_user=userController.getUserId(datosM[i][0]);
             String app_icon_string = getIcon(datosM[i][2]);
 
             if (id_user<=0){
@@ -499,6 +437,7 @@ public class AdminActivity extends AppCompatActivity implements
         }
     }
 
+    //Metodo para optener el nombre del Drawable de la app
     public String getIcon(String packageFlag){
         String icon="";
         List<ApplicationInfo> packages;
@@ -517,6 +456,18 @@ public class AdminActivity extends AppCompatActivity implements
         return icon;
     }
 
+    //Metodo que ejecuta y da respuesta de la importacion
+    public void LoadDataCloud(String user_text,String password_text) {
+        boolean[] user_ws = ConectedCloud(user_text, password_text, AdminActivity.this);
+        if (user_ws[0]){
+            Toast.makeText(getApplication(), "Termino la actualizacion", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(getApplication(), "El usuario no fue encontrado", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    //Metodo que conecta con el API para importar los datos
     public boolean[] ConectedCloud(final String user, final String password, final Context context){
         final boolean[] user_ws = {false};
 
@@ -526,7 +477,7 @@ public class AdminActivity extends AppCompatActivity implements
 
         // Consumo de WS
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://mobility.sysandweb.com/api/login_admin/TGVvbmFyZG9kaXNlclBpZXJvZGFWaW5jaQ==/")
+                .baseUrl("http://192.168.15.2/Roberto/Mobility-app/api/login_admin/TGVvbmFyZG9kaXNlclBpZXJvZGFWaW5jaQ==/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -543,10 +494,9 @@ public class AdminActivity extends AppCompatActivity implements
                     guardarDatos(false,user,password);
                     user_ws[0] = true;
                     int size = responseServiceModel.getLog().size();
-                    Log.e("Size:", "" + size);
+                    Log.e("Size ", "" + size);
                     for (int i = 0; i < responseServiceModel.getLog().size(); i++){
                         UserModel userWS = responseServiceModel.getLog().get(i);
-                        //UserModel newUser = new UserModel(stringUser,stringMail,stringPassword,stringName,stringLastName,stringMotherLastName,strDate,1,0, admin);
                         UserModel newUser = new UserModel(userWS.getUser(),userWS.getMail(),userWS.getPassword(),userWS.getName(),userWS.getLast_name(),userWS.getMother_last_name(),userWS.getDate_create(),1,1, userWS.getAdmin());
                         boolean existe = userController.searchUser(newUser);
                         if (!existe){
@@ -584,24 +534,12 @@ public class AdminActivity extends AppCompatActivity implements
         return user_ws ;
     }
 
-    public void UreSecure(final String user, final String password){
-        final AlertDialog.Builder confir_dialog = new AlertDialog.Builder(this);
-        confir_dialog.setTitle("Importación de la nube").setMessage("Esta seguro de esta accion");
 
-        confir_dialog.setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                LoadDataCloud(password, user);
-            }
-        });
-        confir_dialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-        confir_dialog.show();
-    }
+    /*
+     *
+     *   Metodos de SHARE PRFERENS
+     *
+     */
 
     //Metodo para guardar datos de preferencias
     private void guardarDatos(boolean isFirst,String user,String password) {
@@ -619,6 +557,7 @@ public class AdminActivity extends AppCompatActivity implements
         return isFirts = preferences.getBoolean(CLOUD_PREFS, true);
     }
 
+    //Metodo para obtener el usuario y contraseña
     public String[] cargarUserPassword(){
         SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         String datos[] = new String[2];
@@ -626,15 +565,4 @@ public class AdminActivity extends AppCompatActivity implements
         datos[1]=preferences.getString(CLOUD_PASSWORD,"");
         return datos;
     }
-
-    public void LoadDataCloud(String user_text,String password_text) {
-        boolean[] user_ws = ConectedCloud(user_text, password_text, AdminActivity.this);
-        if (user_ws[0]){
-            Toast.makeText(getApplication(), "Termino la actualizacion", Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(getApplication(), "El usuario no fue encontrado", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
 }
