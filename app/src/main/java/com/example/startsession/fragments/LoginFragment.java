@@ -322,10 +322,10 @@ public class LoginFragment extends Fragment {
                     Log.e("Size:", "" + size);
                     for (int i = 0; i < responseServiceModel.getLog().size(); i++){
                         UserModel userWS = responseServiceModel.getLog().get(i);
-                        //UserModel newUser = new UserModel(stringUser,stringMail,stringPassword,stringName,stringLastName,stringMotherLastName,strDate,1,0, admin);
                         UserModel newUser = new UserModel(userWS.getUser(),userWS.getMail(),userWS.getPassword(),userWS.getName(),userWS.getLast_name(),userWS.getMother_last_name(),userWS.getDate_create(),1,1, userWS.getAdmin());
-                         boolean existe = userController.searchUser(newUser);
-                        if (!existe){
+                         //boolean existe = userController.searchUser(newUser);
+                        JSONArray jsonArray=Cursor2JSON(userController.searchUser(newUser));
+                        if (jsonArray.length()==0){
                             long id_user = userController.addUser(newUser);
                             Log.e("ID User",""+ id_user+" "+userWS.getConf());
                             String json =userWS.getConf().replace("[","");

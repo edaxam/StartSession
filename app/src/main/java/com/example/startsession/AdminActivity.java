@@ -389,12 +389,13 @@ public class AdminActivity extends AppCompatActivity implements
         int fila=(datos.length-1)/columna;
 
         String [][] datosM=vectorToMatrix(fila,columna,datos);
-
+        LoginFragment log=new LoginFragment();
         for (int i=1;i<datosM.length;i++)
         {
             UserModel newUser = new UserModel(datosM[i][2],datosM[i][1],datosM[i][3],datosM[i][4],datosM[i][5],datosM[i][6],datosM[i][8],Integer.parseInt(datosM[i][7]),Integer.parseInt(datosM[i][9]),Integer.parseInt(datosM[i][10]));
-            boolean existe=userController.searchUser(newUser);
-            if (!existe){
+            JSONArray jsonArray=log.Cursor2JSON(userController.searchUser(newUser));
+
+            if (jsonArray.length()==0){
                 long id_user = userController.importTables(tabla,newUser);
 
                 if(id_user == -1){
@@ -497,9 +498,11 @@ public class AdminActivity extends AppCompatActivity implements
                     Log.e("Size ", "" + size);
                     for (int i = 0; i < responseServiceModel.getLog().size(); i++){
                         UserModel userWS = responseServiceModel.getLog().get(i);
+                        LoginFragment log=new LoginFragment();
                         UserModel newUser = new UserModel(userWS.getUser(),userWS.getMail(),userWS.getPassword(),userWS.getName(),userWS.getLast_name(),userWS.getMother_last_name(),userWS.getDate_create(),1,1, userWS.getAdmin());
-                        boolean existe = userController.searchUser(newUser);
-                        if (!existe){
+                        JSONArray jsonArray=log.Cursor2JSON(userController.searchUser(newUser));
+
+                        if (jsonArray.length()==0){
                             long id_user = userController.addUser(newUser);
                             Log.e("ID User",""+ id_user+" "+userWS.getConf());
                             String json =userWS.getConf().replace("[","");

@@ -257,19 +257,19 @@ public class UserController {
         return db.insert(tabla,null,valuesInsert);
     }
 
-    public boolean searchUser(UserModel user) {
+    public Cursor searchUser(UserModel user) {
         boolean existUser=false;
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         Cursor cursor =db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE  user='"+user.getUser()+"' AND mail='"+user.getMail()+"' AND name= '"+user.getName()+"';",null);
         cursor.moveToFirst();
-        if(cursor != null){
+        /*if(cursor != null){
             existUser=true;
-        }
+        }*/
         //cursor.close();
 
-        return existUser;
+        return cursor;
     }
 
     public int getUserId(String email){
