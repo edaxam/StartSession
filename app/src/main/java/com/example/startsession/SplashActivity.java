@@ -40,11 +40,13 @@ public class SplashActivity extends AppCompatActivity {
         if(id_user == 0){
             Intent intent = new Intent (SplashActivity.this, InstructionsActivity.class);
             startActivity(intent);
+            finish();
         }else{
             Intent intent = new Intent (SplashActivity.this, LauncherActivity.class);
             intent.putExtra("id_user",""+id_user);
             //Log.e("HOLA",""+id_user);
             startActivity(intent);
+            finish();
         }
 
     }

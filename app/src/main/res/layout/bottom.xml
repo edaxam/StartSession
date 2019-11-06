@@ -52,7 +52,7 @@
 
     <LinearLayout
         android:foreground="?android:attr/selectableItemBackground"
-        android:id="@+id/ONube"
+        android:onClick="Nube"
         android:clickable="true"
         android:orientation="horizontal"
         android:layout_width="match_parent"

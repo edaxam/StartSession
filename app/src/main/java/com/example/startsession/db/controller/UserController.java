@@ -15,42 +15,41 @@ public class UserController {
     private DBHelper dbHelper;
     private String TABLE_NAME = "user";
 
-    public UserController(Context context){
+    public UserController(Context context) {
         dbHelper = new DBHelper(context);
     }
 
     public long addUser(UserModel user) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues valuesInsert = new ContentValues();
-        valuesInsert.put("user",user.getUser());
-        valuesInsert.put("mail",user.getMail());
-        valuesInsert.put("password",user.getPassword());
-        valuesInsert.put("name",user.getName());
-        valuesInsert.put("last_name",user.getLast_name());
-        valuesInsert.put("mother_last_name",user.getMother_last_name());
-        valuesInsert.put("active",1);
-        valuesInsert.put("status_ws",1);
+        valuesInsert.put("user", user.getUser());
+        valuesInsert.put("mail", user.getMail());
+        valuesInsert.put("password", user.getPassword());
+        valuesInsert.put("name", user.getName());
+        valuesInsert.put("last_name", user.getLast_name());
+        valuesInsert.put("mother_last_name", user.getMother_last_name());
+        valuesInsert.put("active", 1);
+        valuesInsert.put("status_ws", 0);
         valuesInsert.put("admin", user.getAdmin());
-        return db.insert(TABLE_NAME,null,valuesInsert);
+        return db.insert(TABLE_NAME, null, valuesInsert);
     }
 
-
-    public ArrayList<UserModel> getUsers(String campo_search){
+    public ArrayList<UserModel> getUsers(String campo_search) {
         ArrayList<UserModel> users = new ArrayList<>();
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String[] column_names = {"id_user","user","mail","password","name","last_name","mother_last_name","active","status_ws","admin","date_create"};
+        String[] column_names = {"id_user", "user", "mail", "password", "name", "last_name", "mother_last_name", "active", "status_ws", "admin", "date_create"};
 
-        String[] args = new String[] {"1"};
+        String[] args = new String[]{"1"};
 
         String where = "";
-        if(!campo_search.equals("")){
+        if (!campo_search.equals("")) {
             //args = new String[] {"1",campo_search};
-            where = " AND name LIKE '%"+campo_search+"%' OR mother_last_name LIKE '%"+campo_search+"%' OR last_name LIKE '%"+campo_search+"%' OR user LIKE '%"+campo_search+"%' ";
+            where = " AND name LIKE '%" + campo_search + "%' OR mother_last_name LIKE '%" + campo_search + "%' OR last_name LIKE '%" + campo_search + "%' OR user LIKE '%" + campo_search + "%' ";
         }
 
-        Cursor cursor = db.query(TABLE_NAME,column_names,"active =? " + where,args,null,null,null);
+        Cursor cursor = db.query(TABLE_NAME, column_names, "active =? " + where, args, null, null, null);
 
         if (cursor == null) {
             return users;
@@ -72,7 +71,6 @@ public class UserController {
             String date_createDB = cursor.getString(10);
 
 
-
             UserModel getUserBD = new UserModel(userDB, mailDB, passwordDB, nameDB, last_nameDB, mother_last_nameDB, date_createDB, activeDB, status_wsDB, id_userDB, adminDB);
             users.add(getUserBD);
         } while (cursor.moveToNext());
@@ -81,29 +79,25 @@ public class UserController {
         return users;
     }
 
-
-
-    public int updateUser(UserModel user){
+    public int updateUser(UserModel user) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues valuesUpdate = new ContentValues();
-        valuesUpdate.put("user",user.getUser());
-        valuesUpdate.put("mail",user.getMail());
-        valuesUpdate.put("password",user.getPassword());
-        valuesUpdate.put("name",user.getName());
-        valuesUpdate.put("last_name",user.getLast_name());
-        valuesUpdate.put("mother_last_name",user.getMother_last_name());
-        valuesUpdate.put("active",1);
-        valuesUpdate.put("status_ws",1);
-        valuesUpdate.put("admin",user.getAdmin());
+        valuesUpdate.put("user", user.getUser());
+        valuesUpdate.put("mail", user.getMail());
+        valuesUpdate.put("password", user.getPassword());
+        valuesUpdate.put("name", user.getName());
+        valuesUpdate.put("last_name", user.getLast_name());
+        valuesUpdate.put("mother_last_name", user.getMother_last_name());
+        valuesUpdate.put("active", 1);
+        valuesUpdate.put("status_ws", 1);
+        valuesUpdate.put("admin", user.getAdmin());
 
         String where = "id_user = ?";
 
         String[] argsUpdate = {String.valueOf(user.getId_user())};
-        Log.e("id user", "" + user.getId_user() );
+        Log.e("id user", "" + user.getId_user());
         return db.update(TABLE_NAME, valuesUpdate, where, argsUpdate);
     }
-
-
 
     public int deleteUser(UserModel user){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -257,10 +251,34 @@ public class UserController {
         valuesInsert.put("mother_last_name",userModel.getMother_last_name());
         valuesInsert.put("active",userModel.getActive());
         valuesInsert.put("date_create",userModel.getDate_create());
-        valuesInsert.put("status_ws",userModel.getStatus_ws());
+        valuesInsert.put("status_ws",1);
         valuesInsert.put("admin",userModel.getAdmin());
 
         return db.insert(tabla,null,valuesInsert);
     }
 
+    public Cursor searchUser(UserModel user) {
+        boolean existUser=false;
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor =db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE  user='"+user.getUser()+"' AND mail='"+user.getMail()+"' AND name= '"+user.getName()+"';",null);
+        cursor.moveToFirst();
+        /*if(cursor != null){
+            existUser=true;
+        }*/
+        //cursor.close();
+
+        return cursor;
+    }
+
+    public int getUserId(String email){
+        int user_name=0;
+        SQLiteDatabase database = dbHelper.getReadableDatabase();
+        Cursor c_user = database.rawQuery("SELECT id_user FROM user WHERE mail='"+email+"';",null);
+        if(c_user.moveToFirst()){
+            user_name = c_user.getInt(0);
+        }
+        return user_name;
+    }
 }

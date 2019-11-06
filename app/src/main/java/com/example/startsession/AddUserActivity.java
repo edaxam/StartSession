@@ -97,6 +97,8 @@ public class AddUserActivity extends AppCompatActivity {
 
                         editTextUser.setFocusableInTouchMode(true);
                         editTextUser.requestFocus();
+                        Intent intent = new Intent(getApplicationContext(), AdminActivity.class);
+                        startActivity(intent);
                     }
                 }
 

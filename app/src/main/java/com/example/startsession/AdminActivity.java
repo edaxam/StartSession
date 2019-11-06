@@ -2,13 +2,14 @@ package com.example.startsession;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -16,47 +17,68 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
+import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.startsession.db.controller.AppController;
 import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.AppModel;
+import com.example.startsession.db.model.ResponseServiceModel;
 import com.example.startsession.db.model.UserModel;
 import com.example.startsession.fragments.AdminConfigAppFragment;
 import com.example.startsession.fragments.AdminConfigUserFragment;
 import com.example.startsession.fragments.AdminHomeFragment;
 import com.example.startsession.fragments.AdminImportExportFragment;
 import com.example.startsession.fragments.BottomActionSheetConexion;
-import com.example.startsession.fragments.BottomSheetDialog;
+import com.example.startsession.fragments.LoginFragment;
+import com.example.startsession.interfaces.SendInfo;
+import com.example.startsession.interfaces.UserService;
 import com.example.startsession.ui.admin.ViewPagerAdapter;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.util.List;
 
-import io.reactivex.functions.Consumer;
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AdminActivity extends AppCompatActivity implements
-        AdminHomeFragment.OnFragmentInteractionListener,
-        AdminImportExportFragment.OnFragmentInteractionListener,
-        AdminConfigUserFragment.OnFragmentInteractionListener, AdminConfigAppFragment.OnFragmentInteractionListener{
+    AdminHomeFragment.OnFragmentInteractionListener,
+    AdminImportExportFragment.OnFragmentInteractionListener,
+    AdminConfigUserFragment.OnFragmentInteractionListener, AdminConfigAppFragment.OnFragmentInteractionListener {
     BottomNavigationView bottomNavigationView;
 
     //This is our viewPager
     private ViewPager viewPager;
+    public static final String SHARED_PREFS = "Preferencias";
+    public static final String CLOUD_PREFS = "EsPrimera";
+    public static final String CLOUD_USER = "user";
+    public static final String CLOUD_PASSWORD = "password";
+    private boolean isFirts;
 
     //Fragments
 
@@ -71,9 +93,8 @@ public class AdminActivity extends AppCompatActivity implements
     private AppController appController;
     public Uri rutaArchivo;
     private int VALOR_RETORNO = 1;
-    private  int REQUEST_ACCES_FINE=0;
+    private int REQUEST_ACCES_FINE = 0;
     public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
-    public BottomSheetDialog bottomSheetDialog = BottomSheetDialog.newInstance();
 
     @SuppressLint("WrongConstant")
     @Override
@@ -122,12 +143,10 @@ public class AdminActivity extends AppCompatActivity implements
             public void onPageSelected(int position) {
                 if (prevMenuItem != null) {
                     prevMenuItem.setChecked(false);
-                }
-                else
-                {
+                } else {
                     bottomNavigationView.getMenu().getItem(0).setChecked(false);
                 }
-                Log.d("page", "onPageSelected: "+position);
+                Log.d("page", "onPageSelected: " + position);
                 bottomNavigationView.getMenu().getItem(position).setChecked(true);
                 prevMenuItem = bottomNavigationView.getMenu().getItem(position);
             }
@@ -137,7 +156,6 @@ public class AdminActivity extends AppCompatActivity implements
 
             }
         });
-
        /*  //Disable ViewPager Swipe
        viewPager.setOnTouchListener(new View.OnTouchListener()
         {
@@ -149,6 +167,17 @@ public class AdminActivity extends AppCompatActivity implements
         });
         */
         setupViewPager(viewPager);
+    }
+
+    //El Back Press retorna a la dashboard
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //preventing default implementation previous to android.os.Build.VERSION_CODES.ECLAIR
+            viewPager.setCurrentItem(0);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -204,23 +233,27 @@ public class AdminActivity extends AppCompatActivity implements
         boolean hayConexion=isNetworkAvailable(this);
         if (hayConexion){
             readBottomDialogFragment.show(getSupportFragmentManager(), "bottomactionsheetconexion");
-            //Toast.makeText(getContext(),"Si hay conexion", LENGTH_SHORT).show();
         }else {
-            bottomSheetDialog.show(getSupportFragmentManager(), "bottomsheetdialog");
-            //Toast.makeText(getContext(),"No hay conexion", LENGTH_SHORT).show();
+            Archivo(view);
         }
     }
 
+    //Metodo para el boton de nube
+    public void Nube(View view){
+        cargarDatos();
+        String [] datos=cargarUserPassword();
+        LoadDataCloud(datos[0],datos[1]);
+        readBottomDialogFragment.dismiss();
+    }
+
     //Metodo para el boton de archivos
-    public void archivo(View view) {
+    public void Archivo(View view) {
         boolean hayConexion=isNetworkAvailable(this);
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("text/*");
         startActivityForResult(Intent.createChooser(intent, "Importación"), VALOR_RETORNO);
         if (hayConexion){
             readBottomDialogFragment.dismiss();
-        }else {
-            bottomSheetDialog.dismiss();
         }
     }
 
@@ -356,16 +389,20 @@ public class AdminActivity extends AppCompatActivity implements
         int fila=(datos.length-1)/columna;
 
         String [][] datosM=vectorToMatrix(fila,columna,datos);
-
+        LoginFragment log=new LoginFragment();
         for (int i=1;i<datosM.length;i++)
         {
             UserModel newUser = new UserModel(datosM[i][2],datosM[i][1],datosM[i][3],datosM[i][4],datosM[i][5],datosM[i][6],datosM[i][8],Integer.parseInt(datosM[i][7]),Integer.parseInt(datosM[i][9]),Integer.parseInt(datosM[i][10]));
-            long id_user = userController.importTables(tabla,newUser);
+            JSONArray jsonArray=log.Cursor2JSON(userController.searchUser(newUser));
 
-            if(id_user == -1){
-                Toast.makeText(this, "Error al importar. Intenta de nuevo", Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(this, "Guardado correctamente", Toast.LENGTH_LONG).show();
+            if (jsonArray.length()==0){
+                long id_user = userController.importTables(tabla,newUser);
+
+                if(id_user == -1){
+                    Toast.makeText(this, "Error al importar. Intenta de nuevo", Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(this, "Guardado correctamente", Toast.LENGTH_LONG).show();
+                }
             }
         }
 
@@ -379,10 +416,9 @@ public class AdminActivity extends AppCompatActivity implements
 
         String [][] datosM=vectorToMatrix(fila,columna,datos);
 
-        for (int i=1;i<datosM.length;i++)
-        {
+        for (int i=1;i<datosM.length;i++){
             Log.e("Datos",""+datosM[i][0]+" "+datosM[i][1]+" "+datosM[i][2]+" "+datosM[i][3]+" "+datosM[i][5]+" "+datosM[i][6]);
-            int id_user=appController.getUserId(datosM[i][0]);
+            int id_user=userController.getUserId(datosM[i][0]);
             String app_icon_string = getIcon(datosM[i][2]);
 
             if (id_user<=0){
@@ -402,6 +438,7 @@ public class AdminActivity extends AppCompatActivity implements
         }
     }
 
+    //Metodo para optener el nombre del Drawable de la app
     public String getIcon(String packageFlag){
         String icon="";
         List<ApplicationInfo> packages;
@@ -418,5 +455,117 @@ public class AdminActivity extends AppCompatActivity implements
         }
 
         return icon;
+    }
+
+    //Metodo que ejecuta y da respuesta de la importacion
+    public void LoadDataCloud(String user_text,String password_text) {
+        boolean[] user_ws = ConectedCloud(user_text, password_text, AdminActivity.this);
+        if (user_ws[0]){
+            Toast.makeText(getApplication(), "Termino la actualizacion", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(getApplication(), "El usuario no fue encontrado", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    //Metodo que conecta con el API para importar los datos
+    public boolean[] ConectedCloud(final String user, final String password, final Context context){
+        final boolean[] user_ws = {false};
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+        // Consumo de WS
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.15.2/Roberto/Mobility-app/api/login_admin/TGVvbmFyZG9kaXNlclBpZXJvZGFWaW5jaQ==/")
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UserService usrService = retrofit.create(UserService.class);
+        Call<ResponseServiceModel> callUser = usrService.getUsers(user,password);
+        callUser.enqueue(new Callback<ResponseServiceModel>() {
+            @Override
+            public void onResponse(Call<ResponseServiceModel> call, Response<ResponseServiceModel> response) {
+                ResponseServiceModel responseServiceModel = response.body();
+                Log.e("onResponse","" + responseServiceModel.getMessage());
+                Toast.makeText(context,responseServiceModel.getMessage(),Toast.LENGTH_LONG).show();
+                if(responseServiceModel.isStatus()) {
+                    guardarDatos(false,user,password);
+                    user_ws[0] = true;
+                    int size = responseServiceModel.getLog().size();
+                    Log.e("Size ", "" + size);
+                    for (int i = 0; i < responseServiceModel.getLog().size(); i++){
+                        UserModel userWS = responseServiceModel.getLog().get(i);
+                        LoginFragment log=new LoginFragment();
+                        UserModel newUser = new UserModel(userWS.getUser(),userWS.getMail(),userWS.getPassword(),userWS.getName(),userWS.getLast_name(),userWS.getMother_last_name(),userWS.getDate_create(),1,1, userWS.getAdmin());
+                        JSONArray jsonArray=log.Cursor2JSON(userController.searchUser(newUser));
+
+                        if (jsonArray.length()==0){
+                            long id_user = userController.addUser(newUser);
+                            Log.e("ID User",""+ id_user+" "+userWS.getConf());
+                            String json =userWS.getConf().replace("[","");
+                            String jsonC =json.replace("]","");
+                            try {
+                                JSONObject conf = new JSONObject(jsonC);
+
+                                Log.e("JSON", conf.toString());
+                                for (int j=0;j<conf.length();j++){
+                                    //AppModel AppWS = (AppModel) conf.get(String.valueOf(j));
+                                    LoginFragment login = new LoginFragment();
+                                    String app_name=login.getNameApp(conf.getString("app_flag_system").toLowerCase());
+                                    String icon=getIcon(conf.getString("app_flag_system").toLowerCase());
+                                    AppModel newApp = new AppModel((int) id_user,app_name,conf.get("app_flag_system").toString().toLowerCase(),icon,conf.getInt("active"),conf.getInt("status_ws"));
+                                    long id_conf = appController.importConfigAppsWS(newApp);
+                                    Log.e("ID Configuracion",""+id_conf);
+                                }
+                                Toast.makeText(context,"Importacion completa",Toast.LENGTH_LONG).show();
+                            } catch (Throwable t) {
+                                Log.e("LOG", "Could not parse malformed JSON: \"" + json + "\"");
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseServiceModel> call, Throwable t) {
+                Log.e("Error", t.getMessage());
+            }
+        });
+        return user_ws ;
+    }
+
+
+    /*
+     *
+     *   Metodos de SHARE PRFERENS
+     *
+     */
+
+    //Metodo para guardar datos de preferencias
+    private void guardarDatos(boolean isFirst,String user,String password) {
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(CLOUD_PREFS, isFirst);
+        editor.putString(CLOUD_USER,user);
+        editor.putString(CLOUD_PASSWORD,password);
+        editor.apply();
+    }
+
+    //Metodo para cargar datos de preferencias
+    public boolean cargarDatos() {
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        return isFirts = preferences.getBoolean(CLOUD_PREFS, true);
+    }
+
+    //Metodo para obtener el usuario y contraseña
+    public String[] cargarUserPassword(){
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        String datos[] = new String[2];
+        datos[0]=preferences.getString(CLOUD_USER,"");
+        datos[1]=preferences.getString(CLOUD_PASSWORD,"");
+        return datos;
     }
 }
