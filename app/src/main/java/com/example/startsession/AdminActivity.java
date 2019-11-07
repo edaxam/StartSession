@@ -478,7 +478,7 @@ public class AdminActivity extends AppCompatActivity implements
 
         // Consumo de WS
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.15.2/Roberto/Mobility-app/api/login_admin/TGVvbmFyZG9kaXNlclBpZXJvZGFWaW5jaQ==/")
+                .baseUrl("http://mobility.sysandweb.com/api/login_admin/TGVvbmFyZG9kaXNlclBpZXJvZGFWaW5jaQ==/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
