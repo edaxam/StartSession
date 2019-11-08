@@ -86,48 +86,6 @@ public class LauncherActivity extends AppCompatActivity {
         layout=(ConstraintLayout)findViewById(R.id.appLauncher);
         layout.setBackground(fondo);
 
-        String valor = getIntent().getStringExtra("id_user");
-        id_user=Integer.parseInt(valor);
-
-        userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
-
-        installedApps = getInstalledApps(id_user);
-        AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
-        userInstalledApps.setAdapter(installedAppAdapter);
-
-        //Log.e("HOLA",""+appController.getUserName(id_user));
-        getSupportActionBar().setTitle("Mobility App Lock - "+appController.getUserName(id_user));
-
-        userInstalledApps.setClickable(true);
-        userInstalledApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AppModel appSelected = installedApps.get(i);
-                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
-                if (launchIntent != null) {
-
-                    //INSERT user_history
-                    Date date = Calendar.getInstance().getTime();
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-                    String strDate = dateFormat.format(date);
-                    appController = new AppController(getApplicationContext());
-                    int id_config = appController.getIdConfigByUser(id_user);
-
-                    historyController = new HistoryController(getApplicationContext());
-                    HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1);
-                    long id_history = historyController.addHistory(historyModel);
-                    if(id_history == -1){
-                        saved_app = false ;
-                    }
-                    else{
-                        saved_app = true;
-                    }
-
-                    startActivity(launchIntent);//null pointer check in case package name was not found
-
-                }
-            }
-        });
     }
 
 
@@ -291,12 +249,55 @@ public class LauncherActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            progressBar.setProgress(values[0]);
+            //progressBar.setProgress(values[0]);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            String valor = getIntent().getStringExtra("id_user");
+            id_user=Integer.parseInt(valor);
+
+            userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
+
+            installedApps = getInstalledApps(id_user);
+            AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
+            userInstalledApps.setAdapter(installedAppAdapter);
+
+            //Log.e("HOLA",""+appController.getUserName(id_user));
+            getSupportActionBar().setTitle("Mobility App Lock - "+appController.getUserName(id_user));
+
+            userInstalledApps.setClickable(true);
+            userInstalledApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    AppModel appSelected = installedApps.get(i);
+                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
+                    if (launchIntent != null) {
+
+                        //INSERT user_history
+                        Date date = Calendar.getInstance().getTime();
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                        String strDate = dateFormat.format(date);
+                        appController = new AppController(getApplicationContext());
+                        int id_config = appController.getIdConfigByUser(id_user);
+
+                        historyController = new HistoryController(getApplicationContext());
+                        HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1);
+                        long id_history = historyController.addHistory(historyModel);
+                        if(id_history == -1){
+                            saved_app = false ;
+                        }
+                        else{
+                            saved_app = true;
+                        }
+
+                        startActivity(launchIntent);//null pointer check in case package name was not found
+
+                    }
+                }
+            });
+
             progressBar.setVisibility(View.GONE);
         }
     }

@@ -6,7 +6,9 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.example.startsession.db.controller.AppController;
 import com.example.startsession.db.model.AppModel;
 import com.example.startsession.ui.admin.AppAdapter;
@@ -30,21 +33,27 @@ public class ConfigAppActivity extends AppCompatActivity {
     private TextView userName, mailPassword;
     private List<AppModel> installedApps;
     private AppController appController;
-    ListView userInstalledApps;
+    private ListView userInstalledApps;
+    private ShimmerRecyclerView shimmer_recycler_view;
+    public int id_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         setContentView(R.layout.activity_config_app);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        FloatingActionButton fab = findViewById(R.id.fab);
+        shimmer_recycler_view = findViewById(R.id.shimmer_recycler_view);
+
         setSupportActionBar(toolbar);
         Intent intentService = new Intent(this, BlockService.class);
         stopService(intentService);
 
         Intent intent = getIntent();
 
-        final int id_user = Integer.parseInt(intent.getStringExtra("id_user"));
+        id_user = Integer.parseInt(intent.getStringExtra("id_user"));
 
 
         userName  = findViewById(R.id.user_full_name);
@@ -60,19 +69,11 @@ public class ConfigAppActivity extends AppCompatActivity {
         userName.setText(stringUserName);
         mailPassword.setText(stringMailPasword);
 
-
         userInstalledApps = (ListView)findViewById(R.id.recyclerViewApp);
 
-        installedApps = getInstalledApps(id_user);
-        AppAdapter installedAppAdapter = new AppAdapter(getApplicationContext(), installedApps);
-        userInstalledApps.setAdapter(installedAppAdapter);
+        new AsyncTasckLoadApps().execute();
 
 
-        //userInstalledApps.setOnItemClickListener();
-
-        appController = new AppController(getApplicationContext());
-        appController.afterInsert(id_user);
-        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,5 +160,47 @@ public class ConfigAppActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+
+    public class AsyncTasckLoadApps extends AsyncTask<Void,Integer,Void>{
+        int progress;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress=0;
+            shimmer_recycler_view.showShimmerAdapter();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            while (progress<100){
+                progress++;
+                publishProgress(progress);
+                SystemClock.sleep(20);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            //shimmer_recycler_view.setVisibility(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            installedApps = getInstalledApps(id_user);
+            AppAdapter installedAppAdapter = new AppAdapter(getApplicationContext(), installedApps);
+            userInstalledApps.setAdapter(installedAppAdapter);
+            appController = new AppController(getApplicationContext());
+            appController.afterInsert(id_user);
+
+            shimmer_recycler_view.setVisibility(View.GONE);
+            userInstalledApps.setVisibility(View.VISIBLE);
+        }
     }
 }
