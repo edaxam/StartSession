@@ -6,7 +6,7 @@
 
     <CheckBox
         android:id="@+id/rowCheckBox"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="17dp"
         android:layout_width="wrap_content"
         android:layout_height="48dp" />
 
@@ -18,7 +18,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="56dp"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="12dp"/>
 
     <TextView
         android:id="@+id/list_app_name"
