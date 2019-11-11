@@ -51,6 +51,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -88,7 +90,6 @@ public class LauncherActivity extends AppCompatActivity {
 
     }
 
-
     private List<AppModel> getInstalledApps(int id_user) {
         List<AppModel> res = new ArrayList<AppModel>();
         List<PackageInfo> packs = getPackageManager().getInstalledPackages(0);
@@ -105,6 +106,7 @@ public class LauncherActivity extends AppCompatActivity {
                 res.add(new AppModel(appName, appFlag, icon));
             }
         }
+        Collections.sort(res, new sortAlphabetically());
         return res;
     }
 
@@ -299,6 +301,13 @@ public class LauncherActivity extends AppCompatActivity {
             });
 
             progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    private class sortAlphabetically implements Comparator<AppModel> {
+        @Override
+        public int compare(AppModel o1, AppModel o2) {
+            return o1.getApp_name().compareTo(o2.getApp_name());
         }
     }
 

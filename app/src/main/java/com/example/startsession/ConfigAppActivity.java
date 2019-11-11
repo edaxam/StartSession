@@ -1,5 +1,6 @@
 package com.example.startsession;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
@@ -10,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.example.startsession.db.controller.AppController;
 import com.example.startsession.db.model.AppModel;
+import com.example.startsession.fragments.AdminConfigAppFragment;
 import com.example.startsession.ui.admin.AppAdapter;
 
 import java.util.ArrayList;
@@ -35,8 +38,10 @@ public class ConfigAppActivity extends AppCompatActivity {
     private AppController appController;
     private ListView userInstalledApps;
     private ShimmerRecyclerView shimmer_recycler_view;
+    private FloatingActionButton fab;
     public int id_user;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +49,10 @@ public class ConfigAppActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_config_app);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         shimmer_recycler_view = findViewById(R.id.shimmer_recycler_view);
+
+        fab.setVisibility(View.INVISIBLE);
 
         setSupportActionBar(toolbar);
         Intent intentService = new Intent(this, BlockService.class);
@@ -73,36 +80,15 @@ public class ConfigAppActivity extends AppCompatActivity {
 
         new AsyncTasckLoadApps().execute();
 
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CheckBox cb;
                 //Log.e("Num APPS",""+userInstalledApps.getAdapter().getCount());
-                int tam =userInstalledApps.getAdapter().getCount();
-                for (int x = 0; x< tam;x++){
-                    if (installedApps.get(x).isChecked()) {
-                        AppModel appSelected = installedApps.get(x);
-
-                        String app_name = appSelected.getApp_name();
-                        String app_flag_system = appSelected.getApp_flag_system();
-                        String app_icon_string = appSelected.getApp_icon_string();
-//Insert
-                        AppModel newApp = new AppModel(id_user, app_name, app_flag_system, app_icon_string);
-                        long id_app = appController.addApp(newApp);
-                        Log.e("RESPONSE","Id :" + id_app);
-                        if(id_app  == -1){
-                            Toast.makeText(getApplicationContext(), "Error al guardar '"+app_name+"' Intenta de nuevo", Toast.LENGTH_LONG).show();
-                        }
-                        else{
-                            Toast.makeText(getApplicationContext(),"Cambio Guardado",Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }
+                saveApps();
             }
         });
     }
-
 
     private List<AppModel> getInstalledApps(int id_user) {
         List<AppModel> resSN = new ArrayList<AppModel>();
@@ -143,14 +129,12 @@ public class ConfigAppActivity extends AppCompatActivity {
         return resS;
     }
 
-
     private class sortAlphabetically implements Comparator<AppModel>{
         @Override
         public int compare(AppModel o1, AppModel o2) {
             return o1.getApp_name().compareTo(o2.getApp_name());
         }
     }
-
 
     private boolean isSystemPackage(PackageInfo pkgInfo) {
         return ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) ? true : false;
@@ -159,9 +143,31 @@ public class ConfigAppActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        saveApps();
         finish();
     }
 
+    public void saveApps(){
+        int tam =userInstalledApps.getAdapter().getCount();
+        for (int x = 0; x< tam;x++){
+            if (installedApps.get(x).isChecked()) {
+                AppModel appSelected = installedApps.get(x);
+                String app_name = appSelected.getApp_name();
+                String app_flag_system = appSelected.getApp_flag_system();
+                String app_icon_string = appSelected.getApp_icon_string();
+//Insert
+                AppModel newApp = new AppModel(id_user, app_name, app_flag_system, app_icon_string);
+                long id_app = appController.addApp(newApp);
+                Log.e("RESPONSE","Id :" + id_app);
+                if(id_app  == -1){
+                    Toast.makeText(getApplicationContext(), "Error al guardar '"+app_name+"' Intenta de nuevo", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"Cambio Guardado",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
 
     public class AsyncTasckLoadApps extends AsyncTask<Void,Integer,Void>{
         int progress;
@@ -189,6 +195,7 @@ public class ConfigAppActivity extends AppCompatActivity {
             //shimmer_recycler_view.setVisibility(values[0]);
         }
 
+        @SuppressLint("RestrictedApi")
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
@@ -201,6 +208,7 @@ public class ConfigAppActivity extends AppCompatActivity {
 
             shimmer_recycler_view.setVisibility(View.GONE);
             userInstalledApps.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.VISIBLE);
         }
     }
 }

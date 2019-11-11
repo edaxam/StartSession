@@ -25,7 +25,9 @@ import com.example.startsession.EditUserActivity;
 import com.example.startsession.R;
 import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.UserModel;
+import com.example.startsession.interfaces.ClickListener;
 import com.example.startsession.ui.admin.DialogAddUser;
+import com.example.startsession.ui.admin.RecyclerViewItemClickListener;
 import com.example.startsession.ui.admin.UserAdapter;
 
 import java.util.ArrayList;
@@ -133,6 +135,31 @@ public class AdminConfigUserFragment extends Fragment implements DialogAddUser.D
                 pullToRefresh.setRefreshing(false);
             }
         });
+
+        recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(getActivity(), recyclerView, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                UserModel userSelected = listUser.get(position);
+                Toast.makeText(getContext(),"Cargando ..." ,Toast.LENGTH_SHORT).show();
+                Log.e("Es admin",""+userSelected.getAdmin());
+                Intent intent = new Intent(getContext(), EditUserActivity.class);
+                intent.putExtra("id_user","" + userSelected.getId_user());
+                intent.putExtra("user",userSelected.getUser());
+                intent.putExtra("mail",userSelected.getMail());
+                intent.putExtra("password",userSelected.getPassword());
+                intent.putExtra("name",userSelected.getName());
+                intent.putExtra("last_name",userSelected.getLast_name());
+                intent.putExtra("mother_last_name",userSelected.getMother_last_name());
+                intent.putExtra("admin",""+userSelected.getAdmin());
+
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
         
         return view ;
     }
