@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         {
             final WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
             try {
-                wallpaperManager.setResource(R.drawable.wallpaper);
+                wallpaperManager.setResource(R.drawable.pink);
                 guardarDatos(false);
             } catch (IOException e) {
                 e.printStackTrace();

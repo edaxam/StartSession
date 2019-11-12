@@ -93,7 +93,6 @@ public class AdminActivity extends AppCompatActivity implements
     private AppController appController;
     public Uri rutaArchivo;
     private int VALOR_RETORNO = 1;
-    private int REQUEST_ACCES_FINE = 0;
     public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
 
     @SuppressLint("WrongConstant")
@@ -227,9 +226,6 @@ public class AdminActivity extends AppCompatActivity implements
 
     //Metodo de ejecucio
     public  void Importacion(View view){
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_ACCES_FINE);
-        }
         boolean hayConexion=isNetworkAvailable(this);
         if (hayConexion){
             readBottomDialogFragment.show(getSupportFragmentManager(), "bottomactionsheetconexion");
@@ -254,18 +250,6 @@ public class AdminActivity extends AppCompatActivity implements
         startActivityForResult(Intent.createChooser(intent, "Importación"), VALOR_RETORNO);
         if (hayConexion){
             readBottomDialogFragment.dismiss();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode==REQUEST_ACCES_FINE){
-            if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"Permiso consedido",Toast.LENGTH_LONG).show();
-            }else {
-                Toast.makeText(this,"Permiso denegado",Toast.LENGTH_LONG).show();
-            }
         }
     }
 

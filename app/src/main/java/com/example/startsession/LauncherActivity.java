@@ -35,6 +35,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -59,14 +60,13 @@ import java.util.List;
 
 public class LauncherActivity extends AppCompatActivity {
     private AppController appController;
-    GridView userInstalledApps;
+    private GridView userInstalledApps;
     private HistoryController historyController;
     private List<AppModel> installedApps;
     private int id_user;
     private UserController userController;
     private boolean saved_app;
-    private ConstraintLayout layout;
-    private  int REQUEST_ACCES_FINE=0;
+    private ImageView wallpaperLauncher;
     private ProgressBar progressBar;
 
     @SuppressLint("ResourceType")
@@ -80,13 +80,13 @@ public class LauncherActivity extends AppCompatActivity {
         saved_app = false;
 
         progressBar = (ProgressBar)findViewById(R.id.progressLaunch);
+        wallpaperLauncher = (ImageView)findViewById(R.id.wallpaperLauncher);
 
         new AsyncTasck_load().execute();
 
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         Drawable fondo = wallpaperManager.getDrawable();
-        layout=(ConstraintLayout)findViewById(R.id.appLauncher);
-        layout.setBackground(fondo);
+        wallpaperLauncher.setImageDrawable(fondo);
 
     }
 
@@ -103,7 +103,13 @@ public class LauncherActivity extends AppCompatActivity {
             AppModel loginUser = new AppModel(id_user,appFlag);
             boolean app_active = appController.appActiveByUser(loginUser);
             if(app_active){
-                res.add(new AppModel(appName, appFlag, icon));
+                String appNameN;
+                if (appName.length()>=7){
+                    appNameN=appName.substring(0,7)+"...";
+                }else {
+                    appNameN=appName;
+                }
+                res.add(new AppModel(appNameN, appFlag, icon));
             }
         }
         Collections.sort(res, new sortAlphabetically());
@@ -204,30 +210,6 @@ public class LauncherActivity extends AppCompatActivity {
         return false;
     }
 
-    public String getRotation(Context context){
-        final int rotation = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
-        switch (rotation) {
-            case Surface.ROTATION_0:
-            case Surface.ROTATION_180:
-                return "vertical";
-            case Surface.ROTATION_90:
-            default:
-                return "horizontal";
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode==REQUEST_ACCES_FINE){
-            if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"Permiso consedido",Toast.LENGTH_LONG).show();
-            }else {
-                Toast.makeText(this,"Permiso denegado",Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
     public class AsyncTasck_load extends AsyncTask<Void,Integer,Void>{
         int progress;
 
@@ -299,7 +281,6 @@ public class LauncherActivity extends AppCompatActivity {
                     }
                 }
             });
-
             progressBar.setVisibility(View.GONE);
         }
     }
