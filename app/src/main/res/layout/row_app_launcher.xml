@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/app_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:contentDescription="Image"
         android:layout_alignParentLeft="true"
@@ -25,18 +25,23 @@
         android:id="@+id/list_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:gravity="center"
+        android:layout_marginTop="-5dp"
+        android:layout_alignTop="@+id/app_icon"
         android:layout_gravity="center_horizontal"
-        android:textAlignment="center"
+        android:layout_toRightOf="@+id/app_icon"
         android:autoSizeMaxTextSize="@dimen/activity_vertical_margin"
-        android:textSize="14dp"
+        android:ellipsize="end"
+        android:gravity="center"
         android:maxLength="10"
         android:maxLines="1"
+        android:shadowColor="@color/colorPrimary"
+        android:shadowDx="2"
+        android:shadowDy="5"
+        android:shadowRadius="5"
+        android:text="App Name"
+        android:textAlignment="center"
         android:textColor="@color/colorLigthGrey"
-        android:layout_toRightOf="@+id/app_icon"
-        android:layout_alignTop="@+id/app_icon"
-        android:ellipsize="end"
-        android:text="App Name"/>
+        android:textSize="14dp"
+        android:textStyle="bold" />
 
 </LinearLayout>

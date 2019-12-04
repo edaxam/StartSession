@@ -4,8 +4,8 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.startsession"
-        minSdkVersion 21
-        targetSdkVersion 28
+        minSdkVersion 25
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -43,4 +43,5 @@ dependencies {
     implementation 'com.github.devlight.pulseview:library:+'
     implementation 'br.com.simplepass:loading-button-android:1.7.2'
     implementation 'com.github.clans:fab:1.6.4'
+    implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
 }

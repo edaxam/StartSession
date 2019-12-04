@@ -98,26 +98,16 @@ public class AdminImportExportFragment extends Fragment {
         exportar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RxPermissions permissions = new RxPermissions(getActivity());
-                permissions.setLogging(true);
-                permissions.request(Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .subscribe(new Consumer<Boolean>() {
-                            @Override
-                            public void accept(Boolean aBoolean) throws Exception {
-                                ExportDatabaseCSVTask export_db =  new ExportDatabaseCSVTask();
-                                boolean status =  export_db.doInBackground();
-                                if(status){
-                                    Toast.makeText(getContext(), "Exportado Correctamente!", LENGTH_SHORT).show();
-                                    String [] archivos = new String[]{"csvs/user.csv", "csvs/user_config_launcher.csv", "csvs/user_history.csv"};
-                                    Exportaciones(archivos);
+                ExportDatabaseCSVTask export_db =  new ExportDatabaseCSVTask();
+                boolean status =  export_db.doInBackground();
+                if(status){
+                    Toast.makeText(getContext(), "Exportado Correctamente!", LENGTH_SHORT).show();
+                    String [] archivos = new String[]{"csvs/user.csv", "csvs/user_config_launcher.csv", "csvs/user_history.csv"};
+                    Exportaciones(archivos);
 
-                                }else{
-                                    Toast.makeText(getContext(), "Exportación Fallida", LENGTH_SHORT).show();
-                                }
-                                //LogUtils.error(TAG, "checkPermission22--:" + aBoolean);
-                            }
-                        });
+                }else{
+                    Toast.makeText(getContext(), "Exportación Fallida", LENGTH_SHORT).show();
+                }
                 //new ExportDatabaseCSVTask();
             }
         });

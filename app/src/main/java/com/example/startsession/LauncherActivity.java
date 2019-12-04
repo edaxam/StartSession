@@ -35,6 +35,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -51,20 +52,21 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 
 public class LauncherActivity extends AppCompatActivity {
     private AppController appController;
-    GridView userInstalledApps;
+    private GridView userInstalledApps;
     private HistoryController historyController;
     private List<AppModel> installedApps;
     private int id_user;
     private UserController userController;
     private boolean saved_app;
-    private ConstraintLayout layout;
-    private  int REQUEST_ACCES_FINE=0;
+    private ImageView wallpaperLauncher;
     private ProgressBar progressBar;
 
     @SuppressLint("ResourceType")
@@ -78,58 +80,15 @@ public class LauncherActivity extends AppCompatActivity {
         saved_app = false;
 
         progressBar = (ProgressBar)findViewById(R.id.progressLaunch);
+        wallpaperLauncher = (ImageView)findViewById(R.id.wallpaperLauncher);
 
         new AsyncTasck_load().execute();
 
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(this);
         Drawable fondo = wallpaperManager.getDrawable();
-        layout=(ConstraintLayout)findViewById(R.id.appLauncher);
-        layout.setBackground(fondo);
+        wallpaperLauncher.setImageDrawable(fondo);
 
-        String valor = getIntent().getStringExtra("id_user");
-        id_user=Integer.parseInt(valor);
-
-        userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
-
-        installedApps = getInstalledApps(id_user);
-        AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
-        userInstalledApps.setAdapter(installedAppAdapter);
-
-        //Log.e("HOLA",""+appController.getUserName(id_user));
-        getSupportActionBar().setTitle("Mobility App Lock - "+appController.getUserName(id_user));
-
-        userInstalledApps.setClickable(true);
-        userInstalledApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AppModel appSelected = installedApps.get(i);
-                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
-                if (launchIntent != null) {
-
-                    //INSERT user_history
-                    Date date = Calendar.getInstance().getTime();
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-                    String strDate = dateFormat.format(date);
-                    appController = new AppController(getApplicationContext());
-                    int id_config = appController.getIdConfigByUser(id_user);
-
-                    historyController = new HistoryController(getApplicationContext());
-                    HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1);
-                    long id_history = historyController.addHistory(historyModel);
-                    if(id_history == -1){
-                        saved_app = false ;
-                    }
-                    else{
-                        saved_app = true;
-                    }
-
-                    startActivity(launchIntent);//null pointer check in case package name was not found
-
-                }
-            }
-        });
     }
-
 
     private List<AppModel> getInstalledApps(int id_user) {
         List<AppModel> res = new ArrayList<AppModel>();
@@ -144,9 +103,16 @@ public class LauncherActivity extends AppCompatActivity {
             AppModel loginUser = new AppModel(id_user,appFlag);
             boolean app_active = appController.appActiveByUser(loginUser);
             if(app_active){
-                res.add(new AppModel(appName, appFlag, icon));
+                String appNameN;
+                if (appName.length()>=7){
+                    appNameN=appName.substring(0,7)+"...";
+                }else {
+                    appNameN=appName;
+                }
+                res.add(new AppModel(appNameN, appFlag, icon));
             }
         }
+        Collections.sort(res, new sortAlphabetically());
         return res;
     }
 
@@ -244,30 +210,6 @@ public class LauncherActivity extends AppCompatActivity {
         return false;
     }
 
-    public String getRotation(Context context){
-        final int rotation = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
-        switch (rotation) {
-            case Surface.ROTATION_0:
-            case Surface.ROTATION_180:
-                return "vertical";
-            case Surface.ROTATION_90:
-            default:
-                return "horizontal";
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode==REQUEST_ACCES_FINE){
-            if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"Permiso consedido",Toast.LENGTH_LONG).show();
-            }else {
-                Toast.makeText(this,"Permiso denegado",Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
     public class AsyncTasck_load extends AsyncTask<Void,Integer,Void>{
         int progress;
 
@@ -291,13 +233,62 @@ public class LauncherActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            progressBar.setProgress(values[0]);
+            //progressBar.setProgress(values[0]);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            String valor = getIntent().getStringExtra("id_user");
+            id_user=Integer.parseInt(valor);
+
+            userInstalledApps = (GridView)findViewById(R.id.recyclerViewApp);
+
+            installedApps = getInstalledApps(id_user);
+            AppConfigAdapter installedAppAdapter = new AppConfigAdapter(getApplicationContext(), installedApps);
+            userInstalledApps.setAdapter(installedAppAdapter);
+
+            //Log.e("HOLA",""+appController.getUserName(id_user));
+            getSupportActionBar().setTitle("Mobility App Lock - "+appController.getUserName(id_user));
+
+            userInstalledApps.setClickable(true);
+            userInstalledApps.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    AppModel appSelected = installedApps.get(i);
+                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage(appSelected.getApp_flag_system());
+                    if (launchIntent != null) {
+
+                        //INSERT user_history
+                        Date date = Calendar.getInstance().getTime();
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                        String strDate = dateFormat.format(date);
+                        appController = new AppController(getApplicationContext());
+                        int id_config = appController.getIdConfigByUser(id_user);
+
+                        historyController = new HistoryController(getApplicationContext());
+                        HistoryModel historyModel = new HistoryModel(id_user, id_config, strDate, 1);
+                        long id_history = historyController.addHistory(historyModel);
+                        if(id_history == -1){
+                            saved_app = false ;
+                        }
+                        else{
+                            saved_app = true;
+                        }
+
+                        startActivity(launchIntent);//null pointer check in case package name was not found
+
+                    }
+                }
+            });
             progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    private class sortAlphabetically implements Comparator<AppModel> {
+        @Override
+        public int compare(AppModel o1, AppModel o2) {
+            return o1.getApp_name().compareTo(o2.getApp_name());
         }
     }
 

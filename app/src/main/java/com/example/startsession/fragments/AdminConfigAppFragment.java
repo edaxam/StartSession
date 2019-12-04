@@ -22,10 +22,14 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.startsession.AdminActivity;
 import com.example.startsession.ConfigAppActivity;
+import com.example.startsession.LauncherActivity;
 import com.example.startsession.R;
 import com.example.startsession.db.controller.UserController;
 import com.example.startsession.db.model.UserModel;
+import com.example.startsession.interfaces.ClickListener;
+import com.example.startsession.ui.admin.RecyclerViewItemClickListener;
 import com.example.startsession.ui.admin.UserAdapter;
 
 import java.util.ArrayList;
@@ -134,61 +138,31 @@ public class AdminConfigAppFragment extends Fragment {
             }
         });
 
-
-        final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(getActivity(), recyclerView, new ClickListener() {
             @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                return true;
-            }
-        });
+            public void onClick(View view, int position) {
+                UserModel userSelected = listUser.get(position);
 
+                Intent intent = new Intent(getActivity(), ConfigAppActivity.class);
+                intent.putExtra("id_user",""+userSelected.getId_user());
+                intent.putExtra("user",userSelected.getUser());
+                intent.putExtra("mail",userSelected.getMail());
+                intent.putExtra("password",userSelected.getPassword());
+                intent.putExtra("name",userSelected.getName());
+                intent.putExtra("last_name",userSelected.getLast_name());
+                intent.putExtra("mother_last_name",userSelected.getMother_last_name());
 
-        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-                try {
-                    View child = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
-
-                    Log.e("Event click", String.valueOf(mGestureDetector.onTouchEvent(motionEvent)));
-                    if (child != null && mGestureDetector.onTouchEvent(motionEvent)) {
-
-                        int position = recyclerView.getChildAdapterPosition(child);
-                        UserModel userSelected = listUser.get(position);
-
-
-                        //Toast.makeText(getContext(),"Cargando la configuración de : " + userSelected.getName() ,Toast.LENGTH_SHORT).show();
-
-                        Intent intent = new Intent(getActivity(), ConfigAppActivity.class);
-                        intent.putExtra("id_user",""+userSelected.getId_user());
-                        intent.putExtra("user",userSelected.getUser());
-                        intent.putExtra("mail",userSelected.getMail());
-                        intent.putExtra("password",userSelected.getPassword());
-                        intent.putExtra("name",userSelected.getName());
-                        intent.putExtra("last_name",userSelected.getLast_name());
-                        intent.putExtra("mother_last_name",userSelected.getMother_last_name());
-
-                        startActivity(intent);
-
-                        return true;
-                    }
-
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                return false;
+                startActivity(intent);
             }
 
             @Override
-            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-
+            public void onLongClick(View view, int position) {
+                UserModel userSelected = listUser.get(position);
+                Intent intent = new Intent(getContext(), LauncherActivity.class);
+                intent.putExtra("id_user","" + userSelected.getId_user());
+                startActivity(intent);
             }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean b) {
-
-            }
-        });
+        }));
 
 
         return view ;
@@ -240,8 +214,4 @@ public class AdminConfigAppFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-
-
-
 }

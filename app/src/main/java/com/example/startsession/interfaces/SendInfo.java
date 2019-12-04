@@ -10,7 +10,7 @@ import retrofit2.http.POST;
 
 public interface SendInfo{
     @FormUrlEncoded
-    @POST("http://192.168.15.2/Roberto/Mobility-app/api/load_admin/UGVkYXpvYWxhbWJyZWNvbXBsZXRhbGF0YWJsYQ==/")
+    @POST("http://mobility.sysandweb.com/api/load_admin/UGVkYXpvYWxhbWJyZWNvbXBsZXRhbGF0YWJsYQ==/")
     Call<ResponseBody> savePost(@Field("user") String user,@Field("password") String password,@Field("data") JSONArray data);
 
 }
