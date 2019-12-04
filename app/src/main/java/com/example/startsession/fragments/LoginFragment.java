@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,6 +127,70 @@ public class LoginFragment extends Fragment {
 
         user   = (EditText) view.findViewById(R.id.input_user);
         password = (EditText) view.findViewById(R.id.input_password);
+
+        password.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if ((keyEvent.getAction()==KeyEvent.ACTION_DOWN) && (i==KeyEvent.KEYCODE_ENTER)){
+                    userText = user.getText().toString();
+                    passwordText = password.getText().toString();
+                    Toast.makeText(getActivity(),"Conectando ...",Toast.LENGTH_SHORT).show();
+                    @SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> inicioSession = new AsyncTask<String, String, String>() {
+                        @Override
+                        protected String doInBackground(String... voids) {
+                            String result = "";
+                            try {
+                                Thread.sleep(3000);
+                                if(userText.equals("") || passwordText.equals("")){
+                                    result="fail";
+                                }else{
+                                    result="done";
+                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            return result;
+                        }
+
+                        @Override
+                        protected void onPostExecute(String s) {
+                            if (s.equals("done")){
+                                //circularProgressButton.doneLoadingAnimation(Color.parseColor("#333639"), BitmapFactory.decodeResource(getResources(),R.drawable.ic_done_white_48dp));
+
+                                UserModel userModel = validationLogin(userText,passwordText);
+                                Log.e("LOGIN","User: " + userText + " Password: " + passwordText + " id_user: " + userModel.getId_user());
+
+                                if( userModel.getId_user() != 0){
+                                    if(userModel.getId_user() > 0 && userModel.getAdmin() != 1){
+                                        Intent intent = new Intent(getActivity(), LauncherActivity.class);
+                                        intent.putExtra("id_user","" + userModel.getId_user());
+                                        startActivity(intent);
+                                        getActivity().finish();
+                                        circularProgressButton.revertAnimation();
+                                    }
+                                    else{
+                                        Intent intent = new Intent(getActivity(), AdminActivity.class);
+                                        startActivity(intent);
+                                        getActivity().finish();
+                                        circularProgressButton.revertAnimation();
+                                    }
+                                }
+                                else{
+                                    Toast.makeText(getActivity(),"Usuario o contraseña Incorrectos",Toast.LENGTH_LONG).show();
+                                    circularProgressButton.revertAnimation();
+                                }
+                            }else {
+                                Toast.makeText(getActivity(),"Usuario o contraseña VACIOS",Toast.LENGTH_LONG).show();
+                                circularProgressButton.revertAnimation();
+                            }
+                        }
+                    };
+                    circularProgressButton.startAnimation();
+                    inicioSession.execute();
+                }
+                return false;
+            }
+        });
 
         circularProgressButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -391,7 +456,7 @@ public class LoginFragment extends Fragment {
 
         OkHttpClient okHttpClient = new OkHttpClient();
         Retrofit.Builder  retrofitBuilder = new Retrofit.Builder()
-                .baseUrl("http://192.168.15.2/Roberto/Mobility-app/api/load_admin/UGVkYXpvYWxhbWJyZWNvbXBsZXRhbGF0YWJsYQ==/")
+                .baseUrl("http://mobility.sysandweb.com/api/load_admin/UGVkYXpvYWxhbWJyZWNvbXBsZXRhbGF0YWJsYQ==/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient);
         Retrofit retrofit = retrofitBuilder.build();

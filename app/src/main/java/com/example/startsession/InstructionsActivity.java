@@ -1,9 +1,13 @@
 package com.example.startsession;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.startsession.ui.main.SliderAdapter;
 
@@ -22,12 +27,12 @@ public class InstructionsActivity extends AppCompatActivity {
     public static final String LAUNCH_INSTRUCCIONS = "Instrucciones";
     private boolean muestra;
     public int width;
+    private int REQUEST_ACCES_FINE = 0;
 
     private ViewPager viewPager;
     private SliderAdapter myAdapter;
     public Button btnNext;
     public Button btnSkip;
-    public Button btnAcction;
     public LinearLayout linearLayout;
 
     private LinearLayout dots_layout;
@@ -36,6 +41,24 @@ public class InstructionsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+        )!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.KILL_BACKGROUND_PROCESSES,
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.REORDER_TASKS,
+                            Manifest.permission.GET_TASKS,
+                            Manifest.permission.ACCESS_NETWORK_STATE,
+                            Manifest.permission.SET_WALLPAPER,
+                            Manifest.permission.INTERNET,
+                            Manifest.permission.PACKAGE_USAGE_STATS
+                    },REQUEST_ACCES_FINE);
+        }
 
         cargarDatos();
         if (!muestra) {
@@ -93,6 +116,18 @@ public class InstructionsActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode==REQUEST_ACCES_FINE){
+            if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this,"Permiso consedido",Toast.LENGTH_LONG).show();
+            }else {
+                Toast.makeText(this,"Permiso denegado",Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     //Metodo para los puntos de proceso
