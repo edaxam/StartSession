@@ -25,16 +25,22 @@
         android:tint="@color/colorWhite" /-->
 
     <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/floatingActionMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:menu_colorNormal="@color/colorAccent"
-        app:menu_icon="@drawable/ic_change_history_black_24dp"
-        android:id="@+id/floatingActionMenu"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        app:menu_showShadow="true"
+        android:scrollbarSize="@dimen/dp_16"
         app:menu_backgroundColor="@android:color/transparent"
-        app:menu_openDirection="up">
+        app:menu_colorNormal="@color/colorAccent"
+        app:menu_colorPressed="@color/colorAccent"
+        app:menu_icon="@drawable/ic_add_black_24dp"
+        app:menu_openDirection="up"
+        app:menu_shadowColor="#4D000000"
+        app:menu_shadowRadius="4dp"
+        app:menu_shadowYOffset="5dp"
+        app:menu_showShadow="true">
+
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/exit_app"
             android:layout_width="wrap_content"
@@ -42,16 +48,16 @@
             android:src="@drawable/ic_visibility_off_black_24dp"
             app:fab_colorNormal="@color/colorAccent"
             app:fab_label="Modo Kiosko"
-            app:fab_size="normal"/>
+            app:fab_size="normal" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/exit_mode_admi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fab_colorNormal="@color/colorAccent"
             android:src="@drawable/ic_exit_to_app_black_24dp"
+            app:fab_colorNormal="@color/colorAccent"
             app:fab_label="Salir de la app"
-            app:fab_size="normal"/>
+            app:fab_size="normal" />
     </com.github.clans.fab.FloatingActionMenu>
 
 
