@@ -148,7 +148,7 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
-    public void login(EditText user,EditText password){
+    public void login(final EditText user, EditText password){
         userText = user.getText().toString();
         passwordText = password.getText().toString();
         Toast.makeText(getActivity(),"Conectando ...",Toast.LENGTH_SHORT).show();
@@ -176,24 +176,25 @@ public class LoginFragment extends Fragment {
 
                     UserModel userModel = validationLogin(userText,passwordText);
                     Log.e("LOGIN","User: " + userText + " Password: " + passwordText + " id_user: " + userModel.getId_user());
-
-                    if( userModel.getId_user() != 0){
-                        if(userModel.getId_user() > 0 && userModel.getAdmin() != 1){
-                            Intent intent = new Intent(getActivity(), LauncherActivity.class);
-                            intent.putExtra("id_user","" + userModel.getId_user());
-                            startActivity(intent);
-                            getActivity().finish();
+                    if (userModel.getStatus_ws()!= 1) {
+                        if (userModel.getId_user() != 0) {
+                            if (userModel.getId_user()>0&&userModel.getAdmin() != 1) {
+                                Intent intent = new Intent(getActivity(), LauncherActivity.class);
+                                intent.putExtra("id_user", "" + userModel.getId_user());
+                                startActivity(intent);
+                                getActivity().finish();
+                                circularProgressButton.revertAnimation();
+                            } else {
+                                Intent intent = new Intent(getActivity(), AdminActivity.class);
+                                startActivity(intent);
+                                getActivity().finish();
+                                circularProgressButton.revertAnimation();
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), "Usuario o contraseña Incorrectos", Toast.LENGTH_LONG).show();
                             circularProgressButton.revertAnimation();
                         }
-                        else{
-                            Intent intent = new Intent(getActivity(), AdminActivity.class);
-                            startActivity(intent);
-                            getActivity().finish();
-                            circularProgressButton.revertAnimation();
-                        }
-                    }
-                    else{
-                        Toast.makeText(getActivity(),"Usuario o contraseña Incorrectos",Toast.LENGTH_LONG).show();
+                    }else {
                         circularProgressButton.revertAnimation();
                     }
                 }else {
@@ -247,31 +248,33 @@ public class LoginFragment extends Fragment {
 
     public UserModel validationLogin(String user, String password){
 
+        boolean user_ws=false;
         cargarDatos();
-
-        boolean[]user_ws={false};
-        if ((!user.equals("root") && !password.equals("Mobility2639"))){
-            if (!isFirts){
-                String[] datos=cargarUserPassword();
-                if (datos[0].equals(user)&&datos[1].equals(password)){
-                    user_ws[0] = ConectedCloud(user,password,getContext());
-                }else {
-                    user_ws[0] = UreSecure(user,password);
-                }
-            }else {
-                user_ws[0] = ConectedCloud(user,password,getContext());
-            }
-        }
 
         userController = new UserController(getContext());
         appController = new AppController(getContext());
         UserModel loginUser = new UserModel(user,password);
         UserModel id_user = userController.login(loginUser);
 
-        // Root Access
-        if((user.equalsIgnoreCase("root") && password.equals("Mobility2639")) || user_ws[0] ){
+        if(user.equals("root") && password.equals("Mobility2639")){
             id_user.setId_user(-1989);
+        }else if ((!user.equals("root") && !password.equals("Mobility2639"))){
+            if (!isFirts){
+                String[] datos=cargarUserPassword();
+                if (datos[0].equals(user)&&datos[1].equals(password)){
+                    user_ws= ConectedCloud(user,password,getContext());
+                }else {
+                    user_ws = UreSecure(user,password);
+                }
+            }else {
+                user_ws = ConectedCloud(user,password,getContext());
+            }
         }
+
+        id_user.setStatus_ws(user_ws?1:0);
+
+        // Root Access
+
 
         return id_user;
     }

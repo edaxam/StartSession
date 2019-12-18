@@ -86,4 +86,5 @@ public class AppAdapter extends BaseAdapter {
         TextView textInListView;
         ImageView imageInListView;
     }
+
 }

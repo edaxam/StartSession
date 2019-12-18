@@ -171,11 +171,17 @@ public class AdminConfigAppFragment extends Fragment {
     private void reloadListUser(String seachrUser) {
         Log.e("RESP",seachrUser);
         if (userAdapter == null) return;
-        listUser = userController.getUsers(seachrUser);
+        listUser = userController.getUsersAdmin(seachrUser);
         userAdapter.setListUser(listUser);
         userAdapter.notifyDataSetChanged();
     }
-
+/*
+    private void setListUser (){
+        listUser = userController.getUsersAdmin("");
+        userAdapter.setListUser(listUser);
+        userAdapter.notifyDataSetChanged();
+    }
+*/
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {

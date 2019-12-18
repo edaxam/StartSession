@@ -70,6 +70,7 @@ public class AdminActivity extends AppCompatActivity implements
     AdminHomeFragment.OnFragmentInteractionListener,
     AdminImportExportFragment.OnFragmentInteractionListener,
     AdminConfigUserFragment.OnFragmentInteractionListener, AdminConfigAppFragment.OnFragmentInteractionListener {
+
     BottomNavigationView bottomNavigationView;
 
     //This is our viewPager
@@ -214,12 +215,11 @@ public class AdminActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.wallpaper:
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
-                        "content://media/internal/images/media"));
-                startActivity(intent);
-                return true;
+        if (item.getItemId() == R.id.wallpaper) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                    "content://media/internal/images/media"));
+            startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -263,10 +263,6 @@ public class AdminActivity extends AppCompatActivity implements
             {
                 rutaArchivo = data.getData(); //obtener el uri content
                 ImportarDatos(rutaArchivo,this);
-            }
-            if (resultCode == RESULT_CANCELED)
-            {
-
             }
         }
     }

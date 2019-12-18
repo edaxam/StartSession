@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
 
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -60,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         // Do nothing or catch the keys you want to block
         return false;
     }
-
 
     @SuppressLint("ResourceType")
     public void setWallpaperDefault(){
