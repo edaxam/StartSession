@@ -28,13 +28,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        app:fab_shadowColor="#80000000"
+        app:fab_shadowRadius="4dp"
+        app:fab_shadowYOffset="5dp"
+        app:fab_showShadow="true"
         app:srcCompat="@drawable/ic_edit_black_24dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_del"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
+        android:layout_gravity="bottom|start"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_delete_black_24dp" />
 

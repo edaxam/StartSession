@@ -23,7 +23,7 @@ import com.example.startsession.ReadQRActivity;
  * create an instance of this fragment.
  */
 public class RegisterFragment extends Fragment {
-        public static EditText user;
+    public static EditText user;
     public static EditText password;
 
     // TODO: Rename parameter arguments, choose names that match

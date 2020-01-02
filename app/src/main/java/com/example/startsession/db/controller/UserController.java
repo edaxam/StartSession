@@ -34,6 +34,51 @@ public class UserController {
         return db.insert(TABLE_NAME, null, valuesInsert);
     }
 
+    public ArrayList<UserModel> getUsersAdmin(String campo_search) {
+        ArrayList<UserModel> users = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] column_names = {"id_user", "user", "mail", "password", "name", "last_name", "mother_last_name", "active", "status_ws", "admin", "date_create"};
+
+        //String[] args = new String[]{"1"};
+
+        String where = "active = 1 AND admin = 0 ";
+        if (!campo_search.equals("")) {
+            //args = new String[] {"1",campo_search};
+            where += " AND name LIKE '%" + campo_search + "%' OR mother_last_name LIKE '%" + campo_search + "%' OR last_name LIKE '%" + campo_search + "%' OR user LIKE '%" + campo_search + "%' ";
+        }
+
+        Cursor cursor = db.query(TABLE_NAME, column_names, where,null, null, null, null);
+
+        if (cursor == null) {
+            return users;
+        }
+        if (!cursor.moveToFirst()) return users;
+
+        do {
+
+            Long id_userDB = cursor.getLong(0);
+            String userDB = cursor.getString(1);
+            String mailDB = cursor.getString(2);
+            String passwordDB = cursor.getString(3);
+            String nameDB = cursor.getString(4);
+            String last_nameDB = cursor.getString(5);
+            String mother_last_nameDB = cursor.getString(6);
+            Integer activeDB = cursor.getInt(7);
+            Integer status_wsDB = cursor.getInt(8);
+            Integer adminDB = cursor.getInt(9);
+            String date_createDB = cursor.getString(10);
+
+
+            UserModel getUserBD = new UserModel(userDB, mailDB, passwordDB, nameDB, last_nameDB, mother_last_nameDB, date_createDB, activeDB, status_wsDB, id_userDB, adminDB);
+            users.add(getUserBD);
+        } while (cursor.moveToNext());
+
+        cursor.close();
+        return users;
+    }
+
     public ArrayList<UserModel> getUsers(String campo_search) {
         ArrayList<UserModel> users = new ArrayList<>();
 
@@ -136,15 +181,15 @@ public class UserController {
         ContentValues valuesUpdate = new ContentValues();
         valuesUpdate.put("is_last_active",0);
         db_update.update(TABLE_NAME, valuesUpdate, null, null);
+        if (userModel.getAdmin()!=1){
+            SQLiteDatabase db_update_is_active = dbHelper.getWritableDatabase();
+            ContentValues valuesUpdateIsActive = new ContentValues();
+            valuesUpdateIsActive.put("is_last_active",1);
+            String where = "id_user = ?";
 
-        SQLiteDatabase db_update_is_active = dbHelper.getWritableDatabase();
-        ContentValues valuesUpdateIsActive = new ContentValues();
-        valuesUpdateIsActive.put("is_last_active",1);
-        String where = "id_user = ?";
-
-        String[] argsUpdate = {String.valueOf(userModel.getId_user())};
-        db_update.update(TABLE_NAME, valuesUpdateIsActive, where, argsUpdate);
-
+            String[] argsUpdate = {String.valueOf(userModel.getId_user())};
+            db_update.update(TABLE_NAME, valuesUpdateIsActive, where, argsUpdate);
+        }
         return userModel;
 
 

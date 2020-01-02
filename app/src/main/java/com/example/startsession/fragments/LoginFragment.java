@@ -132,61 +132,7 @@ public class LoginFragment extends Fragment {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
                 if ((keyEvent.getAction()==KeyEvent.ACTION_DOWN) && (i==KeyEvent.KEYCODE_ENTER)){
-                    userText = user.getText().toString();
-                    passwordText = password.getText().toString();
-                    Toast.makeText(getActivity(),"Conectando ...",Toast.LENGTH_SHORT).show();
-                    @SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> inicioSession = new AsyncTask<String, String, String>() {
-                        @Override
-                        protected String doInBackground(String... voids) {
-                            String result = "";
-                            try {
-                                Thread.sleep(3000);
-                                if(userText.equals("") || passwordText.equals("")){
-                                    result="fail";
-                                }else{
-                                    result="done";
-                                }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            return result;
-                        }
-
-                        @Override
-                        protected void onPostExecute(String s) {
-                            if (s.equals("done")){
-                                //circularProgressButton.doneLoadingAnimation(Color.parseColor("#333639"), BitmapFactory.decodeResource(getResources(),R.drawable.ic_done_white_48dp));
-
-                                UserModel userModel = validationLogin(userText,passwordText);
-                                Log.e("LOGIN","User: " + userText + " Password: " + passwordText + " id_user: " + userModel.getId_user());
-
-                                if( userModel.getId_user() != 0){
-                                    if(userModel.getId_user() > 0 && userModel.getAdmin() != 1){
-                                        Intent intent = new Intent(getActivity(), LauncherActivity.class);
-                                        intent.putExtra("id_user","" + userModel.getId_user());
-                                        startActivity(intent);
-                                        getActivity().finish();
-                                        circularProgressButton.revertAnimation();
-                                    }
-                                    else{
-                                        Intent intent = new Intent(getActivity(), AdminActivity.class);
-                                        startActivity(intent);
-                                        getActivity().finish();
-                                        circularProgressButton.revertAnimation();
-                                    }
-                                }
-                                else{
-                                    Toast.makeText(getActivity(),"Usuario o contraseña Incorrectos",Toast.LENGTH_LONG).show();
-                                    circularProgressButton.revertAnimation();
-                                }
-                            }else {
-                                Toast.makeText(getActivity(),"Usuario o contraseña VACIOS",Toast.LENGTH_LONG).show();
-                                circularProgressButton.revertAnimation();
-                            }
-                        }
-                    };
-                    circularProgressButton.startAnimation();
-                    inicioSession.execute();
+                    login(user,password);
                 }
                 return false;
             }
@@ -195,65 +141,70 @@ public class LoginFragment extends Fragment {
         circularProgressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                userText = user.getText().toString();
-                passwordText = password.getText().toString();
-                Toast.makeText(getActivity(),"Conectando ...",Toast.LENGTH_SHORT).show();
-                @SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> inicioSession = new AsyncTask<String, String, String>() {
-                    @Override
-                    protected String doInBackground(String... voids) {
-                        String result = "";
-                        try {
-                            Thread.sleep(3000);
-                            if(userText.equals("") || passwordText.equals("")){
-                                result="fail";
-                            }else{
-                                result="done";
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        return result;
-                    }
-
-                    @Override
-                    protected void onPostExecute(String s) {
-                        if (s.equals("done")){
-                            //circularProgressButton.doneLoadingAnimation(Color.parseColor("#333639"), BitmapFactory.decodeResource(getResources(),R.drawable.ic_done_white_48dp));
-
-                            UserModel userModel = validationLogin(userText,passwordText);
-                            Log.e("LOGIN","User: " + userText + " Password: " + passwordText + " id_user: " + userModel.getId_user());
-
-                            if( userModel.getId_user() != 0){
-                                if(userModel.getId_user() > 0 && userModel.getAdmin() != 1){
-                                    Intent intent = new Intent(getActivity(), LauncherActivity.class);
-                                    intent.putExtra("id_user","" + userModel.getId_user());
-                                    startActivity(intent);
-                                    getActivity().finish();
-                                    circularProgressButton.revertAnimation();
-                                }
-                                else{
-                                    Intent intent = new Intent(getActivity(), AdminActivity.class);
-                                    startActivity(intent);
-                                    getActivity().finish();
-                                    circularProgressButton.revertAnimation();
-                                }
-                            }
-                            else{
-                                Toast.makeText(getActivity(),"Usuario o contraseña Incorrectos",Toast.LENGTH_LONG).show();
-                                circularProgressButton.revertAnimation();
-                            }
-                        }else {
-                            Toast.makeText(getActivity(),"Usuario o contraseña VACIOS",Toast.LENGTH_LONG).show();
-                            circularProgressButton.revertAnimation();
-                        }
-                    }
-                };
-                circularProgressButton.startAnimation();
-                inicioSession.execute();
+                login(user,password);
             }
         });
 
         return view;
+    }
+
+    public void login(final EditText user, EditText password){
+        userText = user.getText().toString();
+        passwordText = password.getText().toString();
+        Toast.makeText(getActivity(),"Conectando ...",Toast.LENGTH_SHORT).show();
+        @SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> inicioSession = new AsyncTask<String, String, String>() {
+            @Override
+            protected String doInBackground(String... voids) {
+                String result = "";
+                try {
+                    Thread.sleep(3000);
+                    if(userText.equals("") || passwordText.equals("")){
+                        result="fail";
+                    }else{
+                        result="done";
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                if (s.equals("done")){
+                    //circularProgressButton.doneLoadingAnimation(Color.parseColor("#333639"), BitmapFactory.decodeResource(getResources(),R.drawable.ic_done_white_48dp));
+
+                    UserModel userModel = validationLogin(userText,passwordText);
+                    Log.e("LOGIN","User: " + userText + " Password: " + passwordText + " id_user: " + userModel.getId_user());
+                    if (userModel.getStatus_ws()!= 1) {
+                        if (userModel.getId_user() != 0) {
+                            if (userModel.getId_user()>0&&userModel.getAdmin() != 1) {
+                                Intent intent = new Intent(getActivity(), LauncherActivity.class);
+                                intent.putExtra("id_user", "" + userModel.getId_user());
+                                startActivity(intent);
+                                getActivity().finish();
+                                circularProgressButton.revertAnimation();
+                            } else {
+                                Intent intent = new Intent(getActivity(), AdminActivity.class);
+                                startActivity(intent);
+                                getActivity().finish();
+                                circularProgressButton.revertAnimation();
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), "Usuario o contraseña Incorrectos", Toast.LENGTH_LONG).show();
+                            circularProgressButton.revertAnimation();
+                        }
+                    }else {
+                        circularProgressButton.revertAnimation();
+                    }
+                }else {
+                    Toast.makeText(getActivity(),"Usuario o contraseña VACIOS",Toast.LENGTH_LONG).show();
+                    circularProgressButton.revertAnimation();
+                }
+            }
+        };
+        circularProgressButton.startAnimation();
+        inicioSession.execute();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -297,31 +248,33 @@ public class LoginFragment extends Fragment {
 
     public UserModel validationLogin(String user, String password){
 
+        boolean user_ws=false;
         cargarDatos();
-
-        boolean[]user_ws={false};
-        if ((!user.equals("root") && !password.equals("Mobility2639"))){
-            if (!isFirts){
-                String[] datos=cargarUserPassword();
-                if (datos[0].equals(user)&&datos[1].equals(password)){
-                    user_ws[0] = ConectedCloud(user,password,getContext());
-                }else {
-                    user_ws[0] = UreSecure(user,password);
-                }
-            }else {
-                user_ws[0] = ConectedCloud(user,password,getContext());
-            }
-        }
 
         userController = new UserController(getContext());
         appController = new AppController(getContext());
         UserModel loginUser = new UserModel(user,password);
         UserModel id_user = userController.login(loginUser);
 
-        // Root Access
-        if((user.equalsIgnoreCase("root") && password.equals("Mobility2639")) || user_ws[0] ){
+        if(user.equals("root") && password.equals("Mobility2639")){
             id_user.setId_user(-1989);
+        }else if ((!user.equals("root") && !password.equals("Mobility2639"))){
+            if (!isFirts){
+                String[] datos=cargarUserPassword();
+                if (datos[0].equals(user)&&datos[1].equals(password)){
+                    user_ws= ConectedCloud(user,password,getContext());
+                }else {
+                    user_ws = UreSecure(user,password);
+                }
+            }else {
+                user_ws = ConectedCloud(user,password,getContext());
+            }
         }
+
+        id_user.setStatus_ws(user_ws?1:0);
+
+        // Root Access
+
 
         return id_user;
     }
