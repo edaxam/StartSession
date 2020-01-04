@@ -8,107 +8,116 @@
     tools:context=".AddUserActivity"
     tools:showIn="@layout/activity_add_user">
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp">
-
-
-        <!-- User Label -->
-        <android.support.design.widget.TextInputLayout
+        android:layout_height="match_parent">
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_user"
-                android:drawableLeft="@drawable/ic_account_circle_black_24dp"
-                android:drawablePadding="10dp"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_user_only"  />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_marginBottom="20dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp">
 
-        <!-- Email Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_mail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:drawableLeft="@drawable/ic_contact_mail_black_24dp"
-                android:drawablePadding="10dp"
-                android:hint="@string/input_text_mail_only" />
-        </android.support.design.widget.TextInputLayout>
+                <!-- User Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
+                    <EditText android:id="@+id/input_user"
+                        android:drawableLeft="@drawable/ic_account_circle_black_24dp"
+                        android:drawablePadding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:hint="@string/input_text_user_only"  />
+                </android.support.design.widget.TextInputLayout>
 
-        <!-- Password Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:passwordToggleEnabled="true">
-            <EditText android:id="@+id/input_password"
-                android:drawableStart="@drawable/ic_security_black_24dp"
-                android:drawablePadding="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="@string/input_text_password"/>
-        </android.support.design.widget.TextInputLayout>
+                <!-- Email Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
+                    <EditText android:id="@+id/input_mail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:drawableLeft="@drawable/ic_contact_mail_black_24dp"
+                        android:drawablePadding="10dp"
+                        android:hint="@string/input_text_mail_only" />
+                </android.support.design.widget.TextInputLayout>
 
-        <!-- Name Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_name"
-                android:drawableLeft="@drawable/ic_mood_black_24dp"
-                android:drawablePadding="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_name"/>
-        </android.support.design.widget.TextInputLayout>
+                <!-- Password Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:passwordToggleEnabled="true">
+                    <EditText android:id="@+id/input_password"
+                        android:drawableStart="@drawable/ic_security_black_24dp"
+                        android:drawablePadding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:hint="@string/input_text_password"/>
+                </android.support.design.widget.TextInputLayout>
 
-        <!-- Last Name Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_last_name"
-                android:drawableLeft="@drawable/ic_accessibility_black_24dp"
-                android:drawablePadding="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_last_name"/>
-        </android.support.design.widget.TextInputLayout>
+                <!-- Name Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
+                    <EditText android:id="@+id/input_name"
+                        android:drawableLeft="@drawable/ic_mood_black_24dp"
+                        android:drawablePadding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:hint="@string/input_text_name"/>
+                </android.support.design.widget.TextInputLayout>
 
-        <!-- Mother Last Name Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_mother_last_name"
-                android:drawableLeft="@drawable/ic_pregnant_woman_black_24dp"
-                android:drawablePadding="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/input_text_mother_last_name"/>
-        </android.support.design.widget.TextInputLayout>
+                <!-- Last Name Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
+                    <EditText android:id="@+id/input_last_name"
+                        android:drawableLeft="@drawable/ic_accessibility_black_24dp"
+                        android:drawablePadding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:hint="@string/input_text_last_name"/>
+                </android.support.design.widget.TextInputLayout>
 
-        <CheckBox android:id="@+id/checkbox_admin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Administrador"/>
+                <!-- Mother Last Name Label -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
+                    <EditText android:id="@+id/input_mother_last_name"
+                        android:drawableLeft="@drawable/ic_pregnant_woman_black_24dp"
+                        android:drawablePadding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:hint="@string/input_text_mother_last_name"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <CheckBox android:id="@+id/checkbox_admin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Administrador"/>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

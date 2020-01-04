@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Process;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,8 +121,10 @@ public class AdminHomeFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
+                Intent intentService = new Intent(getContext(), BlockService.class);
+                getActivity().stopService(intentService);
+                getActivity().finish();
+                getActivity().moveTaskToBack(true);
             }
         });
 
@@ -131,10 +134,8 @@ public class AdminHomeFragment extends Fragment {
         exitFabApp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentService = new Intent(getContext(), BlockService.class);
-                getActivity().stopService(intentService);
-                getActivity().finish();
-                getActivity().moveTaskToBack(true);
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
             }
         });
         return view;
@@ -182,5 +183,11 @@ public class AdminHomeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onDestroy() {
+        Process.killProcess(Process.myPid());
+        super.onDestroy();
     }
 }
