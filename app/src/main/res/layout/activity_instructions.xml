@@ -36,7 +36,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SKIP"
+        android:text="SALTAR"
         android:textSize="16sp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -48,12 +48,13 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NEXT"
+        android:text="SIGUIENTE"
         android:textSize="16sp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@null"
         android:id="@+id/btnnext"
+        android:layout_marginRight="5dp"
         android:layout_marginBottom="8dp"
         android:textColor="@android:color/white"/>
 
