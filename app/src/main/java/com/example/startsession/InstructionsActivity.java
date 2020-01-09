@@ -1,12 +1,16 @@
 package com.example.startsession;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -37,10 +41,13 @@ public class InstructionsActivity extends AppCompatActivity {
 
     private LinearLayout dots_layout;
     private ImageView[] dots;
+    private NotificationManager mNotificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE
@@ -53,13 +60,16 @@ public class InstructionsActivity extends AppCompatActivity {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             Manifest.permission.REORDER_TASKS,
                             Manifest.permission.GET_TASKS,
+                            Manifest.permission.READ_PHONE_STATE,
                             Manifest.permission.ACCESS_NETWORK_STATE,
                             Manifest.permission.SET_WALLPAPER,
                             Manifest.permission.INTERNET,
+                            Manifest.permission.WRITE_SECURE_SETTINGS,
+                            Manifest.permission.WRITE_SETTINGS,
                             Manifest.permission.PACKAGE_USAGE_STATS
                     },REQUEST_ACCES_FINE);
         }
-
+        //changeInterruptionFiler(NotificationManager.INTERRUPTION_FILTER_ALARMS);
         cargarDatos();
         if (!muestra) {
             loadHome();
@@ -102,10 +112,10 @@ public class InstructionsActivity extends AppCompatActivity {
             public void onPageSelected(final int position) {
                 crearteDots(position);
                 if (position == myAdapter.lst_title.length - 1) {
-                    btnNext.setText("START");
+                    btnNext.setText("INICIAR");
                     btnSkip.setVisibility(View.INVISIBLE);
                 } else {
-                    btnNext.setText("NEXT");
+                    btnNext.setText("SIGUIENTE");
                     btnSkip.setVisibility(View.VISIBLE);
                 }
 
@@ -188,6 +198,60 @@ public class InstructionsActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         width = metrics.widthPixels; // ancho absoluto en pixels
         int height = metrics.heightPixels; // alto absoluto en pixels
+    }
+
+
+    protected void changeInterruptionFiler(int interruptionFilter){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){ // If api level minimum 23
+            /*
+                boolean isNotificationPolicyAccessGranted ()
+                    Checks the ability to read/modify notification policy for the calling package.
+                    Returns true if the calling package can read/modify notification policy.
+                    Request policy access by sending the user to the activity that matches the
+                    system intent action ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS.
+
+                    Use ACTION_NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED to listen for
+                    user grant or denial of this access.
+
+                Returns
+                    boolean
+
+            */
+            // If notification policy access granted for this package
+            if(mNotificationManager.isNotificationPolicyAccessGranted()){
+                /*
+                    void setInterruptionFilter (int interruptionFilter)
+                        Sets the current notification interruption filter.
+
+                        The interruption filter defines which notifications are allowed to interrupt
+                        the user (e.g. via sound & vibration) and is applied globally.
+
+                        Only available if policy access is granted to this package.
+
+                    Parameters
+                        interruptionFilter : int
+                        Value is INTERRUPTION_FILTER_NONE, INTERRUPTION_FILTER_PRIORITY,
+                        INTERRUPTION_FILTER_ALARMS, INTERRUPTION_FILTER_ALL
+                        or INTERRUPTION_FILTER_UNKNOWN.
+                */
+
+                // Set the interruption filter
+                mNotificationManager.setInterruptionFilter(interruptionFilter);
+            }else {
+                /*
+                    String ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS
+                        Activity Action : Show Do Not Disturb access settings.
+                        Users can grant and deny access to Do Not Disturb configuration from here.
+
+                    Input : Nothing.
+                    Output : Nothing.
+                    Constant Value : "android.settings.NOTIFICATION_POLICY_ACCESS_SETTINGS"
+                */
+                // If notification policy access not granted for this package
+                Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                startActivity(intent);
+            }
+        }
     }
 
 }

@@ -2,9 +2,13 @@ package com.example.startsession.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Process;
+import android.os.WorkSource;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +22,10 @@ import com.example.startsession.R;
 import com.example.startsession.db.controller.AppController;
 import com.example.startsession.db.controller.UserController;
 import com.github.clans.fab.FloatingActionButton;
+
+import java.io.BufferedReader;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -121,10 +129,8 @@ public class AdminHomeFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentService = new Intent(getContext(), BlockService.class);
-                getActivity().stopService(intentService);
-                getActivity().finish();
-                getActivity().moveTaskToBack(true);
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -134,8 +140,17 @@ public class AdminHomeFragment extends Fragment {
         exitFabApp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
+                /*Settings.Secure.putString(getContext().getContentResolver(),
+                        Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, "com.example.startsession.fragments/BlockService");
+                Settings.Secure.putString(getContext().getContentResolver(),
+                        Settings.Secure.ACCESSIBILITY_ENABLED, "0");*/
+                Intent intentService = new Intent(getContext(), BlockService.class);
+                getActivity().stopService(intentService);
+                Intent homeIntent = new Intent(Intent.ACTION_MAIN, null);
+                homeIntent.addCategory(Intent.CATEGORY_HOME);
+                homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                startActivity(homeIntent);
+
             }
         });
         return view;

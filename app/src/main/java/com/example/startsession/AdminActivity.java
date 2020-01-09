@@ -2,6 +2,8 @@ package com.example.startsession;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,9 +15,11 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -96,14 +100,20 @@ public class AdminActivity extends AppCompatActivity implements
     private int VALOR_RETORNO = 1;
     public BottomActionSheetConexion readBottomDialogFragment = BottomActionSheetConexion.newInstance();
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_admin);
-        Intent intentService = new Intent(this, BlockService.class);
-        stopService(intentService);
+
+        //NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        //mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_NONE);
+
+        //Intent intentService = new Intent(this, BlockService.class);
+        //stopService(intentService);
+
         appController = new AppController(getApplicationContext());
         userController = new UserController(getApplicationContext());
         //Initializing viewPager

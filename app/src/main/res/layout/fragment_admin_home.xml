@@ -47,6 +47,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_visibility_off_black_24dp"
             app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorRipple="@color/colorAccent"
             app:fab_label="Modo Kiosko"
             app:fab_size="normal" />
 
@@ -56,6 +57,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_exit_to_app_black_24dp"
             app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorRipple="@color/colorAccent"
             app:fab_label="Salir de la app"
             app:fab_size="normal" />
     </com.github.clans.fab.FloatingActionMenu>
