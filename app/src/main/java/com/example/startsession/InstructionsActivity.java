@@ -133,7 +133,7 @@ public class InstructionsActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode==REQUEST_ACCES_FINE){
             if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"Permiso consedido",Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"Permiso concedido",Toast.LENGTH_LONG).show();
             }else {
                 Toast.makeText(this,"Permiso denegado",Toast.LENGTH_LONG).show();
             }
