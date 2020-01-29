@@ -256,6 +256,7 @@ public class AdminActivity extends AppCompatActivity implements
     public void Archivo(View view) {
         boolean hayConexion=isNetworkAvailable(this);
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("text/*");
         startActivityForResult(Intent.createChooser(intent, "Importación"), VALOR_RETORNO);
         if (hayConexion){

@@ -8,14 +8,17 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,11 +28,18 @@ import android.widget.Toast;
 
 import com.example.startsession.ui.main.SliderAdapter;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 public class InstructionsActivity extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "Preferencias";
     public static final String LAUNCH_INSTRUCCIONS = "Instrucciones";
+    public static final String BTN_LAUNCHER = "inicio";
+    public static final String BTN_SCREEN = "pantalla";
+    public static final String BTN_ACESIBILITY = "accesibilidad";
     private boolean muestra;
+    private boolean btncurrent[]=new boolean[4];
     public int width;
     private int REQUEST_ACCES_FINE = 0;
 
@@ -75,12 +85,13 @@ public class InstructionsActivity extends AppCompatActivity {
             loadHome();
         }
 
+        btncurrent=cargarDatosBTNS();
+
         setContentView(R.layout.activity_instructions);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        myAdapter = new SliderAdapter(this);
+        myAdapter = new SliderAdapter(this,InstructionsActivity.this);
         viewPager.setAdapter(myAdapter);
-
         linearLayout = (LinearLayout) findViewById(R.id.slidelinearlayout);
         dots_layout = (LinearLayout) findViewById(R.id.dotsLayout);
 
@@ -106,6 +117,7 @@ public class InstructionsActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                btns(position);
             }
 
             @Override
@@ -119,6 +131,16 @@ public class InstructionsActivity extends AppCompatActivity {
                     btnSkip.setVisibility(View.VISIBLE);
                 }
 
+                if (position>0){
+                    viewPager.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            return !btncurrent[position];
+                        }
+                    });
+                    btnNext.setEnabled(btncurrent[position]);
+                    btnSkip.setEnabled(btncurrent[position]);
+                }
             }
 
             @Override
@@ -133,7 +155,7 @@ public class InstructionsActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode==REQUEST_ACCES_FINE){
             if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"Permiso consedido",Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"Permiso concedido",Toast.LENGTH_LONG).show();
             }else {
                 Toast.makeText(this,"Permiso denegado",Toast.LENGTH_LONG).show();
             }
@@ -192,6 +214,55 @@ public class InstructionsActivity extends AppCompatActivity {
         return muestra = preferences.getBoolean(LAUNCH_INSTRUCCIONS, true);
     }
 
+    //Metodo para cargar datos de preferencias
+    public boolean[] cargarDatosBTNS() {
+        SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        boolean[]btncurrent=new boolean[4];
+        btncurrent[1] = preferences.getBoolean(BTN_LAUNCHER, false);
+        btncurrent[2] = preferences.getBoolean(BTN_SCREEN, false);
+        btncurrent[3] = preferences.getBoolean(BTN_ACESIBILITY, false);
+
+        return btncurrent;
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        final long EXECUTION_TIME = 10000; // 30s
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+                btncurrent=cargarDatosBTNS();
+
+                for (int i=0;i<4;i++)
+                    btns(i);
+
+                handler.postDelayed(this, EXECUTION_TIME);
+            }
+        }, EXECUTION_TIME);
+    }
+
+    public void btns(final int position){
+        final SharedPreferences preferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                viewPager.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return !btncurrent[position];
+                    }
+                });
+                btnNext.setEnabled(btncurrent[position]);
+                btnSkip.setEnabled(btncurrent[position]);
+            }
+        };
+        preferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
     //Metodo para verificacion de Resolucion
     private void displayResolution() {
         DisplayMetrics metrics = new DisplayMetrics();
@@ -199,7 +270,6 @@ public class InstructionsActivity extends AppCompatActivity {
         width = metrics.widthPixels; // ancho absoluto en pixels
         int height = metrics.heightPixels; // alto absoluto en pixels
     }
-
 
     protected void changeInterruptionFiler(int interruptionFilter){
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){ // If api level minimum 23
