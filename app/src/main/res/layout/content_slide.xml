@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:padding="@dimen/dp_16"
     android:gravity="center">
 
@@ -42,18 +43,25 @@
             android:layout_marginBottom="10dp"
             android:id="@+id/txtruta"/>
 
-        <ImageView
-            android:layout_marginTop="@dimen/dp_8"
-            android:id="@+id/imagen"
-            android:layout_width="250dp"
-            android:layout_height="250dp"/>
-
-        <Button
-            android:tag="btnAccion"
-            android:layout_marginTop="10dp"
-            android:padding="15dp"
+        <LinearLayout
+            android:id="@+id/lltooltip"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_marginTop="@dimen/dp_8"
+                android:id="@+id/imagen"
+                android:layout_width="250dp"
+                android:layout_height="250dp"/>
+
+            <Button
+                android:id="@+id/btnAccion"
+                android:layout_marginTop="10dp"
+                android:padding="15dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
 
     </LinearLayout>

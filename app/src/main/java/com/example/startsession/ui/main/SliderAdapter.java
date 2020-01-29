@@ -1,32 +1,55 @@
 package com.example.startsession.ui.main;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.startsession.InstructionsActivity;
 import com.example.startsession.R;
 
-public class SliderAdapter extends PagerAdapter implements View.OnClickListener {
+import static android.content.Context.MODE_PRIVATE;
 
+public class SliderAdapter extends PagerAdapter implements View.OnClickListener {
+    public static final String SHARED_PREFS="Preferencias";
+    public static final String BTN_LAUNCHER = "inicio";
+    public static final String BTN_SCREEN = "pantalla";
+    public static final String BTN_ACESIBILITY = "accesibilidad";
+    Activity activity;
     Context context;
     LayoutInflater inflarte;
     private View.OnClickListener listener;
 
     public int[] lst_image = {
             R.drawable.mobility_logo,
-            R.drawable.mobility_logo,
-            R.drawable.mobility_logo,
-            R.drawable.mobility_logo
+            R.drawable.permisos,
+            R.drawable.pantalla,
+            R.drawable.accesibilidad
+    };
+    public String[] lst_Nimage = {
+            "mobility_logo",
+            "permisos",
+            "pantalla",
+            "accesibilidad"
     };
 
     public String [] lst_backgound_color={
@@ -59,15 +82,16 @@ public class SliderAdapter extends PagerAdapter implements View.OnClickListener 
 
     public String [] lst_adress = {
             "",
-            "Configuración > Aplicaciones > Icono de engran(Ajustes) > Aplicación de inicio",
-            "Configuración > Pantalla > Tamaño de pantalla",
-            "Configuración > Accesibilidad > Mobility"
+            "Aplicaciones > Icono de engran > Aplicación de inicio",
+            "Pantalla > Tamaño de pantalla",
+            "Accesibilidad > Mobility"
 
     };
 
 
-    public  SliderAdapter(Context context){
+    public  SliderAdapter(Context context,Activity activity){
         this.context=context;
+        this.activity=activity;
     }
 
     @Override
@@ -87,20 +111,22 @@ public class SliderAdapter extends PagerAdapter implements View.OnClickListener 
 
         View view =inflarte.inflate(R.layout.content_slide,container,false);
         view.setOnClickListener(this);
-        //LinearLayout layout=(LinearLayout)view.findViewById(R.id.slidelinearlayout);
 
         ImageView imgslide = (ImageView)view.findViewById(R.id.imagen);
         TextView textitle =(TextView)view.findViewById(R.id.titulo);
         TextView subtitle =(TextView)view.findViewById(R.id.txtdescipcion);
         TextView route =(TextView)view.findViewById(R.id.txtruta);
-        final Button button =(Button) view.findViewWithTag("btnAccion");
-        //Button button = new Button (context);
+        Button button =(Button) view.findViewById(R.id.btnAccion);
 
         textitle.setText(lst_title[position]);
         textitle.setTextColor(Color.parseColor(lst_backgound_color[1]));
         subtitle.setText(lst_description[position]);
         route.setText(lst_adress[position]);
-        imgslide.setImageResource(lst_image[position]);
+        if(isGif(lst_Nimage[position])){
+            Glide.with(context).asGif().load(lst_image[position]).into(imgslide);
+        }else{
+            Glide.with(context).load(lst_image[position]).into(imgslide);
+        }
         button.setText(lst_text_buttons[position]);
         button.setBackgroundColor(Color.parseColor(lst_backgound_color[position]));
         //button.setTextColor(Color.argb(0,0 ,0,0));
@@ -109,23 +135,23 @@ public class SliderAdapter extends PagerAdapter implements View.OnClickListener 
         button.setId(position);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //Log.i("TAG", "The index is " + position);
-                //Log.i("TAG","The id is "+button.getId());
                 if (position==1){
-                   // Log.i("TAG","LAUNCHER");
+                    Log.e("BTN","TRUE "+BTN_LAUNCHER);
+                    guardarDatos(true,BTN_LAUNCHER);
                     ((Activity) context).startActivityForResult(new Intent(android.provider.Settings.ACTION_APPLICATION_SETTINGS), 0);
                 }else if (position==2){
-                    //Log.i("TAG","PANTALLA");
+                    Log.e("BTN","TRUE "+BTN_SCREEN);
+                    guardarDatos(true,BTN_SCREEN);
                     ((Activity) context).startActivityForResult(new Intent(android.provider.Settings.ACTION_DISPLAY_SETTINGS), 0);
                 }else if (position==3){
-                    //Log.i("TAG","ACCESIBLIDAD");
+                    Log.e("BTN","TRUE "+BTN_ACESIBILITY);
+                    guardarDatos(true,BTN_ACESIBILITY);
                     ((Activity) context).startActivityForResult(new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS), 0);
                 }
             }
         });
 
         container.addView(view);
-
         return view;
     }
 
@@ -136,6 +162,23 @@ public class SliderAdapter extends PagerAdapter implements View.OnClickListener 
 
     public void setOnClickListener(View.OnClickListener listener){
         this.listener=listener;
+    }
+
+    private boolean isGif(String imagen) {
+        String extension = "";
+        int i = imagen.lastIndexOf('.');
+        int p = Math.max(imagen.lastIndexOf('/'), imagen.lastIndexOf('\\'));
+        if (i > p) {
+            extension = imagen.substring(i+1);
+        }
+        return extension.trim().equalsIgnoreCase("gif");
+    }
+
+    public void guardarDatos(boolean isFirst,String Key){
+        SharedPreferences preferences = context.getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(Key,isFirst);
+        editor.apply();
     }
 
     @Override
