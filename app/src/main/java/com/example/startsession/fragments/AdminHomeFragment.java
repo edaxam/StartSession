@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.WorkSource;
+import android.preference.PreferenceActivity;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.startsession.AddUserActivity;
 import com.example.startsession.AdminHomeCard;
 import com.example.startsession.BlockService;
 import com.example.startsession.MainActivity;
@@ -140,16 +142,35 @@ public class AdminHomeFragment extends Fragment {
         exitFabApp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Settings.Secure.putString(getContext().getContentResolver(),
+/*                Settings.Secure.putString(getContext().getContentResolver(),
                         Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, "com.example.startsession.fragments/BlockService");
                 Settings.Secure.putString(getContext().getContentResolver(),
-                        Settings.Secure.ACCESSIBILITY_ENABLED, "0");*/
-                Intent intentService = new Intent(getContext(), BlockService.class);
+                        Settings.Secure.ACCESSIBILITY_ENABLED, "1");*/
+                /*Settings.Secure.putString(getContext().getContentResolver(),Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, "com.example.startsession/com.example.startsession.fragments/BlockService");
+                Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                startActivity(intent);*/
+                /*Intent intentService = new Intent(getContext(), BlockService.class);
                 getActivity().stopService(intentService);
                 Intent homeIntent = new Intent(Intent.ACTION_MAIN, null);
                 homeIntent.addCategory(Intent.CATEGORY_HOME);
                 homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                startActivity(homeIntent);
+                startActivity(homeIntent);*/
+
+                Intent intentService = new Intent(getContext(), BlockService.class);
+                getActivity().stopService(intentService);
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    final Intent intenth = new Intent(Settings.ACTION_HOME_SETTINGS);
+                    startActivity(intenth);
+                }
+                else {
+                    final Intent intenth = new Intent(Settings.ACTION_SETTINGS);
+                    startActivity(intenth);
+                }
+                //Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                //startActivityForResult(intent, 0);
+
+                getActivity().finish();
 
             }
         });
